@@ -1,0 +1,24 @@
+This is the project that should form an OpenSource project called CG++
+
+Make this a Header ONLY project, a very minimalistic and simple to use library,
+which will support: 
+
+	JSON (de)serialisation which is custom and manual
+	Binary (de)serialisation which supported by Cereal++11
+	
+
+TODO:
+
+    (1.a) TEST ConceptualGraph Copy Constructor
+
+    (1.b) TEST if boost throws exception when it can’t cast properly.
+
+    (2) ConceptualGraph: Construct from JSON, Output to JSON
+    
+    (3) Save Graph as a single file - Save Many Graphs (e.g. vector) as a single file
+
+    (4) Publish on GitHub / Licencing (BSD 3) - Ask Alexandra first
+
+    (5) Include/Redistribute cereal & rapidjson with cg++
+
+
