@@ -16,14 +16,16 @@ test apps are in : /test
 TESTED with:
 
 Clang 5.1
-GNU 4.7/4.8
+GNU 4.9
 
 REQUIRES:
 
-rapidjson	>= 0.1 (?)	[https://github.com/pah/rapidjson] NOTE: included
+rapidjson	>= 0.1 (?)	[https://github.com/pah/rapidjson]
 boost		>= 1.54		[http://www.boost.org]
 cereal		>= 1.0.0	[http://uscilab.github.io/cereal/]
 C++11 or C++0X enabled (check that your compiler supports it)
+
+NOTE: GCC prior to 4.9 does not properly support regex!
 
 BUILDING & INSTALLING (Linux or OSX):
 
@@ -31,12 +33,9 @@ $ mkdir build
 $ cd build
 $ cmake ..
 $ make
-$ su
-$ make install
+
 
 Tests and libraries (static and shared) will be in /build
 but if installed, they will be copied under /usr/shared/libraries and /usr/shared/includes (TODO: verify)
-
-Licence (TODO: verify)
 
 [1] John F. Sowa, Knowledge Representation: Logical, Philosophical, and Computational Foundations, Brooks Cole Publishing Co., Pacific Grove, CA, ©2000. Actual publication date, 16 August 1999.

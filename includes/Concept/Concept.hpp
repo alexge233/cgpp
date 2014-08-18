@@ -27,7 +27,7 @@ class Concept : public Node
     { }
 
     /// Construct using Token and Token Index
-    Concept ( 
+    Concept (
               Token & token,
               int index
             )
@@ -82,7 +82,7 @@ class Concept : public Node
     int _token_index = -1;
 
     /// json id
-    int _json_id = -1;
+    std::size_t _json_id = -1;
 
 
     template <class Archive> 

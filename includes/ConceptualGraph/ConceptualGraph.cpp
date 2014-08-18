@@ -51,14 +51,14 @@ ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
             for ( const auto & edge : original_edges )
             {
                 // search by matching value & node position
-	            auto match = std::find ( this->_concepts.begin(), this->_concepts.end(), edge );
+	        auto match = std::find ( this->_concepts.begin(), this->_concepts.end(), edge );
 	            
                 // if found - create identical edge
 	            if ( match != this->_concepts.end() )
                 {
 	                relation->_edges.push_back( *match );
                 }
-	        }
+	    }
         }
     }
 
@@ -106,7 +106,7 @@ ConceptualGraph::ConceptualGraph ( const std::string json )
                 _parseConcepts( doc );
 
                 // Then parse Relations, and create Edges whilst doing so
-                //_parseRelations( doc ); TODO
+                _parseRelations( doc );
             }
             else
                 throw std::runtime_error ( "ConceptualGraph JSON: wrong proto version" );
@@ -137,7 +137,7 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
             { 
                 if ( !data[i]["label"].IsString() )
                     throw std::runtime_error ( "ConceptualGraph JSON relation label not a string" );
-                    
+                
                 auto label = std::string( data[i]["label"].GetString() );
                 
                 if ( label.empty() )
@@ -158,7 +158,7 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
 
                 // Create Relation
                 auto relation = std::make_shared<Relation>( token, index );
-
+		
                 // JSON adjacencies
                 auto & adj = data[i]["adjacencies"];
 
@@ -167,10 +167,10 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                 {
                     for ( rapidjson::SizeType k = 0; k < adj.Size(); k++ )
                     {
-                        if ( !adj[k]["nodeTo"].IsInt() )
+                        if ( !adj[k]["nodeTo"].IsUint64() )
                             throw std::runtime_error ( "ConceptualGraph JSON adjacency id not an int");
-
-                        auto key =  boost::lexical_cast<int>( data[i]["nodeTo"].GetInt() );
+			
+                        auto key =  boost::lexical_cast<std::size_t>( adj[i]["nodeTo"].GetUint64() );
 
                         auto it = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return key == ptr->_json_id; } );
                         
@@ -183,6 +183,11 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                             throw std::runtime_error ( "ConceptualGraph JSON adjacency concept not found" );
                     }
                 }
+                else
+		  throw std::runtime_error ( "ConceptualGraph JSON relation adjacencies not an array" );
+		
+		// Last but not least, add relation
+		_relations.push_back ( relation );
             }
             else
                 throw std::runtime_error ( "ConceptualGraph JSON relation obj missing a required member" );
@@ -207,7 +212,7 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
                  data[i].HasMember( "id" ) &&
                  data[i].HasMember( "postag" ) &&
                  data[i].HasMember( "index" ) )
-            {   
+            {
                 if ( !data[i]["label"].IsString() )
                     throw std::runtime_error ( "ConceptualGraph JSON concept label not a string" );
                     
@@ -232,7 +237,7 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
                 if ( auto concept = std::make_shared<Concept>( token, index ) )
                 {
                     // get JSON id - used for edge creation
-                    concept->_json_id = boost::lexical_cast<int>( data[i]["id"].GetString() );
+                    concept->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetUint64() );
 
                     // Add to Concepts w/t Token and Token Index
                     _concepts.push_back ( concept );

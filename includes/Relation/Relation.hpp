@@ -81,13 +81,13 @@ class Relation : public Node
         return _token_index;
     }
 
-    /// Get Current Edges
+    /// Get Current Edges TODO: Remove
     std::vector<std::shared_ptr<Concept>> Edges ( ) const
     {
         return _edges;
     }
 
-    /// Create an Edge to @param node
+    /// Create an Edge to @param node ( TODO: Remove )
     bool Edge ( const std::shared_ptr<Concept> node )
     {
        if ( node )
@@ -115,8 +115,13 @@ class Relation : public Node
     friend class ConceptualGraph;
     friend class cereal::access;
     
+    /// tokens[i]
     int _token_index = -1;
+    
+    /// json id
+    std::size_t _json_id = -1;
 
+    // TODO: Remove
     std::vector<std::shared_ptr<Concept>> _edges;
 
 
@@ -125,6 +130,8 @@ class Relation : public Node
     {
         archive ( cereal::base_class<Node>( this ) );
         archive ( _token_index );
+	
+	// TODO: Remove
         archive ( _edges );
     }
 
