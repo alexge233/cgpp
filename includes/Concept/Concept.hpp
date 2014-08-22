@@ -39,6 +39,7 @@ class Concept : public Node
     : Node( rhs )
     {
         this->_token_index = rhs._token_index;
+        this->_json_id = rhs._json_id;
     }
 
     /// Needed by Virtual inheritence
@@ -60,7 +61,7 @@ class Concept : public Node
 
     /// Equality Operator
     bool operator== ( const Concept & rhs ) const
-    {    
+    {
         return this->_token == rhs._token &&
                this->_token_index == rhs._token_index;
     }
@@ -71,10 +72,10 @@ class Concept : public Node
     {
         return this->_token < rhs._token;
     }
-    
-    
+
+
   private:
-    
+
     friend class ConceptualGraph;
     friend class cereal::access;
     
@@ -85,11 +86,9 @@ class Concept : public Node
     std::size_t _json_id = -1;
 
 
-    template <class Archive> 
-    void serialize ( Archive & archive )
+    template <class Archive> void serialize ( Archive & archive )
     {
-      archive ( cereal::base_class<Node>( this ) );
-      archive ( _token_index );
+        archive ( cereal::base_class<Node>( this ), _token_index );
     }
 
 };

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <vector>
 #include <string>
@@ -13,15 +14,16 @@
 #include "../Node/Node.hpp"
 #include "../Concept/Concept.hpp"
 #include "../Relation/Relation.hpp"
+#include "../Edge/Edge.hpp"
 
 #include "../rapidjson/rapidjson.h"
 #include "../rapidjson/document.h"
 
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/vector.hpp>
+#include <cereal/types/utility.hpp>
 #include <cereal/types/memory.hpp>
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>
-
 
 

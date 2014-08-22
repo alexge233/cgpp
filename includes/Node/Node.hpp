@@ -67,15 +67,14 @@ class Node
     /// Token
     std::shared_ptr<Token> _token;
     
-    /** 
-     * Position of Node within a Graph's List, 
+    /**
+     * Position of Node within a Graph's List
      * e.g. if G = {n1, n2, n3} the number signifying the position
      */
     int _node_position = -1;
     
     
-    template <class Archive> 
-    void serialize ( Archive & archive )
+    template <class Archive> void serialize ( Archive & archive )
     {
       archive( _token, _node_position );
     }

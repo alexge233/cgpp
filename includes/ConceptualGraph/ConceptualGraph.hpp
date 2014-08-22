@@ -3,7 +3,6 @@
 #pragma once
 #include "Includes.hxx"
 
-// TODO: Modularise the PARSING methods into smaller private methods. Break it down, and use assertions or tests.
 
 namespace cgpp
 {
@@ -11,101 +10,160 @@ namespace cgpp
 /**
  * Conceptual Graph class as described by J.Sowa
  *
- * @version 5
- * @date 6-August-2014
- * 
- * NOTE: if I want embeded Graphs, then Concept & ConceptualGraph need a common ABC 
- *       which will provide a basis for an Edge for Relations
+ * @version 7
+ * @date 21-August-2014
  */
+
 class ConceptualGraph
 {
   public:
-    
-    /// Empty Constructor
+
+    /// Empty Constructor - use directly, used indirectly by cereal
     ConceptualGraph ( );
-    
-    /// Construct using JSON string
+
+    /**
+     * Construct using JSON string
+     * @note guid is randomly generated (uid v4)
+     * @note all concepts, relations & edges are contained in graph
+     */
     ConceptualGraph ( const std::string json );
 
-    /// Copy Constructor (Deep Copy)
+    /**
+     * Copy Constructor (Deep Copy Everything)
+     * @note guid is copied
+     * @note all concepts, relations & edges are deep copied
+     */
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-  
-
-    /// Add a new Concept
-    void AddConcept ( const std::shared_ptr<Concept> );
-
-    /// Add a new Relation
-    void AddRelation ( const std::shared_ptr<Relation> );
-    
-
-    /// Add a new Edge (Connect Relation to Concept)
-    bool Connect ( const std::shared_ptr<Relation>, const std::shared_ptr<Concept> );
+    /**
+     * Deep Clone Copy Constructor
+     * @note every member of the graph will be deep copied
+     */
+    ConceptualGraph Clone ( ) const;
 
 
-    /// Equality operator
+    /**
+     * Equality operator
+     * @note isomorphic similarity comparison (concepts,relations,edges)
+     */
     bool operator== ( const ConceptualGraph & rhs ) const;
 
 
+    /**
+     * Add a new Concept
+     * @note will accept duplicates
+     */
+    bool AddConcept ( const std::shared_ptr<Concept> );
 
-    /// Get Graph's Concepts
-    const std::vector<std::shared_ptr<Concept>> & Concepts ( ) const;
+    /**
+     * Add a new Relation
+     * @note will accept duplicates
+     */
+    bool AddRelation ( const std::shared_ptr<Relation> );
 
-    /// Get Graph's Relations
-    const std::vector<std::shared_ptr<Relation>> & Relations ( ) const;
+    /**
+     * Add a new Edge (connect Relation to Concept)
+     * @note will only create if edge doesn't exist
+     * @return true on edge created
+     */
+    bool AddEdge ( const std::shared_ptr<Relation>, const std::shared_ptr<Concept> );
+
+    /**
+     * Add a new Edge (connect Concept to Relation)
+     * @note will only create if edge doesn't exist
+     * @return true on edge created
+     */
+    bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
 
 
+    /**
+     * Get Graph's Concepts
+     * @warning pointers may be shared with other graphs
+     */
+    std::vector<std::shared_ptr<Concept>> Concepts ( ) const;
 
-    /// Graph Unique ID
+    /**
+     * Get Graph's Relations
+     * @warning pointers may be shared with other graphs
+     */
+    std::vector<std::shared_ptr<Relation>> Relations ( ) const;
+
+    /**
+     * Get All Edges
+     * @return a vector of copied Edges with shared Node pointers
+     */
+    std::vector<Edge> Edges ( ) const;
+
+    /**
+     * Get Concepts to which @param Relation has edges to
+     * @return a vector of shared Concept pointers
+     */
+    std::vector<std::shared_ptr<Concept>> Edges ( const std::shared_ptr<Relation> ) const;
+
+    /**
+     * Get Relations to which of @param Concept has edges to
+     * @return a vector of shared Relation pointers
+     */
+    std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
+
+
+    /**
+     * Graph Unique ID
+     * @note this is a UUID v4
+     */
     boost::uuids::uuid GUID ( ) const;
 
     /// Output this graph as JSON
     std::string JSON ( ) const;
 
-    
     /// print graph on std::out
     void Echo ( );
 
-
-    /// serialise graph to a binary file
+    /// Serialise graph to a binary file
     void Save ( const std::string ) const;
 
-    /// deserialise graph from a binary file
+    /// Deserialise graph from a binary file
     void Load ( const std::string );
- 
-    
+
+
   protected:
-    
-    /// current concepts
-    std::vector<std::shared_ptr<Concept>> _concepts;
-    
-    /// current relations
-    std::vector<std::shared_ptr<Relation>> _relations;
+
+    friend class cereal::access;
+
 
     /// Graph Unique ID
     boost::uuids::uuid _guid;
 
+    /// current concepts
+    std::vector<std::shared_ptr<Concept>> _concepts;
+
+    /// current relations
+    std::vector<std::shared_ptr<Relation>> _relations;
+
+    /// current edges: [Relation,Concept] or [Concept,Relation]
+    std::vector<Edge> _edges;
+
     /// Current Proto version
     static constexpr int _version = 1;
 
-    
+
+
     /// parse relation objects from json
     void _parseRelations ( rapidjson::Document & );
 
     /// parse concept objects from json
     void _parseConcepts ( rapidjson::Document & );
 
-    
-    /* TODO...
-    friend class cereal::access;
+    /// parse edge from json adjacencies
+    void _parseEdges ( rapidjson::Document & );
+
 
     template <class Archive> void serialize ( Archive & archive )
     {
-         archive( _concepts, _relations );
+         archive( _concepts, _relations, _edges );
     }
-    */
-};
 
+};
 
 }
 

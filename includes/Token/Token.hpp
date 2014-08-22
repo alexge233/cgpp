@@ -9,7 +9,7 @@ namespace cgpp
 /**
  * Class Wrapping around a Token/Word which has a Part-Of-Speech Tag
  * @version 8
- * @date 7-August-2014
+ * @date 21-August-2014
  */
 
 class Token
@@ -22,9 +22,9 @@ class Token
 
     
     /// Defacto constructor
-    Token ( 
-            const std::string & value, 
-            const std::string & tag 
+    Token (
+            const std::string & value,
+            const std::string & tag
           )
     : _value ( value ), _postag ( tag )
     { }
@@ -46,12 +46,19 @@ class Token
     }
 
 
+    /// Part of Speech Tag
+    std::string tag ( ) const
+    {
+        return _postag;
+    }
+
+
     /// Equality operator - Case insensitive
     bool operator== ( const Token & rhs  ) const
     {
         if ( !this->_value.empty() && !rhs._value.empty() )
             return boost::iequals( this->_value, rhs._value );
-        else 
+        else
             throw std::runtime_error ( "[Token::operator==] empty string" );
     }
 
@@ -62,19 +69,18 @@ class Token
         return this->_value < rhs._value;
     }
 
-    
+
   private:
 
-
     friend class cereal::access;
-    
-    /// Raw string value  
+
+    /// Raw string value
     std::string _value;
 
     /// Part of speech tag
     std::string _postag;
 
-    
+
     template <class Archive>
     void serialize ( Archive & archive )
     {

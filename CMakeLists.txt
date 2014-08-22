@@ -21,17 +21,26 @@ add_subdirectory(includes/ConceptualGraph)
 add_subdirectory(includes/Node)
 add_subdirectory(includes/Relation)
 add_subdirectory(includes/Token)
+add_subdirectory(includes/Edge)
 
 # Test executable "creategraph”
 add_executable ( creategraph tests/construct.cpp
-			     includes/ConceptualGraph/ConceptualGraph.cpp)
+			     includes/ConceptualGraph/ConceptualGraph.cpp
+			     includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 
 # Test executable "jsontest"
 add_executable ( jsontest tests/json.cpp
-                          includes/ConceptualGraph/ConceptualGraph.cpp)
+                          includes/ConceptualGraph/ConceptualGraph.cpp
+                          includes/ConceptualGraph/ConceptualGraphJSON.cpp)
+
+# Test executable "deserialise"
+add_executable ( deserialise tests/deserialise.cpp
+			     includes/ConceptualGraph/ConceptualGraph.cpp
+			     includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 
 # Build Libraries (both static and shared)
-set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp)
+set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
+                        includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 
 add_library (cgpp OBJECT ${SOURCES})
 add_library (static STATIC $<TARGET_OBJECTS:cgpp>)
@@ -41,8 +50,10 @@ add_library (shared SHARED $<TARGET_OBJECTS:cgpp>)
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
+
+# NOTE: C++14 is available as: -std=c++1y or -std=gnu++1y in GCC 4.9 - Don't know if Clang supports it yet.
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # using Clang
@@ -54,29 +65,42 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   elseif ()
     message(FATAL_ERROR "Clang version >= 3.0 is required")
   endif()
+  
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+  
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
+  
   #add_definitions(${CMAKE_CXX_FLAGS})
+  
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -s -mtune=native -march=native")
+  
   set(BUILD_SHARED_LIBS OFF)
+  
   message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  
+
   message (STATUS "GCC/Linux" )
   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+  
   if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
     message(STATUS "Info: g++ version >= 4.9 using C++11")
   elseif ()
     message (FATAL_ERROR "g++ version >= 4.9 is required")
   endif()
+  
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++0x -Wall -fPIC")
+  
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
-  #add_definitions(${CMAKE_CXX_FLAGS})
+  
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG -O3 -s -mtune=native -march=native")
+  
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native") # -s ?
+  
   set(BUILD_SHARED_LIBS OFF)
+  
   message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
