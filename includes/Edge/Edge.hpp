@@ -13,7 +13,6 @@ namespace cgpp
  * @version 1
  * @date 20-August-2014
  */
-
 struct Edge
 {
     std::shared_ptr<Node> from;

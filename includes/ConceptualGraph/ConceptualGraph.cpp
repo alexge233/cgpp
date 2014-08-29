@@ -181,8 +181,7 @@ bool ConceptualGraph::AddConcept ( std::shared_ptr<Concept> node )
 {
     if ( node )
     {
-		if ( std::find_if ( _concepts.begin(), _concepts.end(),
-                            [&]( const std::shared_ptr<Concept> & rhs ){ return *node == *rhs; }) 
+		if ( std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & rhs ){ return *node == *rhs; }) 
              == _concepts.end() )
         {
             _concepts.push_back( node );
@@ -200,8 +199,7 @@ bool ConceptualGraph::AddRelation ( std::shared_ptr<Relation> node )
 {
     if ( node )
     {
-		if ( std::find_if ( _relations.begin(), _relations.end(),
-                            [&]( const std::shared_ptr<Relation> & rhs ){ return *node == *rhs; }) 
+		if ( std::find_if ( _relations.begin(), _relations.end(),[&]( const std::shared_ptr<Relation> & rhs ){ return *node == *rhs; }) 
             == _relations.end() )
         {
             _relations.push_back( node );
@@ -233,13 +231,11 @@ bool ConceptualGraph::AddEdge (
 		if ( c_it != _concepts.end() && r_it != _relations.end() )
 		{
 			// Find if edge already exists - NOTE: I can use Edge::operator== in order to minify this line below
-			if ( std::find_if ( _edges.begin(), _edges.end(),
-                                [&]( const Edge & rhs ){ return *rhs.from == *relation && *rhs.to == *concept; }) 
+			if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *relation && *rhs.to == *concept; }) 
                 == _edges.end() )
 			{
 				// create new edge: [Relation,Concept]
 				_edges.push_back( (Edge){ relation, concept } );
-
 				return true;
 			}
 		}
@@ -269,8 +265,7 @@ bool ConceptualGraph::AddEdge (
 		if ( c_it != _concepts.end() && r_it != _relations.end() )
 		{
 			// Find if edge already exists
-			if ( std::find_if ( _edges.begin(), _edges.end(), 
-                                [&]( const Edge & rhs ){ return *rhs.from == *concept && *rhs.to == *relation; })
+			if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *concept && *rhs.to == *relation; })
                 == _edges.end() )
 			{
 				// create new edge: [Concept,Relation]
@@ -349,6 +344,98 @@ std::vector<std::shared_ptr<Relation>> ConceptualGraph::Edges ( const std::share
 }
 
 
+std::vector<std::shared_ptr<Concept>> ConceptualGraph::Concept_difference ( const ConceptualGraph & rhs ) const
+{
+    std::vector<std::shared_ptr<Concept>> diff;
+    for ( const auto concept : this->_concepts )
+    {
+        // If it doesn't exist in rhs._concepts, add into current diff - comparison takes into account both Token value and Token Index
+        if ( std::find_if ( rhs._concepts.begin(), rhs._concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return *ptr == *concept; } )
+            == rhs._concepts.end() )
+        {
+            diff.push_back ( concept );
+        }
+    }
+    return diff;
+}
+
+
+std::vector<std::shared_ptr<Relation>> ConceptualGraph::Relation_difference ( const ConceptualGraph & rhs ) const
+{
+    std::vector<std::shared_ptr<Relation>> diff;
+    for ( const auto relation : this->_relations )
+    {
+        // If it doesn't exist in rhs._relations, add into current diff - comparison takes into account both Token value and Token Index
+        if ( std::find_if ( rhs._relations.begin(), rhs._relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return *ptr == *relation; } )
+            == rhs._relations.end() )
+        {
+            diff.push_back ( relation );
+        }
+    }
+    return diff;
+}
+
+
+std::vector<Edge> ConceptualGraph::Edge_difference ( const ConceptualGraph & rhs ) const
+{
+    std::vector<Edge> diff;
+    for ( const auto edge : this->_edges )
+    {
+        if ( std::find ( rhs._edges.begin(), rhs._edges.end(), edge ) == rhs._edges.end() )
+        {
+            diff.push_back ( edge );
+        }
+    }
+    return diff;
+}
+
+
+std::vector<std::shared_ptr<Concept>> ConceptualGraph::Concept_equality ( const ConceptualGraph & rhs ) const
+{
+    std::vector<std::shared_ptr<Concept>> same;
+    for ( const auto concept : this->_concepts )
+    {
+        // If it doesn't exist in rhs._concepts, add into current diff - comparison takes into account both Token value and Token Index
+        if ( std::find_if ( rhs._concepts.begin(), rhs._concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return *ptr == *concept; } )
+            != rhs._concepts.end() )
+        {
+            same.push_back ( concept );
+        }
+    }
+    return same;
+}
+
+
+std::vector<std::shared_ptr<Relation>> ConceptualGraph::Relation_equality ( const ConceptualGraph & rhs ) const
+{
+    std::vector<std::shared_ptr<Relation>> same;
+    for ( const auto relation : this->_relations )
+    {
+        // If it doesn't exist in rhs._relations, add into current diff - comparison takes into account both Token value and Token Index
+        if ( std::find_if ( rhs._relations.begin(), rhs._relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return *ptr == *relation; } )
+            != rhs._relations.end() )
+        {
+            same.push_back ( relation );
+        }
+    }
+    return same;
+}
+
+
+std::vector<Edge> ConceptualGraph::Edge_equality ( const ConceptualGraph & rhs ) const
+{
+    std::vector<Edge> same;
+    for ( const auto edge : this->_edges )
+    {
+        if ( std::find ( rhs._edges.begin(), rhs._edges.end(), edge )  != rhs._edges.end() )
+        {
+            same.push_back ( edge );
+        }
+    }
+    return same;
+}
+
+
 void  ConceptualGraph::Echo ( )
 {
    std::cout << "[ConceptualGraph] ∃(G) [" << this << "] - G(c)={";
@@ -374,9 +461,8 @@ void  ConceptualGraph::Save ( const std::string fname ) const
      if ( output.is_open() )
      {
         cereal::BinaryOutputArchive archive( output );
-		archive( _concepts );
-        archive( _relations );
-		archive( _edges );
+        archive( _concepts, _relations );
+        archive( _edges );
      }
      else
         std::cerr << "[ConceptualGraph::Save] Could not open file for saving" << std::endl;
@@ -390,9 +476,8 @@ void  ConceptualGraph::Load ( const std::string fname )
     if ( input.is_open() )
     {
         cereal::BinaryInputArchive archive ( input );
-        archive( _concepts );
-        archive( _relations );
-		archive( _edges );
+        archive( _concepts, _relations );
+        archive( _edges );
     }
     else
        std::cerr << "[ConceptualGraph::Load] Could not open file for loading" << std::endl;

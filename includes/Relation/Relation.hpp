@@ -51,7 +51,8 @@ class Relation : public Node
     /// Equality Operator
     bool operator== ( const Relation & rhs ) const
     {
-        return (*this->_token) ==  (*rhs._token);
+        return *this->_token == *rhs._token &&
+               this->_token_index == rhs._token_index;
     }
 
     /// Get Token Index

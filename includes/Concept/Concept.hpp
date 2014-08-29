@@ -61,7 +61,7 @@ class Concept : public Node
     /// Equality Operator
     bool operator== ( const Concept & rhs ) const
     {
-        return this->_token == rhs._token &&
+        return *this->_token == *rhs._token &&
                this->_token_index == rhs._token_index;
     }
 

@@ -10,8 +10,8 @@ namespace cgpp
 /**
  * Conceptual Graph class as described by J.Sowa
  *
- * @version 7
- * @date 21-August-2014
+ * @version 8
+ * @date 29-August-2014
  */
 
 class ConceptualGraph
@@ -35,10 +35,7 @@ class ConceptualGraph
      */
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-    /**
-     * Deep Clone Copy Constructor
-     * @note every member of the graph will be deep copied
-     */
+    /// Deep Clone Copy Constructor @note deep copy all members
     ConceptualGraph Clone ( ) const;
 
 
@@ -49,68 +46,59 @@ class ConceptualGraph
     bool operator== ( const ConceptualGraph & rhs ) const;
 
 
-    /**
-     * Add a new Concept
-     * @note will accept duplicates
-     */
+    /// Add a new Concept  @note will accept duplicates
     bool AddConcept ( const std::shared_ptr<Concept> );
 
-    /**
-     * Add a new Relation
-     * @note will accept duplicates
-     */
+    /// Add a new Relation @note will accept duplicates
     bool AddRelation ( const std::shared_ptr<Relation> );
 
-    /**
-     * Add a new Edge (connect Relation to Concept)
-     * @note will only create if edge doesn't exist
-     * @return true on edge created
-     */
+    /// Add a new Edge (connect Relation to Concept) @note will only create if edge doesn't exist
     bool AddEdge ( const std::shared_ptr<Relation>, const std::shared_ptr<Concept> );
 
     /**
      * Add a new Edge (connect Concept to Relation)
      * @note will only create if edge doesn't exist
-     * @return true on edge created
      */
     bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
 
 
-    /**
-     * Get Graph's Concepts
-     * @warning pointers may be shared with other graphs
-     */
+    /// Get Graph's Concepts
     std::vector<std::shared_ptr<Concept>> Concepts ( ) const;
 
-    /**
-     * Get Graph's Relations
-     * @warning pointers may be shared with other graphs
-     */
+    /// Get Graph's Relations
     std::vector<std::shared_ptr<Relation>> Relations ( ) const;
 
-    /**
-     * Get All Edges
-     * @return a vector of copied Edges with shared Node pointers
-     */
+    /// Get All Edges
     std::vector<Edge> Edges ( ) const;
 
-    /**
-     * Get Concepts to which @param Relation has edges to
-     * @return a vector of shared Concept pointers
-     */
+    /// Get Concepts to which @param Relation has edges to
     std::vector<std::shared_ptr<Concept>> Edges ( const std::shared_ptr<Relation> ) const;
 
-    /**
-     * Get Relations to which of @param Concept has edges to
-     * @return a vector of shared Relation pointers
-     */
+    /// Get Relations to which of @param Concept has edges to
     std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
 
 
-    /**
-     * Graph Unique ID
-     * @note this is a UUID v4
-     */
+    /// Find which of our Concepts don't exist in  @param rhs
+    std::vector<std::shared_ptr<Concept>> Concept_difference ( const ConceptualGraph & rhs ) const;
+
+    /// Find which of our Relations don't exist in @param rhs
+    std::vector<std::shared_ptr<Relation>> Relation_difference ( const ConceptualGraph & rhs ) const;
+
+    /// Find which of our Edges don't exist in @param rhs
+    std::vector<Edge> Edge_difference ( const ConceptualGraph & rhs ) const;
+
+
+    /// Find which Concepts are identical compared to @param rhs
+    std::vector<std::shared_ptr<Concept>> Concept_equality ( const ConceptualGraph & rhs ) const;
+
+    /// Find which Relations are identical compared to @param rhs
+    std::vector<std::shared_ptr<Relation>> Relation_equality ( const ConceptualGraph & rhs ) const;
+
+    /// Find which Edges are identical compared to @param rhs
+    std::vector<Edge> Edge_equality ( const ConceptualGraph & rhs ) const;
+
+
+    /// Graph Unique ID @note this is a UUID v4
     boost::uuids::uuid GUID ( ) const;
 
     /// Output this graph as JSON
@@ -119,10 +107,10 @@ class ConceptualGraph
     /// print graph on std::out
     void Echo ( );
 
-    /// Serialise graph to a binary file
+    /// Serialise graph to a binary file with filename @param file
     void Save ( const std::string ) const;
 
-    /// Deserialise graph from a binary file
+    /// Deserialise graph from a binary file with filename @param file
     void Load ( const std::string );
 
 

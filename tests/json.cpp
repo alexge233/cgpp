@@ -6,7 +6,7 @@
 
 #include <iostream>
 #include <memory>
-#include "../includes/ConceptualGraph/ConceptualGraph.hpp"
+#include "../includes/cgpp"
 #include "json.hpp"
 
  int main ( void )

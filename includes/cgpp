@@ -1,0 +1,6 @@
+#include "ConceptualGraph/ConceptualGraph.hpp"
+#include "Concept/Concept.hpp"
+#include "Edge/Edge.hpp"
+#include "Node/Node.hpp"
+#include "Relation/Relation.hpp"
+#include "Token/Token.hpp"
