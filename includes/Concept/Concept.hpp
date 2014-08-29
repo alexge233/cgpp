@@ -17,11 +17,10 @@ class Concept : public Node
 {
   public:
 
-    
     /// Empty Constructor
     Concept ( ) : Node ( )
     { }
-    
+
     /// Construct using a Token only
     Concept ( Token & token ) : Node( token )
     { }
@@ -33,7 +32,7 @@ class Concept : public Node
             )
     :   Node ( token ), _token_index ( index )
     { }
-    
+
     /// Construct using another node
     Concept ( const Concept & rhs ) 
     : Node( rhs )

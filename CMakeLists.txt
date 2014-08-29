@@ -42,9 +42,9 @@ add_executable ( deserialise tests/deserialise.cpp
 set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
                         includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 
-add_library (cgpp OBJECT ${SOURCES})
-add_library (static STATIC $<TARGET_OBJECTS:cgpp>)
-add_library (shared SHARED $<TARGET_OBJECTS:cgpp>)
+add_library (lcgpp OBJECT ${SOURCES})
+add_library (cgpp.0.1-static STATIC $<TARGET_OBJECTS:lcgpp>)
+add_library (cgpp.0.1 SHARED $<TARGET_OBJECTS:lcgpp>)
 
 
 set(CMAKE_COLOR_MAKEFILE on)
@@ -91,7 +91,8 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     message (FATAL_ERROR "g++ version >= 4.9 is required")
   endif()
   
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++0x -Wall -fPIC")
+  # NOTE: gnu++11 enables GNU's violating options, whereas c++11 is strictly only the new version
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
   
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
   

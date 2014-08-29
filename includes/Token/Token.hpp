@@ -11,16 +11,14 @@ namespace cgpp
  * @version 8
  * @date 21-August-2014
  */
-
 class Token
 {
   public:
-    
-    
+
+
     /// NOTE: cereal requires default constructible or Save/Load methods FIX: Make it private, and give access to cereal only!
     Token ( ) = default;
 
-    
     /// Defacto constructor
     Token (
             const std::string & value,

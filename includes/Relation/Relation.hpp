@@ -12,12 +12,11 @@ namespace cgpp
  * @version 6
  * @date 8-August-2014
  */
-
 class Relation : public Node
 {
   public:
-    
-    
+
+
     /// Empty Constructor - Avoid using
     Relation ( ) = default;
 
@@ -39,7 +38,7 @@ class Relation : public Node
         this->_token_index = rhs._token_index;
         this->_json_id = rhs._json_id;
     }
-    
+
     /// Poly Destructor
     ~Relation ( ) = default;
 
@@ -60,16 +59,17 @@ class Relation : public Node
     {
         return _token_index;
     }
-    
-    
+
+
   private:
-    
+
     friend class ConceptualGraph;
     friend class cereal::access;
-    
+
+
     /// tokens[i]
     int _token_index = -1;
-    
+
     /// json id
     std::size_t _json_id = -1;
 
@@ -78,7 +78,7 @@ class Relation : public Node
         archive ( cereal::base_class<Node>( this ), _token_index );
     }
 
-    
+
 };
 
 }

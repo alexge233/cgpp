@@ -399,4 +399,10 @@ void  ConceptualGraph::Load ( const std::string fname )
 }
 
 
+boost::uuids::uuid ConceptualGraph::GUID ( ) const
+{
+    return _guid;
+}
+
+
 } // namespace end
