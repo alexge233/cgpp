@@ -1,0 +1,2 @@
+#include "../ConceptualGraph/ConceptualGraph.hpp"
+

@@ -84,7 +84,7 @@ class Token
     {
       archive ( _value, _postag );
     }
-   
+
 };
 
 }

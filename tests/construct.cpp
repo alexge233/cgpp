@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "../includes/cgpp"
+#include "../includes/Utilities/Utilities.hpp"
 #include "json.hpp"
 
 int main ( void )
@@ -116,20 +117,10 @@ int main ( void )
     graph2->AddEdge( is_node, blue_node );
     
     graph2->Echo();
-
-    auto diff1 = graph->Concept_difference( * graph2 );
-    auto diff2 = graph2->Concept_difference( * graph );
-    auto diff3 = graph->Edge_equality ( * graph2 );
     
-    std::cout << "Graph 1 & Graph 2 Concepts difference " << std::endl;
-    for ( auto n : diff1 ) std::cout << n->asToken()->value() << std::endl;
-    
-    std::cout << "Graph 2 & Graph 1 Concepts difference " << std::endl;
-    for ( auto n : diff2 ) std::cout << n->asToken()->value() << std::endl;
-    
-    std::cout << "Graph 1 & Graph 2 Edge Equality" << std::endl;
-    for ( auto e : diff3 ) std::cout << "[" << e.from->asToken()->value() << "," << e.to->asToken()->value() << "]" << std::endl;
-    
+    std::cout << "Minimum Edges Connected for Graph: " << util::MinimumEdgesConnected ( graph ) << std::endl;
+    std::cout << "Minimum Edges Connected for Graph2: " << util::MinimumEdgesConnected ( graph2 ) << std::endl;
+    std::cout << "Minimum Edges Connected for Graph3: " << util::MinimumEdgesConnected ( graph3 ) << std::endl;
     
     std::cout << "JSON for Graph" << std::endl;
     std::cout << graph->JSON() << std::endl;

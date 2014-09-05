@@ -18,33 +18,23 @@ class ConceptualGraph
 {
   public:
 
-    /// Empty Constructor - use directly, used indirectly by cereal
+    /// Empty Constructor
     ConceptualGraph ( );
 
-    /**
-     * Construct using JSON string
-     * @note guid is randomly generated (uid v4)
-     * @note all concepts, relations & edges are contained in graph
-     */
+    /// Construct using a string @param json - @note guid is randomly generated (uid v4)
     ConceptualGraph ( const std::string json );
 
-    /**
-     * Copy Constructor (Deep Copy Everything)
-     * @note guid is copied
-     * @note all concepts, relations & edges are deep copied
-     */
+    /// Copy Constructor - Shallow copy - @note guid is copied
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-    /// Deep Clone Copy Constructor @note deep copy all members
+    /// Copy Constructor - Deep Clone - @note deep copy all members
     ConceptualGraph Clone ( ) const;
 
 
-    /**
-     * Equality operator
-     * @note isomorphic similarity comparison (concepts,relations,edges)
-     */
-    bool operator== ( const ConceptualGraph & rhs ) const;
+    /**             @note Graph Operations              */
 
+    /// Equality operator - @note isomorphic similarity comparison (concepts,relations,edges)
+    bool operator== ( const ConceptualGraph & rhs ) const;
 
     /// Add a new Concept  @note will accept duplicates
     bool AddConcept ( const std::shared_ptr<Concept> );
@@ -55,12 +45,8 @@ class ConceptualGraph
     /// Add a new Edge (connect Relation to Concept) @note will only create if edge doesn't exist
     bool AddEdge ( const std::shared_ptr<Relation>, const std::shared_ptr<Concept> );
 
-    /**
-     * Add a new Edge (connect Concept to Relation)
-     * @note will only create if edge doesn't exist
-     */
+    /// Add a new Edge (connect Concept to Relation) @note will only create if edge doesn't exist
     bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
-
 
     /// Get Graph's Concepts
     std::vector<std::shared_ptr<Concept>> Concepts ( ) const;
@@ -78,25 +64,7 @@ class ConceptualGraph
     std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
 
 
-    /// Find which of our Concepts don't exist in  @param rhs
-    std::vector<std::shared_ptr<Concept>> Concept_difference ( const ConceptualGraph & rhs ) const;
-
-    /// Find which of our Relations don't exist in @param rhs
-    std::vector<std::shared_ptr<Relation>> Relation_difference ( const ConceptualGraph & rhs ) const;
-
-    /// Find which of our Edges don't exist in @param rhs
-    std::vector<Edge> Edge_difference ( const ConceptualGraph & rhs ) const;
-
-
-    /// Find which Concepts are identical compared to @param rhs
-    std::vector<std::shared_ptr<Concept>> Concept_equality ( const ConceptualGraph & rhs ) const;
-
-    /// Find which Relations are identical compared to @param rhs
-    std::vector<std::shared_ptr<Relation>> Relation_equality ( const ConceptualGraph & rhs ) const;
-
-    /// Find which Edges are identical compared to @param rhs
-    std::vector<Edge> Edge_equality ( const ConceptualGraph & rhs ) const;
-
+    /**             @note Various Helper methods          */
 
     /// Graph Unique ID @note this is a UUID v4
     boost::uuids::uuid GUID ( ) const;
@@ -118,7 +86,6 @@ class ConceptualGraph
 
     friend class cereal::access;
 
-
     /// Graph Unique ID
     boost::uuids::uuid _guid;
 
@@ -135,6 +102,7 @@ class ConceptualGraph
     static constexpr int _version = 1;
 
 
+    /**             @note JSON methods                      */
 
     /// parse relation objects from json
     void _parseRelations ( rapidjson::Document & );
@@ -146,6 +114,7 @@ class ConceptualGraph
     void _parseEdges ( rapidjson::Document & );
 
 
+    /// (De)Serialisation delegate for cereal library
     template <class Archive> void serialize ( Archive & archive )
     {
          archive( _concepts, _relations, _edges );

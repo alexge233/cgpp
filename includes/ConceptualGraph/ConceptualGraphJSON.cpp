@@ -19,7 +19,7 @@ std::string ConceptualGraph::JSON ( ) const
     for ( auto r : _relations )
     {
         rstr += "\n\r\t{\n\r\t\t\"label\":\"" + r->asToken()->value() + "\",\n\r\t\t\"postag\":\"" + r->asToken()->tag() + "\",\n\r";
-        rstr += "\t\t\"index\":\"" + boost::lexical_cast<std::string>( r->TokenIndex() ) + "\",\n\r";
+        rstr += "\t\t\"index\":" + boost::lexical_cast<std::string>( r->TokenIndex() ) + ",\n\r";
         rstr += "\t\t\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( r->asToken()->value() ) ) + "\n\r\t},";
     }
     if ( !rstr.empty() )
@@ -33,7 +33,7 @@ std::string ConceptualGraph::JSON ( ) const
     for ( auto c : _concepts )
     {
         cstr += "\n\r\t{\n\r\t\t\"label\":\"" + c->asToken()->value() + "\",\n\r\t\t\"postag\":\"" + c->asToken()->tag() + "\",\n\r";
-        cstr += "\t\t\"index\":\"" + boost::lexical_cast<std::string>( c->TokenIndex() ) + "\",\n\r";
+        cstr += "\t\t\"index\":" + boost::lexical_cast<std::string>( c->TokenIndex() ) + ",\n\r";
         cstr += "\t\t\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( c->asToken()->value() ) ) + "\n\r\t},";
     }
     if ( !cstr.empty() )
@@ -69,7 +69,7 @@ std::string ConceptualGraph::JSON ( ) const
         ss << estr;
     }
 
-    ss << "]\n\r}";
+    ss << "]\n\r}\n\r";
     return ss.str();
 }
 
@@ -103,7 +103,7 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
                     throw std::runtime_error ("ConceptualGraph JSON concept obj has empty label" );
 
                 if ( !data[i]["index"].IsInt() )
-                    throw std::runtime_error ( "ConceptualGraph JSON concept index not an int" );
+                    throw std::runtime_error ( "ConceptualGraph JSON concept index not an int - hint: did you add quotes?" );
 
                 int index = boost::lexical_cast<int>( data[i]["index"].GetInt() );
 
@@ -159,7 +159,7 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                     throw std::runtime_error ("ConceptualGraph JSON relation obj has empty label" );
 
                 if ( !data[i]["index"].IsInt() )
-                    throw std::runtime_error ( "ConceptualGraph JSON relation index not an int" );
+                    throw std::runtime_error ( "ConceptualGraph JSON relation index not an int - hint: did you add quotes?" );
 
                 int index = boost::lexical_cast<int>( data[i]["index"].GetInt() );
 

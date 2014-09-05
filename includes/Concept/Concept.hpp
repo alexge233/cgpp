@@ -62,7 +62,7 @@ class Concept : public Node
     bool operator== ( const Concept & rhs ) const
     {
         return *this->_token == *rhs._token &&
-               this->_token_index == rhs._token_index;
+                this->_token_index == rhs._token_index;
     }
 
 
@@ -77,7 +77,7 @@ class Concept : public Node
 
     friend class ConceptualGraph;
     friend class cereal::access;
-    
+
     /// tokens[i]
     int _token_index = -1;
 

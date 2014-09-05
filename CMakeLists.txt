@@ -22,11 +22,13 @@ add_subdirectory(includes/Node)
 add_subdirectory(includes/Relation)
 add_subdirectory(includes/Token)
 add_subdirectory(includes/Edge)
+add_subdirectory(includes/Utilities)
 
 # Test executable "creategraph”
 add_executable ( creategraph tests/construct.cpp
 			     includes/ConceptualGraph/ConceptualGraph.cpp
-			     includes/ConceptualGraph/ConceptualGraphJSON.cpp)
+			     includes/ConceptualGraph/ConceptualGraphJSON.cpp
+			     includes/Utilities/Utilities.cpp)
 
 # Test executable "jsontest"
 add_executable ( jsontest tests/json.cpp
@@ -40,7 +42,8 @@ add_executable ( deserialise tests/deserialise.cpp
 
 # Build Libraries (both static and shared)
 set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
-                        includes/ConceptualGraph/ConceptualGraphJSON.cpp)
+                        includes/ConceptualGraph/ConceptualGraphJSON.cpp
+                        includes/Utilities/Utilities.cpp)
 
 add_library (lcgpp OBJECT ${SOURCES})
 add_library (cgpp.0.1-static STATIC $<TARGET_OBJECTS:lcgpp>)

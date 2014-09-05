@@ -52,7 +52,7 @@ class Relation : public Node
     bool operator== ( const Relation & rhs ) const
     {
         return *this->_token == *rhs._token &&
-               this->_token_index == rhs._token_index;
+                this->_token_index == rhs._token_index;
     }
 
     /// Get Token Index

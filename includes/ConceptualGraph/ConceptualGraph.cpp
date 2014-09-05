@@ -239,6 +239,8 @@ bool ConceptualGraph::AddEdge (
 				return true;
 			}
 		}
+		else
+            std::cerr << "ConceptualGraph AddEdge: either Concept or Relation doesn't exist in this graph, Edge won't be created" << std::endl;
     
 		return false;
 	}
@@ -273,6 +275,9 @@ bool ConceptualGraph::AddEdge (
 				return true;
 			}
 		}
+		else
+            std::cerr << "ConceptualGraph AddEdge: either Concept or Relation doesn't exist in this graph, Edge won't be created" << std::endl;
+        
 		return false;
 	}
 	else
@@ -344,6 +349,7 @@ std::vector<std::shared_ptr<Relation>> ConceptualGraph::Edges ( const std::share
 }
 
 
+/*
 std::vector<std::shared_ptr<Concept>> ConceptualGraph::Concept_difference ( const ConceptualGraph & rhs ) const
 {
     std::vector<std::shared_ptr<Concept>> diff;
@@ -434,17 +440,17 @@ std::vector<Edge> ConceptualGraph::Edge_equality ( const ConceptualGraph & rhs )
     }
     return same;
 }
-
+*/
 
 void  ConceptualGraph::Echo ( )
 {
-   std::cout << "[ConceptualGraph] ∃(G) [" << this << "] - G(c)={";
+   std::cout << "[ConceptualGraph] ∃(G): G(c)={";
    for ( auto con : _concepts )
-        std::cout << con->asToken()->value() << "[" << con << "],";
+        std::cout << con->asToken()->value() << ",";
 
    std::cout << "}, G(r)= {";
    for ( auto rel : _relations )
-        std::cout << rel->asToken()->value() << "[" << rel << "],";
+        std::cout << rel->asToken()->value() << ",";
 
    std::cout << "}, G(e)= {";
    for ( auto edge : _edges )

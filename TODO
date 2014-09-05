@@ -8,6 +8,7 @@ which will support:
 
 TODO:
 
+    (1) Rename "/includes/cgpp" to "/includes/core"
     (2) Include/Redistribute cereal & rapidjson with cg++
 
 
