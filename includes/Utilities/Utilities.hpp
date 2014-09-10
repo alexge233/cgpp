@@ -1,14 +1,30 @@
+/**
+ *
+ *  _____                            _               _   _____                 _
+ * /  __ \                          | |             | | |  __ \               | |        _     _
+ * | /  \/ ___  _ __   ___ ___ _ __ | |_ _   _  __ _| | | |  \/_ __ __ _ _ __ | |__    _| |_ _| |
+ * | |    / _ \| '_ \ / __/ _ \ '_ \| __| | | |/ _` | | | | __| '__/ _` | '_ \| '_ \  |_   _|_   _|
+ * | \__/\ (_) | | | | (_|  __/ |_) | |_| |_| | (_| | | | |_\ \ | | (_| | |_) | | | |   |_|   |_|
+ *  \____/\___/|_| |_|\___\___| .__/ \__|\__,_|\__,_|_|  \____/_|  \__,_| .__/|_| |_|
+ *                            | |                                       | |
+ *                            |_|                                       |_|
+ *
+ * @brief Helper functions used for a variety of purposes
+ *
+ * A variety of graph operations and set operations using conceptual graphs
+ *
+ * @see ConceptualGraph
+ * @version 1
+ * @date 5-September-2014
+ * @author Alexandros Gkiokas <a.gkiokas@warwick.ac.uk>
+ * @copyright BSD-3 license
+ */
+
 #ifndef _CGPP_Utilities_HPP_
 #define _CGPP_Utilities_HPP_
 #pragma once
 #include "Includes.hxx"
 
-/**
- * Helper functions used for a variety of purposes
- *
- * @version 1
- * @date 5-September-2014
- */
 namespace cgpp
 {
 namespace util
@@ -17,6 +33,7 @@ namespace util
 /**
  * Check if a Concept Graph is connected:
  * @note Each and every Node (Concept/Relation) must have minimum one edge
+ * WARNING: I got a sefault in here,  so I'm using the DEBUG version again
  */
 bool MinimumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
 
@@ -33,9 +50,9 @@ bool MaximumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
  * @return a vector of different Concepts pointers found in <b 1st parameter rhs>
  */
 std::vector<std::shared_ptr<Concept>> Compare_Concepts_Difference (
-                                                                      const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                      const std::shared_ptr<ConceptualGraph> & rhs
-                                                                    );
+                                                                    const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                    const std::shared_ptr<ConceptualGraph> & rhs
+                                                                  );
 
 
 /**
@@ -43,9 +60,9 @@ std::vector<std::shared_ptr<Concept>> Compare_Concepts_Difference (
  * @return a vector of different Relation pointers found in <b 1st parameter rhs>
  */
 std::vector<std::shared_ptr<Relation>> Compare_Relations_Difference (
-                                                                        const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                        const std::shared_ptr<ConceptualGraph> & rhs
-                                                                      );
+                                                                      const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                      const std::shared_ptr<ConceptualGraph> & rhs
+                                                                    );
 
 
 /**
@@ -53,9 +70,9 @@ std::vector<std::shared_ptr<Relation>> Compare_Relations_Difference (
  * @return a vector of different Edge pointers found in <b 1st parameter rhs>
  */
 std::vector<std::shared_ptr<Edge>> Compare_Edges_Difference (
-                                                                const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                const std::shared_ptr<ConceptualGraph> & rhs
-                                                              );
+                                                              const std::shared_ptr<ConceptualGraph> & lhs,
+                                                              const std::shared_ptr<ConceptualGraph> & rhs
+                                                            );
 
 
 /**
@@ -68,9 +85,9 @@ std::vector<
                         std::shared_ptr<Concept> >
            > 
            Concepts_Intersection (
-                                    const std::shared_ptr<ConceptualGraph> & lhs,
-                                    const std::shared_ptr<ConceptualGraph> & rhs
-                                );
+                                   const std::shared_ptr<ConceptualGraph> & lhs,
+                                   const std::shared_ptr<ConceptualGraph> & rhs
+                                 );
 
 
 /**
@@ -98,11 +115,12 @@ std::vector<
                         std::shared_ptr<Edge> >
            >
            Edges_Intersection (
-                                 const std::shared_ptr<ConceptualGraph> & lhs,
-                                 const std::shared_ptr<ConceptualGraph> & rhs
+                                const std::shared_ptr<ConceptualGraph> & lhs,
+                                const std::shared_ptr<ConceptualGraph> & rhs
                               );
 
 }
 }
 
 #endif
+

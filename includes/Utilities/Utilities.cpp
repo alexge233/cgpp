@@ -9,22 +9,40 @@ bool MinimumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph )
 {
     if ( graph )
     {
+        const auto concepts = graph->Concepts();
+        const auto relations = graph->Relations();
+        const auto edges = graph->Edges();
+
         // Check if there exists at least one Edge from or to that concept - abort if there isn't at least one
-        for ( const auto & concept : graph->Concepts() )
+        for ( const auto & concept : concepts )
         {
-            if ( std::find_if ( graph->Edges().begin(), graph->Edges().end(), [&]( const Edge & rhs )
-                                                                               { return *rhs.from == *concept || *rhs.to == *concept; } )
-                == graph->Edges().end() )
+            if ( std::find_if ( edges.begin(), edges.end(),
+                                [&]( const Edge & rhs )
+                                {
+                                    if ( rhs.from && rhs.to )
+                                         return *rhs.from == *concept || *rhs.to == *concept;
+
+                                    else
+                                        throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(1): rhs.from or rhs.to is nullptr - Edge problem ?" );
+                                }
+                              ) == edges.end() )
             {
                 return false;
             }
         }
         // Check if there exists at least one Edge from or to that relation - abort if there isn't at least one
-        for ( const auto & relation : graph->Relations() )
+        for ( const auto & relation : relations )
         {
-            if ( std::find_if ( graph->Edges().begin(), graph->Edges().end(), [&]( const Edge & rhs )
-                                                                               { return *rhs.from == *relation || *rhs.to == *relation; } )
-                == graph->Edges().end() )
+            if ( std::find_if ( edges.begin(), edges.end(),
+                                [&]( const Edge & rhs )
+                                {
+                                    if ( rhs.from && rhs.to )
+                                        return *rhs.from == *relation || *rhs.to == *relation; 
+
+                                    else
+                                        throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(2): rhs.from or rhs.to is nullptr - Edge problem ?" );
+                                }
+                               ) == edges.end() )
             {
                 return false;
             }
@@ -45,20 +63,30 @@ bool MaximumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph )
 
 
 std::vector<std::shared_ptr<Concept>> Compare_Concepts_Difference (
-                                                                      const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                      const std::shared_ptr<ConceptualGraph> & rhs
-                                                                    )
+                                                                    const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                    const std::shared_ptr<ConceptualGraph> & rhs
+                                                                  )
 {
     std::vector<std::shared_ptr<Concept>> diff;
 
     if ( lhs && rhs )
     {
-        for ( const auto & concept : lhs->Concepts() )
+        const auto mine_concepts = lhs->Concepts();
+        const auto other_concepts = rhs->Concepts();
+
+        for ( const auto & concept : mine_concepts )
         {
             // If it doesn't exist in rhs->Relations(), add into current diff - comparison takes into account only Token Value
-            if ( std::find_if ( rhs->Concepts().begin(), rhs->Concepts().end(), [&]( const std::shared_ptr<Concept> & ptr )
-                                                                                  { return *concept->asToken() == *ptr->asToken(); } )
-                 == rhs->Concepts().end() )
+            if ( std::find_if ( other_concepts.begin(), other_concepts.end(),
+                                [&]( const std::shared_ptr<Concept> & ptr )
+                                {
+                                    if ( concept )
+                                        return *concept->asToken() == *ptr->asToken();
+
+                                    else
+                                        throw std::runtime_error ( "cgpp::util Compare_Concepts_Difference: lamda param concept is null" );
+                                }
+                              ) == other_concepts.end() )
             {
                 diff.push_back ( concept );
             }
@@ -72,21 +100,31 @@ std::vector<std::shared_ptr<Concept>> Compare_Concepts_Difference (
 
 
 std::vector<std::shared_ptr<Relation>> Compare_Relations_Difference (
-                                                                        const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                        const std::shared_ptr<ConceptualGraph> & rhs
-                                                                      )
+                                                                      const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                      const std::shared_ptr<ConceptualGraph> & rhs
+                                                                    )
 
 {
     std::vector<std::shared_ptr<Relation>> diff;
 
     if ( lhs && rhs )
     {
-        for ( const auto & relation : lhs->Relations() )
+        const auto mine_relations = lhs->Relations();
+        const auto other_relations = rhs->Relations();
+
+        for ( const auto & relation : mine_relations )
         {
             // If it doesn't exist in rhs->Relations(), add into current diff - comparison takes into account only Token Value
-            if ( std::find_if ( rhs->Relations().begin(), rhs->Relations().end(), [&]( const std::shared_ptr<Relation> & ptr )
-                                                                                  { return *relation->asToken() == *ptr->asToken(); } )
-                 == rhs->Relations().end() )
+            if ( std::find_if (other_relations.begin(), other_relations.end(),
+                                [&]( const std::shared_ptr<Relation> & ptr )
+                                {
+                                    if ( relation )
+                                        return *relation->asToken() == *ptr->asToken();
+
+                                    else
+                                        throw std::runtime_error ( "cgpp::util Compare_Relations_Difference: lamda param relation is null" );
+                                }
+                              ) == other_relations.end() )
             {
                 diff.push_back ( relation );
             }
@@ -107,6 +145,32 @@ std::vector<std::shared_ptr<Edge>> Compare_Edges_Difference (
     // TODO...
 }
 
+
+std::vector< std::pair< std::shared_ptr<Concept>, std::shared_ptr<Concept> > >  Concepts_Intersection (
+                                                                                                        const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                                                        const std::shared_ptr<ConceptualGraph> & rhs
+                                                                                                      )
+{
+    // TODO
+}
+
+
+std::vector< std::pair< std::shared_ptr<Relation>, std::shared_ptr<Relation> > > Relations_Intersection (
+                                                                                                          const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                                                          const std::shared_ptr<ConceptualGraph> & rhs
+                                                                                                        )
+{
+    // TODO
+}
+
+
+std::vector< std::pair< std::shared_ptr<Edge>, std::shared_ptr<Edge> > > Edges_Intersection (
+                                                                                              const std::shared_ptr<ConceptualGraph> & lhs,
+                                                                                              const std::shared_ptr<ConceptualGraph> & rhs
+                                                                                            )
+{
+    // TODO
+}
 
 }
 }
