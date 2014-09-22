@@ -444,15 +444,15 @@ std::vector<Edge> ConceptualGraph::Edge_equality ( const ConceptualGraph & rhs )
 
 void  ConceptualGraph::Echo ( )
 {
-   std::cout << "[ConceptualGraph] ∃(G): G(c)={";
+   std::cout << "∃(Gₜ): Gₜ(c)={";
    for ( auto con : _concepts )
         std::cout << con->asToken()->value() << ",";
 
-   std::cout << "}, G(r)= {";
+   std::cout << "}, Gₜ(r)= {";
    for ( auto rel : _relations )
         std::cout << rel->asToken()->value() << ",";
 
-   std::cout << "}, G(e)= {";
+   std::cout << "}, Gₜ(e)= {";
    for ( auto edge : _edges )
         std::cout << "[" << edge.from->asToken()->value() << "→" << edge.to->asToken()->value() << "],";
 

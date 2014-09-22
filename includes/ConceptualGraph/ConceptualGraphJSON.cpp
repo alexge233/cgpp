@@ -13,7 +13,7 @@ std::string ConceptualGraph::JSON ( ) const
      */
 
     std::stringstream ss;
-    ss << "{\n\r\t\"version\":1,\n\r\t\"guid\":\"" << _guid << "\",\n\r\t\"creator\":null,\n\r\t\"relations\":[";
+    ss << "{\n\r\t\"version\":1,\n\r\t\"guid\":\"" << _guid << "\",\n\r\t\"creator\":null,\n\r\t\"relations\":["; // BUG valgrind reports uninitialised value here
 
     std::string rstr;
     for ( auto r : _relations )
