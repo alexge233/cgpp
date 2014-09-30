@@ -1,0 +1,2 @@
+/usr/bin/ar cr libcgpp.0.1-static.a  CMakeFiles/lcgpp.dir/includes/ConceptualGraph/ConceptualGraph.cpp.o CMakeFiles/lcgpp.dir/includes/ConceptualGraph/ConceptualGraphJSON.cpp.o CMakeFiles/lcgpp.dir/includes/Utilities/Utilities.cpp.o
+/usr/bin/ranlib libcgpp.0.1-static.a
