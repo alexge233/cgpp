@@ -56,11 +56,15 @@ ConceptualGraph::ConceptualGraph ( const std::string json )
 
                 // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
                 std::string uuid = doc["guid"].GetString();
-                std::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", std::regex_constants::icase );
+                static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );
 
-                // ATTENTION: only GCC > 4.9 implements std::regex correctly. Clang works ok.
+                /* 
+                 * ATTENTION: only GCC > 4.9 implements std::regex correctly. Clang works ok.
+                 * WARNING: GCC 4.8 doesn't support std::regex. Compiling cgpp with gcc-4.9 and then using it in a project with lesser versions is buggy.
+                 *          So, I have fallen back to using boost::regex from which std::regex was derived.
+                 */
 
-                if ( std::regex_match ( uuid, expr ) )
+                if ( boost::regex_match ( uuid, expr ) )
                     _guid = boost::lexical_cast<boost::uuids::uuid>( uuid );
 
                 else
@@ -177,7 +181,7 @@ ConceptualGraph ConceptualGraph::Clone ( ) const
 }
 
 
-bool ConceptualGraph::AddConcept ( std::shared_ptr<Concept> node )
+bool ConceptualGraph::AddConcept ( const std::shared_ptr<Concept> node )
 {
     if ( node )
     {
@@ -195,7 +199,7 @@ bool ConceptualGraph::AddConcept ( std::shared_ptr<Concept> node )
 }
 
 
-bool ConceptualGraph::AddRelation ( std::shared_ptr<Relation> node )
+bool ConceptualGraph::AddRelation ( const std::shared_ptr<Relation> node )
 {
     if ( node )
     {

@@ -17,8 +17,6 @@ set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 
 include_directories(SYSTEM ${INCLUDE_HEADERS})
 
-find_package(Boost)
-
 add_subdirectory(includes/Concept)
 add_subdirectory(includes/ConceptualGraph)
 add_subdirectory(includes/Node)
@@ -26,6 +24,8 @@ add_subdirectory(includes/Relation)
 add_subdirectory(includes/Token)
 add_subdirectory(includes/Edge)
 add_subdirectory(includes/Utilities)
+
+find_package( Boost 1.54 COMPONENTS regex REQUIRED )
 
 # Enable 'make test'
 enable_testing()
@@ -46,7 +46,7 @@ add_executable ( jsontest
 add_test( JSON_Serialise jsontest )
 
 # Test executable "deserialise"
-add_executable ( deserialise 
+add_executable ( deserialise
                        tests/deserialise.cpp
 			           includes/ConceptualGraph/ConceptualGraph.cpp
 			           includes/ConceptualGraph/ConceptualGraphJSON.cpp)
@@ -61,11 +61,17 @@ add_library (lcgpp OBJECT ${SOURCES})
 add_library (cgpp.0.1-static STATIC $<TARGET_OBJECTS:lcgpp>)
 add_library (cgpp.0.1 SHARED $<TARGET_OBJECTS:lcgpp>)
 
+target_link_libraries(cgpp.0.1-static ${Boost_REGEX_LIBRARY} )
+target_link_libraries(cgpp.0.1 ${Boost_REGEX_LIBRARY} )
+target_link_libraries(creategraph ${Boost_REGEX_LIBRARY} )
+target_link_libraries(jsontest ${Boost_REGEX_LIBRARY} )
+target_link_libraries(deserialise ${Boost_REGEX_LIBRARY} )
+
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
 
 # NOTE: C++14 is available as: -std=c++1y or -std=gnu++1y in GCC 4.9 - Don't know if Clang supports it yet.
 
@@ -89,7 +95,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # using GCC/Linux
   message (STATUS "GCC/Linux" )
   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-  if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+  if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
     message(STATUS "Info: g++ version >= 4.9 using C++11")
   elseif ()
     message (FATAL_ERROR "g++ version >= 4.9 is required")
