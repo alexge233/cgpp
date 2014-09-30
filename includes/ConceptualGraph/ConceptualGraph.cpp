@@ -10,12 +10,21 @@ namespace cgpp
 int constexpr ConceptualGraph::_version;
 
 
+<<<<<<< HEAD
 void ConceptualGraph::GenerateGUID ()
 {
     auto uuid = boost::uuids::random_generator()();
     _guid = boost::lexical_cast<std::string>( uuid );
 }
 
+=======
+ConceptualGraph::ConceptualGraph ( )
+{
+    _guid = boost::uuids::random_generator()();
+}
+
+
+>>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
 {
     // Copy GUID - WARNING: I used to generate a new one at each copy operation
@@ -65,7 +74,11 @@ ConceptualGraph::ConceptualGraph ( const std::string json )
                  */
 
                 if ( boost::regex_match ( uuid, expr ) )
+<<<<<<< HEAD
                     _guid = uuid;
+=======
+                    _guid = boost::lexical_cast<boost::uuids::uuid>( uuid );
+>>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 
                 else
                     throw std::runtime_error ( "ConceptualGraph invalid UUID" );
@@ -496,7 +509,11 @@ void  ConceptualGraph::Load ( const std::string fname )
 
 boost::uuids::uuid ConceptualGraph::GUID ( ) const
 {
+<<<<<<< HEAD
     return boost::lexical_cast<boost::uuids::uuid>( _guid );
+=======
+    return _guid;
+>>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 }
 
 

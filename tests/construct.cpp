@@ -13,7 +13,10 @@ int main ( void )
 
     std::cout << "Creating Graph" << std::endl;
     auto graph = std::make_shared<ConceptualGraph>();
+<<<<<<< HEAD
     graph->GenerateGUID();
+=======
+>>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 
     // Try to manually populate the empty graph
     Token sky = Token( "sky", "NA" );
@@ -98,7 +101,10 @@ int main ( void )
     
     std::cout << "Creating Graph3" << std::endl;
     auto graph3 = std::make_shared<ConceptualGraph>();
+<<<<<<< HEAD
     graph3->GenerateGUID();
+=======
+>>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
     graph3->AddConcept( sea_node );
     graph3->AddConcept( blue_node );
     
