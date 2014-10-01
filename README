@@ -1,11 +1,8 @@
 This is a minimalistic library implementing John Sowa’s Conceptual Graphs [1].
 It uses a much more lax JSON protocol to the one implemented in XML (CGXML, Cogitant, CGIF)
 and at the moment, does not conform to the ISO Common Logic Project.
-
 However, it is a very simple library, taking a graph-centric approach,
 and should be very easy to use for simple Knowledge Representation.
-
-Examples, demonstrate how visualisation and manipulation of Conceptual Graphs can be performed on a web browser, by using VivaGraph JS [https://github.com/anvaka/VivaGraphJS].
 
 FILES
 
@@ -16,25 +13,32 @@ test apps are in : /test
 TESTED with:
 
 Clang 5.1
-GNU 4.9
+GNU 4.9, 4.9 with C++11 enabled
 
 REQUIRES:
 
-boost		>= 1.54		[http://www.boost.org]
-cereal      >= 1.0.0    [http://uscilab.github.io/cereal/]
-rapidjson   >= 0.1 (?)  [https://github.com/pah/rapidjson]
+boost       >= 1.54     [http://www.boost.org]
+cereal      >= 1.0.0    [http://uscilab.github.io/cereal/] expected to be in /usr/local/include
+rapidjson   >= 0.1 (?)  [https://github.com/pah/rapidjson] included under /includes/rapidjson
 
-C++11 or C++14 enabled (check that your compiler supports it)
-
-NOTE: GCC prior to 4.9 does not properly support regex!
-
-BUILDING & INSTALLING (Linux or OSX):
+BUILDING (Linux or OSX):
 
 $ mkdir build
 $ cd build
 $ cmake ..
-$ make
 
-Tests and libraries (static and shared) will be in /build
+TESTING (Tests are in folder tests and also serve as examples)
+
+$ make test
+
+INTALLING (by default, headers installed in /usr/local/include and library in /usr/local/libs)
+
+$ su
+$ make install
+
+OR
+
+$ sudo make install
+
 
 [1] John F. Sowa, Knowledge Representation: Logical, Philosophical, and Computational Foundations, Brooks Cole Publishing Co., Pacific Grove, CA, ©2000. Actual publication date, 16 August 1999.

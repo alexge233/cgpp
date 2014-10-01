@@ -1,14 +1,5 @@
-This is the project that should form an OpenSource project called CG++
-
-Make this a Header ONLY project, a very minimalistic and simple to use library,
-which will support:
-
-	JSON (de)serialisation which is custom and manual
-	Binary (de)serialisation which supported by Cereal++11
-
 TODO:
 
-    (1) Rename "/includes/cgpp" to "/includes/core"
-    (2) Include/Redistribute cereal & rapidjson with cg++
+    (1) Include/Redistribute cereal
 
 
