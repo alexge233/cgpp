@@ -1,4 +1,0 @@
-ConstructGraph 2 0.00490057
-JSON_Serialise 2 0.00241554
-JSON_Deserialise 2 0.00265408
----

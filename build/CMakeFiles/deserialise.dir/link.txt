@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=gnu++11 -Wall -fPIC -g    CMakeFiles/deserialise.dir/tests/deserialise.cpp.o CMakeFiles/deserialise.dir/includes/ConceptualGraph/ConceptualGraph.cpp.o CMakeFiles/deserialise.dir/includes/ConceptualGraph/ConceptualGraphJSON.cpp.o  -o deserialise -rdynamic -lboost_regex 

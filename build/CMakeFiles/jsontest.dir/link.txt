@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=gnu++11 -Wall -fPIC -g    CMakeFiles/jsontest.dir/tests/json.cpp.o CMakeFiles/jsontest.dir/includes/ConceptualGraph/ConceptualGraph.cpp.o CMakeFiles/jsontest.dir/includes/ConceptualGraph/ConceptualGraphJSON.cpp.o  -o jsontest -rdynamic -lboost_regex 

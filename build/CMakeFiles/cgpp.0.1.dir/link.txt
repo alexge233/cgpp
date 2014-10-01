@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC -std=gnu++11 -Wall -fPIC -g   -shared -Wl,-soname,libcgpp.0.1.so -o libcgpp.0.1.so CMakeFiles/lcgpp.dir/includes/ConceptualGraph/ConceptualGraph.cpp.o CMakeFiles/lcgpp.dir/includes/ConceptualGraph/ConceptualGraphJSON.cpp.o CMakeFiles/lcgpp.dir/includes/Utilities/Utilities.cpp.o -lboost_regex 

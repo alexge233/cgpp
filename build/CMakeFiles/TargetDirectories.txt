@@ -1,6 +1,0 @@
-/home/alex/projects/cgpp-master/build/CMakeFiles/cgpp.0.1.dir
-/home/alex/projects/cgpp-master/build/CMakeFiles/cgpp.0.1-static.dir
-/home/alex/projects/cgpp-master/build/CMakeFiles/creategraph.dir
-/home/alex/projects/cgpp-master/build/CMakeFiles/deserialise.dir
-/home/alex/projects/cgpp-master/build/CMakeFiles/jsontest.dir
-/home/alex/projects/cgpp-master/build/CMakeFiles/lcgpp.dir

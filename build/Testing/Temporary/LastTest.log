@@ -1,127 +1,0 @@
-Start testing: Oct 01 00:02 BST
-----------------------------------------------------------
-1/3 Testing: ConstructGraph
-1/3 Test: ConstructGraph
-Command: "/home/alex/projects/cgpp-master/build/creategraph"
-Directory: /home/alex/projects/cgpp-master/build
-"ConstructGraph" start time: Oct 01 00:02 BST
-Output:
-----------------------------------------------------------
-Creating Graph
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-Saving Graph
-Copying Graph
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-Cmp : Graph == Copy
-Graphs Equal? : 1
-Cloning Graph
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-Edges of Relation: is
-[is,blue]
-Edges of Concept: sky
-[sky,is]
-Creating Graph2
-∃(Gₜ): Gₜ(c)={sea,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sea→is],[is→blue],}
-Cmp: Graph == Graph2
-Graphs Equal? : 0
-Creating Graph3
-∃(Gₜ): Gₜ(c)={sea,blue,}, Gₜ(r)= {}, Gₜ(e)= {}
-Cmp: Graph3 == Graph2
-Graphs Equal? : 0
-Trying to duplicate Relation,Concepts and Edges in Graph2
-∃(Gₜ): Gₜ(c)={sea,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sea→is],[is→blue],}
-Minimum Edges Connected for Graph: 1
-Minimum Edges Connected for Graph2: 1
-Minimum Edges Connected for Graph3: 0
-JSON for Graph
-{
-	"version":1,
-	"guid":"b6185815-f26b-40a6-a779-1f294f8c538c",
-	"creator":null,
-	"relations":[
-	{
-		"label":"is",
-		"postag":"NA",
-		"index":1,
-		"id":14481510741918333043
-	}],
-	"concepts":[
-	{
-		"label":"sky",
-		"postag":"NA",
-		"index":0,
-		"id":17325357324875297879
-	},
-	{
-		"label":"blue",
-		"postag":"NA",
-		"index":2,
-		"id":4257097405502794621
-	}],
-	"adjacencies":[
-	{
-		"nodeFrom":17325357324875297879,
-		"nodeTo":14481510741918333043,
-		"index":0,
-		"order":"cr"
-
-	},
-	{
-		"nodeFrom":14481510741918333043,
-		"nodeTo":4257097405502794621,
-		"index":1,
-		"order":"rc"
-
-	}]
-}
-
-Adding all graphs into a vector
-Saving to file: graphs.bin
-<end of output>
-Test time =   0.01 sec
-----------------------------------------------------------
-Test Passed.
-"ConstructGraph" end time: Oct 01 00:02 BST
-"ConstructGraph" time elapsed: 00:00:00
-----------------------------------------------------------
-
-2/3 Testing: JSON_Serialise
-2/3 Test: JSON_Serialise
-Command: "/home/alex/projects/cgpp-master/build/jsontest"
-Directory: /home/alex/projects/cgpp-master/build
-"JSON_Serialise" start time: Oct 01 00:02 BST
-Output:
-----------------------------------------------------------
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-<end of output>
-Test time =   0.00 sec
-----------------------------------------------------------
-Test Passed.
-"JSON_Serialise" end time: Oct 01 00:02 BST
-"JSON_Serialise" time elapsed: 00:00:00
-----------------------------------------------------------
-
-3/3 Testing: JSON_Deserialise
-3/3 Test: JSON_Deserialise
-Command: "/home/alex/projects/cgpp-master/build/deserialise"
-Directory: /home/alex/projects/cgpp-master/build
-"JSON_Deserialise" start time: Oct 01 00:02 BST
-Output:
-----------------------------------------------------------
-Loading & Deserializing Single File: graph_1.bin
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-Loading & Deserializing all graphs from: graphs.bin
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-∃(Gₜ): Gₜ(c)={sky,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sky→is],[is→blue],}
-∃(Gₜ): Gₜ(c)={sea,blue,}, Gₜ(r)= {is,}, Gₜ(e)= {[sea→is],[is→blue],}
-∃(Gₜ): Gₜ(c)={sea,blue,}, Gₜ(r)= {}, Gₜ(e)= {}
-<end of output>
-Test time =   0.01 sec
-----------------------------------------------------------
-Test Passed.
-"JSON_Deserialise" end time: Oct 01 00:02 BST
-"JSON_Deserialise" time elapsed: 00:00:00
-----------------------------------------------------------
-
-End testing: Oct 01 00:02 BST
