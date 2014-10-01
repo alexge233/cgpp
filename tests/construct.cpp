@@ -13,10 +13,7 @@ int main ( void )
 
     std::cout << "Creating Graph" << std::endl;
     auto graph = std::make_shared<ConceptualGraph>();
-<<<<<<< HEAD
-    graph->GenerateGUID();
-=======
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
+    std::cout << "Graph 1 GUID: " << graph->GUID() << std::endl;
 
     // Try to manually populate the empty graph
     Token sky = Token( "sky", "NA" );
@@ -47,6 +44,7 @@ int main ( void )
     std::cout << "Copying Graph" << std::endl;
     // Copy Constructor
     auto copy = std::make_shared<ConceptualGraph>( *graph );
+    std::cout << "Copy GUID: " << copy ->GUID() << std::endl;
     copy->Echo();
     
     std::cout << "Cmp : Graph == Copy" << std::endl;
@@ -57,6 +55,7 @@ int main ( void )
     std::cout << "Cloning Graph" << std::endl;
     auto clone = std::make_shared<ConceptualGraph>( graph->Clone() );
     clone->Echo();
+    std::cout << "Clone Graph GUID: " << clone->GUID() << std::endl;
     
     std::cout << "Edges of Relation: " << is_node->asToken()->value() << std::endl;
     
@@ -78,6 +77,7 @@ int main ( void )
 
     std::cout << "Creating Graph2" << std::endl;
     auto graph2 = std::make_shared<ConceptualGraph>();
+    std::cout << "Graph2 GUID: " <<  graph2->GUID() << std::endl;
     
     // manually populate the empty graph
     Token sea = Token( "sea", "NA" );
@@ -101,10 +101,8 @@ int main ( void )
     
     std::cout << "Creating Graph3" << std::endl;
     auto graph3 = std::make_shared<ConceptualGraph>();
-<<<<<<< HEAD
-    graph3->GenerateGUID();
-=======
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
+    std::cout << "Graph3 GUID: " << graph3->GUID() << std::endl;
+    
     graph3->AddConcept( sea_node );
     graph3->AddConcept( blue_node );
     

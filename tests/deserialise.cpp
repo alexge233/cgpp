@@ -22,7 +22,9 @@ int main ( void )
     }
 
     for ( auto g : graphs )
+    {
         g->Echo();
-
+        std::cout << "Graph GUID: " <<  g->GUID() << std::endl;
+    }
     return 0;
 }

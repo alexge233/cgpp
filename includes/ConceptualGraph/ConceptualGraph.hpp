@@ -19,11 +19,7 @@ class ConceptualGraph
   public:
 
     /// Empty Constructor
-<<<<<<< HEAD
-    ConceptualGraph ( ) = default;
-=======
     ConceptualGraph ( );
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 
     /// Construct using a string @param json - @note guid is randomly generated (uid v4)
     ConceptualGraph ( const std::string json );
@@ -31,15 +27,8 @@ class ConceptualGraph
     /// Copy Constructor - Shallow copy - @note guid is copied
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-    /// Copy Constructor - Deep Clone - @note deep copy all members
+    /// Copy Constructor - Deep Clone - @note deep copy all members @warning guid is also copied !
     ConceptualGraph Clone ( ) const;
-
-<<<<<<< HEAD
-    /// Generate a new Random GUID
-    void GenerateGUID ( );
-
-=======
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 
     /**             @note Graph Operations              */
 
@@ -97,11 +86,7 @@ class ConceptualGraph
     friend class cereal::access;
 
     /// Graph Unique ID
-<<<<<<< HEAD
     std::string _guid;
-=======
-    boost::uuids::uuid _guid;
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
 
     /// current concepts
     std::vector<std::shared_ptr<Concept>> _concepts;
@@ -131,11 +116,7 @@ class ConceptualGraph
     /// (De)Serialisation delegate for cereal library
     template <class Archive> void serialize ( Archive & archive )
     {
-<<<<<<< HEAD
          archive( _concepts, _relations, _edges, _guid );
-=======
-         archive( _concepts, _relations, _edges );
->>>>>>> f40734ddb950b32196936d5f51c142f056c49fed
     }
 
 };
