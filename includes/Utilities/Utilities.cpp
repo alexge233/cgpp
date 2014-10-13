@@ -7,58 +7,49 @@ namespace util
 
 bool MinimumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph )
 {
-    if ( graph )
-    {
-        const auto concepts = graph->Concepts();
-        const auto relations = graph->Relations();
-        const auto edges = graph->Edges();
-
-        // Check if there exists at least one Edge from or to that concept - abort if there isn't at least one
-        for ( const auto & concept : concepts )
-        {
-            if ( std::find_if ( edges.begin(), edges.end(),
-                                [&]( const Edge & rhs )
-                                {
-                                    if ( rhs.from && rhs.to )
-                                         return *rhs.from == *concept || *rhs.to == *concept;
-
-                                    else
-                                        throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(1): rhs.from or rhs.to is nullptr - Edge problem ?" );
-                                }
-                              ) == edges.end() )
-            {
-                return false;
-            }
-        }
-        // Check if there exists at least one Edge from or to that relation - abort if there isn't at least one
-        for ( const auto & relation : relations )
-        {
-            if ( std::find_if ( edges.begin(), edges.end(),
-                                [&]( const Edge & rhs )
-                                {
-                                    if ( rhs.from && rhs.to )
-                                        return *rhs.from == *relation || *rhs.to == *relation; 
-
-                                    else
-                                        throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(2): rhs.from or rhs.to is nullptr - Edge problem ?" );
-                                }
-                               ) == edges.end() )
-            {
-                return false;
-            }
-        }
-        // If function hasn't returned false so far, we may assume it has the minimum amount of edges
-        return true;
-    }
-    else
+    if ( !graph )
         throw std::runtime_error ( "cgpp::util:: MinimumEdgesConnected: null graph param" );
-}
 
+    const auto concepts = graph->Concepts();
+    const auto relations = graph->Relations();
+    const auto edges = graph->Edges();
 
-bool MaximumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph )
-{
-    // TODO...
-    return false;
+    // Check if there exists at least one Edge from or to that concept - abort if there isn't at least one
+    for ( const auto & concept : concepts )
+    {
+        if ( std::find_if ( edges.begin(), edges.end(),
+                            [&]( const Edge & rhs )
+                            {
+                                if ( rhs.from && rhs.to )
+                                        return *rhs.from == *concept || *rhs.to == *concept;
+
+                                else
+                                    throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(1): rhs.from or rhs.to is nullptr - Edge problem ?" );
+                            }
+                            ) == edges.end() )
+        {
+            return false;
+        }
+    }
+    // Check if there exists at least one Edge from or to that relation - abort if there isn't at least one
+    for ( const auto & relation : relations )
+    {
+        if ( std::find_if ( edges.begin(), edges.end(),
+                            [&]( const Edge & rhs )
+                            {
+                                if ( rhs.from && rhs.to )
+                                    return *rhs.from == *relation || *rhs.to == *relation; 
+
+                                else
+                                    throw std::runtime_error ( "cgpp::util MinimumEdgesConnected lamda(2): rhs.from or rhs.to is nullptr - Edge problem ?" );
+                            }
+                            ) == edges.end() )
+        {
+            return false;
+        }
+    }
+    // If function hasn't returned false so far, we may assume it has the minimum amount of edges
+    return true;
 }
 
 
@@ -136,41 +127,6 @@ std::vector<std::shared_ptr<Relation>> Compare_Relations_Difference (
     return diff;
 }
 
-
-std::vector<std::shared_ptr<Edge>> Compare_Edges_Difference (
-                                                                const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                const std::shared_ptr<ConceptualGraph> & rhs
-                                                              )
-{
-    // TODO...
 }
 
-
-std::vector< std::pair< std::shared_ptr<Concept>, std::shared_ptr<Concept> > >  Concepts_Intersection (
-                                                                                                        const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                                                        const std::shared_ptr<ConceptualGraph> & rhs
-                                                                                                      )
-{
-    // TODO
-}
-
-
-std::vector< std::pair< std::shared_ptr<Relation>, std::shared_ptr<Relation> > > Relations_Intersection (
-                                                                                                          const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                                                          const std::shared_ptr<ConceptualGraph> & rhs
-                                                                                                        )
-{
-    // TODO
-}
-
-
-std::vector< std::pair< std::shared_ptr<Edge>, std::shared_ptr<Edge> > > Edges_Intersection (
-                                                                                              const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                                              const std::shared_ptr<ConceptualGraph> & rhs
-                                                                                            )
-{
-    // TODO
-}
-
-}
 }

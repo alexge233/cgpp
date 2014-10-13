@@ -74,6 +74,68 @@ std::string ConceptualGraph::JSON ( ) const
 }
 
 
+std::string ConceptualGraph::minifiedJSON ( ) const
+{
+    std::stringstream ss;
+    ss << "{\"version\":1,\"guid\":\"" << _guid << "\",\"creator\":null,\"relations\":["; // BUG valgrind reports uninitialised value here
+
+    std::string rstr;
+    for ( auto r : _relations )
+    {
+        rstr += "{\"label\":\"" + r->asToken()->value() + "\",\"postag\":\"" + r->asToken()->tag() + "\",";
+        rstr += "\"index\":" + boost::lexical_cast<std::string>( r->TokenIndex() ) + ",";
+        rstr += "\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( r->asToken()->value() ) ) + "},";
+    }
+    if ( !rstr.empty() )
+    {
+        rstr.pop_back();
+        ss << rstr;
+    }
+
+    ss << "],\"concepts\":[";
+    std::string cstr;
+    for ( auto c : _concepts )
+    {
+        cstr += "{\"label\":\"" + c->asToken()->value() + "\",\"postag\":\"" + c->asToken()->tag() + "\",";
+        cstr += "\"index\":" + boost::lexical_cast<std::string>( c->TokenIndex() ) + ",";
+        cstr += "\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( c->asToken()->value() ) ) + "},";
+    }
+    if ( !cstr.empty() )
+    {
+        cstr.pop_back();
+        ss << cstr;
+    }
+
+    ss << "],\"adjacencies\":[";
+    std::string estr;
+    unsigned int index = 0;
+    for ( auto e : _edges )
+    {
+        estr += "{\"nodeFrom\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.from->asToken()->value() ) ) + ",";
+        estr += "\"nodeTo\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.to->asToken()->value() ) ) + ",";
+        estr += "\"index\":" + boost::lexical_cast<std::string>( index ) + ","; // BUG: Not what I want - I need an index respective to the origination nodeFrom - not global
+
+        if ( std::dynamic_pointer_cast<Concept>( e.from ) && std::dynamic_pointer_cast<Relation>( e.to ) )
+            estr+= "\"order\":\"cr\"";
+
+        else if ( std::dynamic_pointer_cast<Relation>( e.from ) && std::dynamic_pointer_cast<Concept>( e.to ) )
+            estr+= "\"order\":\"rc\"";
+
+        else
+            throw std::runtime_error ( "ConceptualGraph cannnot create JSON adjacancies, unknown edge order" );
+
+        estr+= "},";
+        index++;
+    }
+    if ( !estr.empty() )
+    {
+        estr.pop_back();
+        ss << estr;
+    }
+
+    ss << "]}";
+    return ss.str();
+}
 
 //      PROTECTED METHODS
 
@@ -207,40 +269,41 @@ void ConceptualGraph::_parseEdges ( rapidjson::Document & doc )
             {
                 if ( !adj[k]["nodeTo"].IsUint64() )
                     throw std::runtime_error ( "ConceptualGraph JSON adjacency nodeTo not an Uint64");
-                
+
                 if ( !adj[k]["nodeFrom"].IsUint64() )
                     throw std::runtime_error ( "ConceptualGraph JSON adjacency nodeFrom not an Uint64");
-                
+
                 // Get json ids
                 auto from = boost::lexical_cast<std::size_t>( adj[k]["nodeFrom"].GetUint64() );
                 auto to =  boost::lexical_cast<std::size_t>( adj[k]["nodeTo"].GetUint64() );
-                
+
                 // Get order type = "rc" ~> [Relation,Concept] and "cr" ~> [Concept,Relation]
                 auto order = std::string( adj[k]["order"].GetString() );
-                
+
                 if ( boost::iequals( order, "cr" ) )
                 {
                     // Find in our concepts the actual Node pointers
                     auto from_it = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return from == ptr->_json_id; } );
                     auto to_it = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return to == ptr->_json_id; } );
-                    
+
                     if ( from_it != _concepts.end() && to_it != _relations.end() )
                         AddEdge ( *from_it, *to_it );
-                    
-                    else
-                        throw std::runtime_error ( "ConceptualGraph cannot create edge, Concept/Relation pointer not found by json_id - (hint: is order correct?) (1)" );
+
+                    else if ( from_it ==  concepts.end()  || to_it ==  _relations.end() )
+                        throw std::runtime_error ( "ConceptualGraph cannot create edge: {from:" +  boost::lexical_cast<std::string>( from ) + ", to: "
+                                                    + boost::lexical_cast<std::string>( to ) + "}, because Concept or Relation pointer not found by json_id (1)" );
                 }
                 else if ( boost::iequals ( order, "rc" ) )
                 {
                     // Find in our concepts the actual Node pointers
                     auto from_it = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return from == ptr->_json_id; } );
                     auto to_it = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return to == ptr->_json_id; } );
-                    
+
                     if ( from_it != _relations.end() && to_it != _concepts.end() )
                         AddEdge ( *from_it, *to_it );
-                    
+
                     else
-                        throw std::runtime_error ( "ConceptualGraph cannot create edge, Concept/Relation pointer not found by json_id - (hint: is order correct?) (2)" );
+                        throw std::runtime_error ( "ConceptualGraph cannot create edge, Concept/Relation pointer not found by json_id (2)" );
                 }
                 else
                     throw std::runtime_error ( "ConceptualGraph cannot parse adjacency, unknown order type" );

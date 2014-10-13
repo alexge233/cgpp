@@ -11,13 +11,14 @@ int constexpr ConceptualGraph::_version;
 
 ConceptualGraph::ConceptualGraph ()
 {
-    auto uuid = boost::uuids::random_generator()();
+    auto uuid = boost::uuids::random_generator()();         // Vagrind=uninitialised value
     _guid = boost::lexical_cast<std::string>( uuid );
 }
 
 ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
 {
-    auto uuid = boost::uuids::random_generator()();
+    auto uuid = boost::uuids::random_generator()();         // Vagrind=uninitialised value
+
     // WARNING Generate a new UUID for each Graph Object
     this->_guid = boost::lexical_cast<std::string>( uuid );
 

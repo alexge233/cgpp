@@ -68,8 +68,11 @@ class ConceptualGraph
     /// Graph Unique ID @note this is a UUID v4
     boost::uuids::uuid GUID ( ) const;
 
-    /// Output this graph as JSON
+    /// Output this graph as JSON well-formatted string
     std::string JSON ( ) const;
+
+    /// Outpit this graph as a JSON minified string
+    std::string minifiedJSON ( ) const;
 
     /// print graph on std::out
     void Echo ( );

@@ -131,6 +131,9 @@ int main ( void )
     std::cout << "JSON for Graph" << std::endl;
     std::cout << graph->JSON() << std::endl;
     
+    std::cout << "minified JSON for Graph" << std::endl;
+    std::cout << graph->minifiedJSON() << std::endl;
+    
     // Final TEST: try to serialise all graphs
     std::cout << "Adding all graphs into a vector" << std::endl;
     std::vector<std::shared_ptr<ConceptualGraph>> graphs = { graph, copy, clone, graph2, graph3 };
