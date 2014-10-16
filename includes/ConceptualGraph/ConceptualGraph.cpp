@@ -30,8 +30,9 @@ ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
 
 ConceptualGraph::ConceptualGraph ( const std::string json )
 {
+    _json = json;
     rapidjson::Document doc;
-    const char * txt = json.c_str();
+    const char * txt = _json.c_str();
     doc.Parse<0>( txt );
 
     if ( doc.IsObject() )
@@ -44,16 +45,10 @@ ConceptualGraph::ConceptualGraph ( const std::string json )
              doc.HasMember( "concepts") &&
              doc.HasMember( "adjacencies") )
         {
-            if ( !doc["version"].IsInt() )
-                throw std::runtime_error ( "ConceptualGraph version member not an int" );
-
-            auto version = boost::lexical_cast<int>( doc["version"].GetInt() );
+            auto version = boost::lexical_cast<int>( doc["version"].GetString() );
 
             if ( ConceptualGraph::_version == version )
             {
-                if ( !doc["guid"].IsString() )
-                    throw std::runtime_error ( "ConceptualGraph guid member not a string" );
-
                 // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
                 std::string uuid = doc["guid"].GetString();
                 static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );

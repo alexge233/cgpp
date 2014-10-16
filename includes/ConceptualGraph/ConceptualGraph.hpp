@@ -91,6 +91,9 @@ class ConceptualGraph
     /// Graph Unique ID
     std::string _guid;
 
+    /// JSON string
+    std::string _json;
+
     /// current concepts
     std::vector<std::shared_ptr<Concept>> _concepts;
 

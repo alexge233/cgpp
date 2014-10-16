@@ -156,21 +156,12 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
                  data[i].HasMember( "postag" ) &&
                  data[i].HasMember( "index" ) )
             {
-                if ( !data[i]["label"].IsString() )
-                    throw std::runtime_error ( "ConceptualGraph JSON concept label not a string" );
-
                 auto label = std::string( data[i]["label"].GetString() );
 
                 if ( label.empty() )
-                    throw std::runtime_error ("ConceptualGraph JSON concept obj has empty label" );
+                    throw std::runtime_error ("ConceptualGraph JSON concept obj has empty label, or couldn't cast it into a string, in json: " + _json );
 
-                if ( !data[i]["index"].IsInt() )
-                    throw std::runtime_error ( "ConceptualGraph JSON concept index not an int - hint: did you add quotes?" );
-
-                int index = boost::lexical_cast<int>( data[i]["index"].GetInt() );
-
-                if ( !data[i]["postag"].IsString() )
-                    throw std::runtime_error ( "ConceptualGraph JSON concept postag not a string" );
+                int index = boost::lexical_cast<int>( data[i]["index"].GetString() );
 
                 auto postag = std::string( data[i]["postag"].GetString() );
 
@@ -180,7 +171,7 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
                 if ( auto concept = std::make_shared<Concept>( token, index ) )
                 {
                     // get JSON id - used for edge creation
-                    concept->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetUint64() );
+                    concept->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetString() );
 
                     // Add to Concepts w/t Token and Token Index
                     _concepts.push_back ( concept );
@@ -212,21 +203,12 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                  data[i].HasMember( "postag" ) &&
                  data[i].HasMember( "index" ) )
             {
-                if ( !data[i]["label"].IsString() )
-                    throw std::runtime_error ( "ConceptualGraph JSON relation label not a string" );
-
                 auto label = std::string( data[i]["label"].GetString() );
 
                 if ( label.empty() )
-                    throw std::runtime_error ("ConceptualGraph JSON relation obj has empty label" );
+                    throw std::runtime_error ("ConceptualGraph JSON relation obj has empty label, or couldn't cast it into a string, in json: " + _json );
 
-                if ( !data[i]["index"].IsInt() )
-                    throw std::runtime_error ( "ConceptualGraph JSON relation index not an int - hint: did you add quotes?" );
-
-                int index = boost::lexical_cast<int>( data[i]["index"].GetInt() );
-
-                if ( !data[i]["postag"].IsString() )
-                    throw std::runtime_error ( "ConceptualGraph JSON concept postag not a string" );
+                int index = boost::lexical_cast<int>( data[i]["index"].GetString() );
 
                 auto postag = std::string( data[i]["postag"].GetString() );
 
@@ -237,7 +219,7 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                 if ( auto relation = std::make_shared<Relation>( token, index ) )
                 {
                     // get JSON id - used for edge creation
-                    relation->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetUint64() );
+                    relation->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetString() );
 
                     // Add
                     _relations.push_back ( relation );
@@ -267,46 +249,42 @@ void ConceptualGraph::_parseEdges ( rapidjson::Document & doc )
             adj[k].HasMember ( "nodeFrom" ) &&
             adj[k].HasMember ( "order" ) )
             {
-                if ( !adj[k]["nodeTo"].IsUint64() )
-                    throw std::runtime_error ( "ConceptualGraph JSON adjacency nodeTo not an Uint64");
-
-                if ( !adj[k]["nodeFrom"].IsUint64() )
-                    throw std::runtime_error ( "ConceptualGraph JSON adjacency nodeFrom not an Uint64");
-
                 // Get json ids
-                auto from = boost::lexical_cast<std::size_t>( adj[k]["nodeFrom"].GetUint64() );
-                auto to =  boost::lexical_cast<std::size_t>( adj[k]["nodeTo"].GetUint64() );
+                auto nodeFrom = boost::lexical_cast<std::size_t>( adj[k]["nodeFrom"].GetString() );
+                auto nodeTo =  boost::lexical_cast<std::size_t>( adj[k]["nodeTo"].GetString() );
 
-                // Get order type = "rc" ~> [Relation,Concept] and "cr" ~> [Concept,Relation]
-                auto order = std::string( adj[k]["order"].GetString() );
+                // string ids for debugging
+                auto from_str = boost::lexical_cast<std::string>( adj[k]["nodeFrom"].GetString() );
+                auto to_str = boost::lexical_cast<std::string>( adj[k]["nodeTo"].GetString() );
 
-                if ( boost::iequals( order, "cr" ) )
-                {
-                    // Find in our concepts the actual Node pointers
-                    auto from_it = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return from == ptr->_json_id; } );
-                    auto to_it = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return to == ptr->_json_id; } );
+                // Try to find "nodeFrom" in relations and concepts
+                auto from_concept = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ) { return nodeFrom == ptr->_json_id; } );
+                auto from_relation = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return nodeFrom == ptr->_json_id; } );
 
-                    if ( from_it != _concepts.end() && to_it != _relations.end() )
-                        AddEdge ( *from_it, *to_it );
+                // Try to find "nodeTo" in relations and concepts
+                auto to_concept = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return nodeTo == ptr->_json_id; } );
+                auto to_relation = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return nodeTo == ptr->_json_id; } );
 
-                    else if ( from_it ==  concepts.end()  || to_it ==  _relations.end() )
-                        throw std::runtime_error ( "ConceptualGraph cannot create edge: {from:" +  boost::lexical_cast<std::string>( from ) + ", to: "
-                                                    + boost::lexical_cast<std::string>( to ) + "}, because Concept or Relation pointer not found by json_id (1)" );
-                }
-                else if ( boost::iequals ( order, "rc" ) )
-                {
-                    // Find in our concepts the actual Node pointers
-                    auto from_it = std::find_if ( _relations.begin(), _relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return from == ptr->_json_id; } );
-                    auto to_it = std::find_if ( _concepts.begin(), _concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return to == ptr->_json_id; } );
+                // [Concept, Relation]
+                if ( from_concept != _concepts.end() && to_relation != _relations.end() )
+                    AddEdge ( *from_concept, *to_relation );
 
-                    if ( from_it != _relations.end() && to_it != _concepts.end() )
-                        AddEdge ( *from_it, *to_it );
+                // [Relation, Concept]
+                else if ( from_relation != _relations.end() && to_concept != _concepts.end() )
+                    AddEdge ( *from_relation, *to_concept );
 
-                    else
-                        throw std::runtime_error ( "ConceptualGraph cannot create edge, Concept/Relation pointer not found by json_id (2)" );
-                }
-                else
-                    throw std::runtime_error ( "ConceptualGraph cannot parse adjacency, unknown order type" );
+                else if ( from_relation != _relations.end() && to_concept == _concepts.end() )
+                    throw std::runtime_error ( "ConceptualGraph cannot find `nodeTo ` Concept: " + to_str +  " for `nodeFrom` Relation: " + from_str + " in json " + _json );
+
+                else if ( from_concept != _concepts.end() && to_relation ==  _relations.end() )
+                    throw std::runtime_error ( "ConceptualGraph cannot find `nodeTo` Relation: " + to_str +  " for `nodeFrom` Concept: " + from_str + " in json " + _json );
+
+                else if ( from_concept == _concepts.end() && from_relation ==  _relations.end() )
+                    throw std::runtime_error ( "ConceptualGraph cannot find `nodeFrom` Node: " + from_str + " in json " + _json );
+
+                else if ( to_concept ==  _concepts.end() && to_relation ==  _relations.end() )
+                    throw std::runtime_error ( "ConceptualGraph cannot find `nodeTo` Node: " + to_str + " in json " + _json );
+
             }
             else
                 throw std::runtime_error ( "ConceptualGraph JSON adjacency member missing" );
