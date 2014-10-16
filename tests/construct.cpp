@@ -19,24 +19,24 @@ int main ( void )
     Token sky = Token( "sky", "NA" );
     Token is = Token( "is", "NA" );
     Token blue = Token( "blue", "NA" );
-    
+
     // 2 Concepts, 1 Relation
     auto sky_node  = std::make_shared<Concept>( sky, 0 );
     auto is_node   = std::make_shared<Relation>( is, 1 );
     auto blue_node = std::make_shared<Concept>( blue, 2 );
-    
+
     // Add them
     graph->AddConcept( sky_node );
     graph->AddConcept( blue_node );
     graph->AddRelation( is_node );
-    
+
     // Connect them
     graph->AddEdge( sky_node, is_node );
     graph->AddEdge( is_node, blue_node );
-    
+
     // Echo
     graph->Echo();
-    
+
     std::cout << "Saving Graph" << std::endl;
     // Save them to file
     graph->Save( "graph_1.bin" );
@@ -46,28 +46,29 @@ int main ( void )
     auto copy = std::make_shared<ConceptualGraph>( *graph );
     std::cout << "Copy GUID: " << copy ->GUID() << std::endl;
     copy->Echo();
-    
+
     std::cout << "Cmp : Graph == Copy" << std::endl;
+
     // Test if they are equal - They should be !!
     bool equal = (*graph == *copy);
     std::cout << "Graphs Equal? : " << equal << std::endl;
-    
+
     std::cout << "Cloning Graph" << std::endl;
     auto clone = std::make_shared<ConceptualGraph>( graph->Clone() );
     clone->Echo();
     std::cout << "Clone Graph GUID: " << clone->GUID() << std::endl;
-    
+
     std::cout << "Edges of Relation: " << is_node->asToken()->value() << std::endl;
-    
+
     // Iterate Concepts of relation is
     auto edges1 = graph->Edges( is_node );
     for ( auto concept : edges1 )
     {
         std::cout << "[" << is_node->asToken()->value() << "," << concept->asToken()->value() << "]" << std::endl;
     }
-    
+
     std::cout << "Edges of Concept: " << sky_node->asToken()->value() << std::endl;
-    
+
     // Iterate Relations of Concept sky
     auto edges2 = graph->Edges( sky_node );
     for ( auto relation : edges2 )

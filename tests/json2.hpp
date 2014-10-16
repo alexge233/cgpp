@@ -1,9 +1,8 @@
-#ifndef _CGPP_JSON1_HPP_
-#define _CGPP_JSON1_HPP_
-
+#ifndef _CGPP_JSON2_HPP_
+#define _CGPP_JSON3_HPP_
 #pragma once
 
-const std::string json = "\
+const std::string json2 = "\
 {\
     \"version\" : \"1\",\
     \"guid\" : \"00000000-0000-0000-0000-000000000000\",\
@@ -17,29 +16,29 @@ const std::string json = "\
      }],\
      \"concepts\" : [\
      {\
-         \"label\" : \"sky\",\
-         \"postag\" : \"NNZ\",\
-         \"index\" : \"0\",\
-         \"id\" : \"1577683746703680484\"\
-     },\
-     {\
          \"label\" : \"blue\",\
          \"postag\" : \"NNZ\",\
          \"index\" : \"2\",\
          \"id\" : \"15843861542616104093\"\
+     },\
+     {\
+         \"label\" : \"sky\",\
+         \"postag\" : \"NNZ\",\
+         \"index\" : \"0\",\
+         \"id\" : \"1577683746703680484\"\
      }],\
      \"adjacencies\": [\
-      {\
-	\"nodeTo\" : \"2976782025758403374\",\
-	\"nodeFrom\" : \"1577683746703680484\",\
-	\"index\" : \"0\",\
-	\"order\" : \"cr\"\
+     {\
+        \"nodeTo\" : \"15843861542616104093\",\
+        \"nodeFrom\" : \"2976782025758403374\",\
+        \"index\" : \"1\",\
+        \"order\" : \"rc\"\
       },\
       {\
-	\"nodeTo\" : \"15843861542616104093\",\
-	\"nodeFrom\" : \"2976782025758403374\",\
-	\"index\" : \"1\",\
-	\"order\" : \"rc\"\
+        \"nodeTo\" : \"2976782025758403374\",\
+        \"nodeFrom\" : \"1577683746703680484\",\
+        \"index\" : \"0\",\
+        \"order\" : \"cr\"\
       }]\
 }";
 

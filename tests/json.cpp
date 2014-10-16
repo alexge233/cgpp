@@ -9,8 +9,8 @@
 #include "../includes/cgpp"
 #include "json.hpp"
 
- int main ( void )
- {
+int main ( void )
+{
     // TEST: Try to load from this one JSON file - TODO: Try to load from a series of Test JSON files (erroneous and correct ones)
     try
     {
@@ -23,4 +23,4 @@
     }
 
     return 0;
- }
+}

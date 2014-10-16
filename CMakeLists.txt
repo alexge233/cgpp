@@ -39,7 +39,7 @@ add_executable ( creategraph
 add_test ( ConstructGraph creategraph )
 
 # Test executable "jsontest"
-add_executable ( jsontest 
+add_executable ( jsontest
                     tests/json.cpp
                     includes/ConceptualGraph/ConceptualGraph.cpp
                     includes/ConceptualGraph/ConceptualGraphJSON.cpp)
@@ -51,6 +51,13 @@ add_executable ( deserialise
 			           includes/ConceptualGraph/ConceptualGraph.cpp
 			           includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 add_test( JSON_Deserialise deserialise)
+
+# Test executable "deserialise"
+add_executable ( comparison
+                       tests/comparison.cpp
+                       includes/ConceptualGraph/ConceptualGraph.cpp
+                       includes/ConceptualGraph/ConceptualGraphJSON.cpp)
+add_test( JSON_Comparison comparison)
 
 # Build Libraries (both static and shared)
 set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
@@ -66,6 +73,7 @@ target_link_libraries(cgpp.0.1 ${Boost_REGEX_LIBRARY} )
 target_link_libraries(creategraph ${Boost_REGEX_LIBRARY} )
 target_link_libraries(jsontest ${Boost_REGEX_LIBRARY} )
 target_link_libraries(deserialise ${Boost_REGEX_LIBRARY} )
+target_link_libraries(comparison ${Boost_REGEX_LIBRARY} )
 
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE on)
