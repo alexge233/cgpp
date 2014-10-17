@@ -9,7 +9,7 @@ namespace cgpp
 
 /**
  * Struct Encapsulating Edges
- * 
+ *
  * @version 1
  * @date 20-August-2014
  */
@@ -20,7 +20,7 @@ struct Edge
 
     bool operator== ( const Edge & rhs ) const
     {
-        return (*this->from == *rhs.from && *this->to == *rhs.to);
+        return (*this->from == *rhs.from && *this->to == *rhs.to );
     }
 
     template <class Archive> void serialize ( Archive & archive )

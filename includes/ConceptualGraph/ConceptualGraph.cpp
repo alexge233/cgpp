@@ -28,62 +28,6 @@ ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
     this->_edges = rhs._edges;
 }
 
-ConceptualGraph::ConceptualGraph ( const std::string json )
-{
-    _json = json;
-    rapidjson::Document doc;
-    const char * txt = _json.c_str();
-    doc.Parse<0>( txt );
-
-    if ( doc.IsObject() )
-    {
-        // Check JSON has all needed members
-        if ( doc.HasMember( "version" ) && 
-             doc.HasMember( "guid" ) && 
-             doc.HasMember( "creator" ) &&
-             doc.HasMember( "relations") &&
-             doc.HasMember( "concepts") &&
-             doc.HasMember( "adjacencies") )
-        {
-            auto version = boost::lexical_cast<int>( doc["version"].GetString() );
-
-            if ( ConceptualGraph::_version == version )
-            {
-                // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
-                std::string uuid = doc["guid"].GetString();
-                static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );
-
-                /* 
-                 * ATTENTION: only GCC > 4.9 implements std::regex correctly. Clang works ok.
-                 * WARNING: GCC 4.8 doesn't support std::regex. Compiling cgpp with gcc-4.9 and then using it in a project with lesser versions is buggy.
-                 *          So, I have fallen back to using boost::regex from which std::regex was derived.
-                 */
-
-                if ( boost::regex_match ( uuid, expr ) )
-                    _guid = uuid;
-
-                else
-                    throw std::runtime_error ( "ConceptualGraph invalid UUID" );
-
-                // Parse Concepts first
-                _parseConcepts ( doc );
-
-                // Then parse Relations
-                _parseRelations ( doc );
-
-                // Finally, parse Edges (adjacencies)
-                _parseEdges ( doc );
-            }
-            else
-                throw std::runtime_error ( "ConceptualGraph JSON: wrong proto version" );
-        }
-        else
-            throw std::runtime_error ( "ConceptualGraph JSON: missing member" );
-    }
-    else
-        throw std::runtime_error ( "ConceptualGraph JSON: not a valid object" ) ;
-}
-
 
 bool ConceptualGraph::operator== ( const ConceptualGraph & rhs ) const
 {
@@ -97,23 +41,98 @@ bool ConceptualGraph::operator== ( const ConceptualGraph & rhs ) const
 
     if ( this->_concepts.size() == rhs._concepts.size() )
     {
-        // Need a predicate, std::equal will compare pointers address, override by using the operator of the actual objects
         concepts = std::equal ( this->_concepts.begin(), this->_concepts.end(), rhs._concepts.begin(), c_pred );
     }
 
     if ( this->_relations.size() == rhs._relations.size() )
     {
-        // Need a predicate, std::equal will compare pointers address, override by using the operator of the actual objects
         relations = std::equal ( this->_relations.begin(), this->_relations.end(), rhs._relations.begin(), r_pred );
     }
 
     if ( this->_edges.size() == rhs._edges.size() )
     {
-        // Don't need a predicate, this is a vector of objects, default operator should suffice
         edges = std::equal ( this->_edges.begin(), this->_edges.end(), rhs._edges.begin() );
     }
 
-    return (concepts && relations && edges);
+    return concepts && relations && edges;
+}
+
+bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
+{
+    bool concepts = false, relations = false, edges = false;
+
+    if ( this->_concepts.size() == rhs._concepts.size() )
+    {
+        concepts = std::is_permutation( this->_concepts.begin(), this->_concepts.end(), rhs._concepts.begin(),
+                                        [&]( const std::shared_ptr<Concept> & item1, const std::shared_ptr<Concept> & item2)->bool
+                                        { return (*item1 == *item2); } );
+    }
+    if ( this->_relations.size() == rhs._relations.size() )
+    {
+        relations = std::is_permutation( this->_relations.begin(), this->_relations.end(), rhs._relations.begin(),
+                                         [&]( const std::shared_ptr<Relation> & item1, const std::shared_ptr<Relation> & item2)->bool
+                                         { return (*item1 == *item2); } );
+    }
+
+    if ( this->_edges.size() == rhs._edges.size() )
+    {
+        std::vector<bool> edge_res;
+        // Keep local copies of vectors
+        auto my_concepts = this->_concepts;
+        auto other_concepts = rhs._concepts;
+        for ( const auto mine : my_concepts )
+        {
+            for ( const auto other : other_concepts )
+            {
+                if ( *mine == *other )
+                {
+                    const auto mines = this->Edges( mine );
+                    const auto othrs = rhs.Edges( other );
+                    if ( mines.size() == othrs.size() )
+                    {
+                        if ( !std::equal( mines.begin(), mines.end(), othrs.begin(),
+                                            [&]( const std::shared_ptr<Relation> item1, const std::shared_ptr<Relation> item2)->bool
+                                            { return (*item1 == *item2); } ) )
+                        {
+                            edge_res.push_back( false );
+                        }
+                    }
+                    else edge_res.push_back( false );
+                }
+            }
+        }
+        // keep local copies of vectors
+        auto my_relations = this->_relations;
+        auto other_relations = rhs._relations;
+        for ( const auto mine : my_relations )
+        {
+            for ( const auto other : other_relations )
+            {
+                if ( *mine == *other )
+                {
+                    const auto mines = this->Edges( mine );
+                    const auto othrs = rhs.Edges( other );
+                    if ( mines.size() == othrs.size() )
+                    {
+                        /// std::equal should also take into account the index of the items - TEST
+                        if ( !std::equal( mines.begin(), mines.end(), othrs.begin(),
+                                        [&]( const std::shared_ptr<Concept> item1, const std::shared_ptr<Concept> item2)->bool
+                                        { return *item1 == *item2; } ) )
+                        {
+                            edge_res.push_back( false );
+                        }
+                    }
+                    else edge_res.push_back( false );
+                }
+            }
+        }
+
+        bool ok = true;
+        for ( auto res : edge_res ) { if ( !res ) ok = false; }
+        edges = ok;
+    }
+
+    return concepts && relations && edges;
 }
 
 
@@ -198,7 +217,7 @@ bool ConceptualGraph::AddRelation ( const std::shared_ptr<Relation> node )
 {
     if ( node )
     {
-		if ( std::find_if ( _relations.begin(), _relations.end(),[&]( const std::shared_ptr<Relation> & rhs ){ return *node == *rhs; }) 
+        if ( std::find_if ( _relations.begin(), _relations.end(),[&]( const std::shared_ptr<Relation> & rhs ){ return *node == *rhs; }) 
             == _relations.end() )
         {
             _relations.push_back( node );
@@ -217,70 +236,64 @@ bool ConceptualGraph::AddEdge (
                                 const std::shared_ptr<Concept> concept
                                 )
 {
-	if ( concept && relation )
-	{
-		/*
-         * WARNING: Searching by Pointer Comparisong - Find if both Nodes exist in our vectors
-         *          If nodes do not exist in our graph vectors, we will end up with an Edge with unknown Node ownership.
-         */
-		auto c_it = std::find ( _concepts.begin(), _concepts.end(), concept );
-		auto r_it = std::find ( _relations.begin(), _relations.end(), relation );
+    if ( concept && relation )
+    {
+        auto c_it = std::find ( _concepts.begin(), _concepts.end(), concept );
+        auto r_it = std::find ( _relations.begin(), _relations.end(), relation );
 
-		// Both exist
-		if ( c_it != _concepts.end() && r_it != _relations.end() )
-		{
-			// Find if edge already exists - NOTE: I can use Edge::operator== in order to minify this line below
-			if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *relation && *rhs.to == *concept; }) 
+        // Both exist
+        if ( c_it != _concepts.end() && r_it != _relations.end() )
+        {
+            // Find if edge already exists - NOTE: I can use Edge::operator== in order to minify this line below
+            if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *relation && *rhs.to == *concept; }) 
                 == _edges.end() )
-			{
-				// create new edge: [Relation,Concept]
-				_edges.push_back( (Edge){ relation, concept } );
-				return true;
-			}
-		}
-		else
+            {
+                // create new edge: [Relation,Concept]
+                Edge edge = { relation, concept };
+                _edges.push_back( edge );
+                return true;
+            }
+        }
+        else
             std::cerr << "ConceptualGraph AddEdge: either Concept or Relation doesn't exist in this graph, Edge won't be created" << std::endl;
-    
-		return false;
-	}
-	else
-		throw std::runtime_error ( "ConceptualGraph AddEdge null param" );
+
+        return false;
+    }
+    else
+        throw std::runtime_error ( "ConceptualGraph AddEdge null param" );
 }
 
 
 bool ConceptualGraph::AddEdge (
-								const std::shared_ptr<Concept> concept,
-								const std::shared_ptr<Relation> relation
-								)
+                                const std::shared_ptr<Concept> concept,
+                                const std::shared_ptr<Relation> relation
+                              )
 {
-	if ( concept && relation )
-	{
-        /*
-         * WARNING: Searching by Pointer Comparisong - Find if both Nodes exist in our vectors
-         *          If nodes do not exist in our graph vectors, we will end up with an Edge with unknown Node ownership.
-         */
-		auto c_it = std::find ( _concepts.begin(), _concepts.end(), concept );
-		auto r_it = std::find ( _relations.begin(), _relations.end(), relation );
+    if ( concept && relation )
+    {
+        auto c_it = std::find ( _concepts.begin(), _concepts.end(), concept );
+        auto r_it = std::find ( _relations.begin(), _relations.end(), relation );
 
-		// Both exist
-		if ( c_it != _concepts.end() && r_it != _relations.end() )
-		{
-			// Find if edge already exists
-			if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *concept && *rhs.to == *relation; })
+        // Both exist
+        if ( c_it != _concepts.end() && r_it != _relations.end() )
+        {
+            // Find if edge already exists
+            if ( std::find_if ( _edges.begin(), _edges.end(), [&]( const Edge & rhs ){ return *rhs.from == *concept && *rhs.to == *relation; })
                 == _edges.end() )
-			{
-				// create new edge: [Concept,Relation]
-				_edges.push_back( (Edge){ concept, relation } );
-				return true;
-			}
-		}
-		else
+            {
+                // create new edge: [Concept,Relation]
+                Edge edge = { concept, relation };
+                _edges.push_back( edge );
+                return true;
+            }
+        }
+        else
             std::cerr << "ConceptualGraph AddEdge: either Concept or Relation doesn't exist in this graph, Edge won't be created" << std::endl;
-        
-		return false;
-	}
-	else
-		throw std::runtime_error ( "ConceptualGraph AddEdge null param" );
+
+        return false;
+    }
+    else
+        throw std::runtime_error ( "ConceptualGraph AddEdge null param" );
 }
 
 
@@ -308,18 +321,17 @@ std::vector<std::shared_ptr<Concept>> ConceptualGraph::Edges ( const std::shared
 
     for ( const auto & edge : _edges )
     {
-		// [from] is a relation, [to] is a concept
-		if ( auto lhs = std::dynamic_pointer_cast<Relation>( edge.from ) )
-		{
-			if ( *lhs == *rhs )
-			{
-				if ( auto concept = std::dynamic_pointer_cast<Concept>( edge.to ) )
-					result.push_back ( concept );
-
-				else
-					throw std::runtime_error ( "ConceptualGraph error when iterating Edges of a Relation, it wasnt a Concept" );
-			}
-		}
+        // [from] is a relation, [to] is a concept
+        if ( auto lhs = std::dynamic_pointer_cast<Relation>( edge.from ) )
+        {
+            if ( *lhs == *rhs )
+            {
+                if ( auto concept = std::dynamic_pointer_cast<Concept>( edge.to ) )
+                {
+                    result.push_back ( std::make_shared<Concept>( *concept ) );
+                }
+            }
+        }
     }
     return result;
 }
@@ -331,115 +343,21 @@ std::vector<std::shared_ptr<Relation>> ConceptualGraph::Edges ( const std::share
 
     for ( const auto & edge : _edges )
     {
-		// [from] is a concept, [to] is a relation
-		if ( auto lhs = std::dynamic_pointer_cast<Concept>( edge.from ) )
-		{
-			if ( *lhs == *rhs )
-			{
-				if ( auto relation = std::dynamic_pointer_cast<Relation>( edge.to ) )
-					result.push_back ( relation );
-		
-				else
-					throw std::runtime_error ( "ConceptualGraph error when iterating Edges of a Concept, it wasnt a Relation" );
-			}
-		}
+        // [from] is a concept, [to] is a relation
+        if ( auto lhs = std::dynamic_pointer_cast<Concept>( edge.from ) )
+        {
+            if ( *lhs == *rhs )
+            {
+                if ( auto relation = std::dynamic_pointer_cast<Relation>( edge.to ) )
+                {
+                    result.push_back ( std::make_shared<Relation>( *relation ) );
+                }
+            }
+        }
     }
     return result;
 }
 
-
-/*
-std::vector<std::shared_ptr<Concept>> ConceptualGraph::Concept_difference ( const ConceptualGraph & rhs ) const
-{
-    std::vector<std::shared_ptr<Concept>> diff;
-    for ( const auto concept : this->_concepts )
-    {
-        // If it doesn't exist in rhs._concepts, add into current diff - comparison takes into account both Token value and Token Index
-        if ( std::find_if ( rhs._concepts.begin(), rhs._concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return *ptr == *concept; } )
-            == rhs._concepts.end() )
-        {
-            diff.push_back ( concept );
-        }
-    }
-    return diff;
-}
-
-
-std::vector<std::shared_ptr<Relation>> ConceptualGraph::Relation_difference ( const ConceptualGraph & rhs ) const
-{
-    std::vector<std::shared_ptr<Relation>> diff;
-    for ( const auto relation : this->_relations )
-    {
-        // If it doesn't exist in rhs._relations, add into current diff - comparison takes into account both Token value and Token Index
-        if ( std::find_if ( rhs._relations.begin(), rhs._relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return *ptr == *relation; } )
-            == rhs._relations.end() )
-        {
-            diff.push_back ( relation );
-        }
-    }
-    return diff;
-}
-
-
-std::vector<Edge> ConceptualGraph::Edge_difference ( const ConceptualGraph & rhs ) const
-{
-    std::vector<Edge> diff;
-    for ( const auto edge : this->_edges )
-    {
-        if ( std::find ( rhs._edges.begin(), rhs._edges.end(), edge ) == rhs._edges.end() )
-        {
-            diff.push_back ( edge );
-        }
-    }
-    return diff;
-}
-
-
-std::vector<std::shared_ptr<Concept>> ConceptualGraph::Concept_equality ( const ConceptualGraph & rhs ) const
-{
-    std::vector<std::shared_ptr<Concept>> same;
-    for ( const auto concept : this->_concepts )
-    {
-        // If it doesn't exist in rhs._concepts, add into current diff - comparison takes into account both Token value and Token Index
-        if ( std::find_if ( rhs._concepts.begin(), rhs._concepts.end(), [&]( const std::shared_ptr<Concept> & ptr ){ return *ptr == *concept; } )
-            != rhs._concepts.end() )
-        {
-            same.push_back ( concept );
-        }
-    }
-    return same;
-}
-
-
-std::vector<std::shared_ptr<Relation>> ConceptualGraph::Relation_equality ( const ConceptualGraph & rhs ) const
-{
-    std::vector<std::shared_ptr<Relation>> same;
-    for ( const auto relation : this->_relations )
-    {
-        // If it doesn't exist in rhs._relations, add into current diff - comparison takes into account both Token value and Token Index
-        if ( std::find_if ( rhs._relations.begin(), rhs._relations.end(), [&]( const std::shared_ptr<Relation> & ptr ){ return *ptr == *relation; } )
-            != rhs._relations.end() )
-        {
-            same.push_back ( relation );
-        }
-    }
-    return same;
-}
-
-
-std::vector<Edge> ConceptualGraph::Edge_equality ( const ConceptualGraph & rhs ) const
-{
-    std::vector<Edge> same;
-    for ( const auto edge : this->_edges )
-    {
-        if ( std::find ( rhs._edges.begin(), rhs._edges.end(), edge )  != rhs._edges.end() )
-        {
-            same.push_back ( edge );
-        }
-    }
-    return same;
-}
-*/
 
 void  ConceptualGraph::Echo ( )
 {

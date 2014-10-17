@@ -27,13 +27,15 @@ class ConceptualGraph
     /// Copy Constructor - Shallow copy - @note guid is copied
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-    /// Copy Constructor - Deep Clone - @note deep copy all members @warning guid is also copied !
+    // ..
     ConceptualGraph Clone ( ) const;
 
-    /**             @note Graph Operations              */
 
-    /// Equality operator - @note isomorphic similarity comparison (concepts,relations,edges)
+    /// Identical Graph operator - @note comparison of Concepts, Relations, Edges by Value and Index
     bool operator== ( const ConceptualGraph & rhs ) const;
+
+    /// Isomorphic Graph operator - @note Concept & Relation perumutations are allowed - but Edge Order must be preserved
+    bool operator|= ( const ConceptualGraph & rhs ) const;
 
     /// Add a new Concept  @note will accept duplicates
     bool AddConcept ( const std::shared_ptr<Concept> );
@@ -63,7 +65,6 @@ class ConceptualGraph
     std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
 
 
-    /**             @note Various Helper methods          */
 
     /// Graph Unique ID @note this is a UUID v4
     boost::uuids::uuid GUID ( ) const;

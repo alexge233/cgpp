@@ -53,11 +53,6 @@ int main ( void )
     bool equal = (*graph == *copy);
     std::cout << "Graphs Equal? : " << equal << std::endl;
 
-    std::cout << "Cloning Graph" << std::endl;
-    auto clone = std::make_shared<ConceptualGraph>( graph->Clone() );
-    clone->Echo();
-    std::cout << "Clone Graph GUID: " << clone->GUID() << std::endl;
-
     std::cout << "Edges of Relation: " << is_node->asToken()->value() << std::endl;
 
     // Iterate Concepts of relation is
@@ -137,7 +132,7 @@ int main ( void )
     
     // Final TEST: try to serialise all graphs
     std::cout << "Adding all graphs into a vector" << std::endl;
-    std::vector<std::shared_ptr<ConceptualGraph>> graphs = { graph, copy, clone, graph2, graph3 };
+    std::vector<std::shared_ptr<ConceptualGraph>> graphs = { graph, copy, graph2, graph3 };
     std::ofstream output ( "graphs.bin" );
     if ( output.is_open() )
     {

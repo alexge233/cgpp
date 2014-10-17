@@ -3,6 +3,62 @@
 namespace cgpp
 {
 
+ConceptualGraph::ConceptualGraph ( const std::string json )
+{
+    _json = json;
+    rapidjson::Document doc;
+    const char * txt = _json.c_str();
+    doc.Parse<0>( txt );
+
+    if ( doc.IsObject() )
+    {
+        // Check JSON has all needed members
+        if ( doc.HasMember( "version" ) && 
+             doc.HasMember( "guid" ) && 
+             doc.HasMember( "creator" ) &&
+             doc.HasMember( "relations") &&
+             doc.HasMember( "concepts") &&
+             doc.HasMember( "adjacencies") )
+        {
+            auto version = boost::lexical_cast<int>( doc["version"].GetString() );
+
+            if ( ConceptualGraph::_version == version )
+            {
+                // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
+                std::string uuid = doc["guid"].GetString();
+                static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );
+
+                /* 
+                 * ATTENTION: only GCC > 4.9 implements std::regex correctly. Clang works ok.
+                 * WARNING: GCC 4.8 doesn't support std::regex. Compiling cgpp with gcc-4.9 and then using it in a project with lesser versions is buggy.
+                 *          So, I have fallen back to using boost::regex from which std::regex was derived.
+                 */
+
+                if ( boost::regex_match ( uuid, expr ) )
+                    _guid = uuid;
+
+                else
+                    throw std::runtime_error ( "ConceptualGraph invalid UUID" );
+
+                // Parse Concepts first
+                _parseConcepts ( doc );
+
+                // Then parse Relations
+                _parseRelations ( doc );
+
+                // Finally, parse Edges (adjacencies)
+                _parseEdges ( doc );
+            }
+            else
+                throw std::runtime_error ( "ConceptualGraph JSON: wrong proto version" );
+        }
+        else
+            throw std::runtime_error ( "ConceptualGraph JSON: missing member" );
+    }
+    else
+        throw std::runtime_error ( "ConceptualGraph JSON: not a valid object" ) ;
+}
+
 std::string ConceptualGraph::JSON ( ) const
 {
     /*
