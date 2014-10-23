@@ -13,8 +13,8 @@ ConceptualGraph::ConceptualGraph ( const std::string json )
     if ( doc.IsObject() )
     {
         // Check JSON has all needed members
-        if ( doc.HasMember( "version" ) && 
-             doc.HasMember( "guid" ) && 
+        if ( doc.HasMember( "version" ) &&
+             doc.HasMember( "guid" ) &&
              doc.HasMember( "creator" ) &&
              doc.HasMember( "relations") &&
              doc.HasMember( "concepts") &&
@@ -66,6 +66,8 @@ std::string ConceptualGraph::JSON ( ) const
      *       if human readability is not an issue (e.g., nobody will ever read the json) feel free to remove "\n\r" and "\t"
      *
      * WARNING: Save your self a lot of trouble: Validate output: http://jsonlint.com before using it anywhere.
+     * 
+     * ATTENTION: The id should NOT BE THE MURMUR HASH OF THE VALUE!!! IT SHOULD BE A UNIQUE ID !!!
      */
 
     std::stringstream ss;
@@ -76,7 +78,7 @@ std::string ConceptualGraph::JSON ( ) const
     {
         rstr += "\n\r\t{\n\r\t\t\"label\":\"" + r->asToken()->value() + "\",\n\r\t\t\"postag\":\"" + r->asToken()->tag() + "\",\n\r";
         rstr += "\t\t\"index\":" + boost::lexical_cast<std::string>( r->TokenIndex() ) + ",\n\r";
-        rstr += "\t\t\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( r->asToken()->value() ) ) + "\n\r\t},";
+        rstr += "\t\t\"id\":" + boost::lexical_cast<std::string>(  r->UUID()   ) + "\n\r\t},";
     }
     if ( !rstr.empty() )
     {
@@ -90,7 +92,7 @@ std::string ConceptualGraph::JSON ( ) const
     {
         cstr += "\n\r\t{\n\r\t\t\"label\":\"" + c->asToken()->value() + "\",\n\r\t\t\"postag\":\"" + c->asToken()->tag() + "\",\n\r";
         cstr += "\t\t\"index\":" + boost::lexical_cast<std::string>( c->TokenIndex() ) + ",\n\r";
-        cstr += "\t\t\"id\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( c->asToken()->value() ) ) + "\n\r\t},";
+        cstr += "\t\t\"id\":" + boost::lexical_cast<std::string>(  c->UUID()   ) + "\n\r\t},";
     }
     if ( !cstr.empty() )
     {
@@ -103,8 +105,8 @@ std::string ConceptualGraph::JSON ( ) const
     unsigned int index = 0;
     for ( auto e : _edges )
     {
-        estr += "\n\r\t{\n\r\t\t\"nodeFrom\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.from->asToken()->value() ) ) + ",\n\r";
-        estr += "\t\t\"nodeTo\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.to->asToken()->value() ) ) + ",\n\r";
+        estr += "\n\r\t{\n\r\t\t\"nodeFrom\":" + boost::lexical_cast<std::string>( e.from->UUID() ) + ",\n\r";
+        estr += "\t\t\"nodeTo\":" + boost::lexical_cast<std::string>( e.to->UUID()   ) + ",\n\r";
         estr += "\t\t\"index\":" + boost::lexical_cast<std::string>( index ) + ",\n\r";
 
         if ( std::dynamic_pointer_cast<Concept>( e.from ) && std::dynamic_pointer_cast<Relation>( e.to ) )
@@ -226,8 +228,15 @@ void ConceptualGraph::_parseConcepts ( rapidjson::Document & doc )
 
                 if ( auto concept = std::make_shared<Concept>( token, index ) )
                 {
-                    // get JSON id - used for edge creation
-                    concept->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetString() );
+                    std::string uuid = data[i]["id"].GetString();
+                    static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );
+
+                    // get JSON CONCEPT UUID-v4 used for edge creation
+                    if ( boost::regex_match ( uuid, expr ) )
+                        concept->_json_id = boost::lexical_cast<boost::uuids::uuid>( uuid );
+
+                    else
+                        throw std::runtime_error ( "Concept invalid ID" );
 
                     // Add to Concepts w/t Token and Token Index
                     _concepts.push_back ( concept );
@@ -274,8 +283,15 @@ void ConceptualGraph::_parseRelations ( rapidjson::Document & doc )
                 // Create Relation
                 if ( auto relation = std::make_shared<Relation>( token, index ) )
                 {
-                    // get JSON id - used for edge creation
-                    relation->_json_id = boost::lexical_cast<std::size_t>( data[i]["id"].GetString() );
+                    std::string uuid = data[i]["id"].GetString();
+                    static const boost::regex expr ( "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", boost::regex_constants::icase );
+
+                    // get JSON RELATION UUID-v4 used for edge creation
+                    if ( boost::regex_match ( uuid, expr ) )
+                        relation->_json_id = boost::lexical_cast<boost::uuids::uuid>( uuid );
+
+                    else
+                        throw std::runtime_error ( "Relation invalid ID" );
 
                     // Add
                     _relations.push_back ( relation );
@@ -306,8 +322,8 @@ void ConceptualGraph::_parseEdges ( rapidjson::Document & doc )
             adj[k].HasMember ( "order" ) )
             {
                 // Get json ids
-                auto nodeFrom = boost::lexical_cast<std::size_t>( adj[k]["nodeFrom"].GetString() );
-                auto nodeTo =  boost::lexical_cast<std::size_t>( adj[k]["nodeTo"].GetString() );
+                auto nodeFrom = boost::lexical_cast<boost::uuids::uuid>( adj[k]["nodeFrom"].GetString() );
+                auto nodeTo =  boost::lexical_cast<boost::uuids::uuid>( adj[k]["nodeTo"].GetString() );
 
                 // string ids for debugging
                 auto from_str = boost::lexical_cast<std::string>( adj[k]["nodeFrom"].GetString() );

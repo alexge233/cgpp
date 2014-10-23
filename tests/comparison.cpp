@@ -9,6 +9,11 @@ int main ( void )
 
     std::vector<std::shared_ptr<cgpp::ConceptualGraph>> graphs;
 
+    /**
+     * WARNING ATTENTION: This test will fail, because the hardcoded json files in json.hpp have std::size_t murmur hashes.
+     * I now use UUID-v4 instead. 
+     * Fix the header to be able to use this test!
+     */
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1a ) );
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1a ) );
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1b ) );

@@ -1,5 +1,5 @@
 #ifndef _CGPP_Node_HPP_
-#define _CGPP_Node_HPP_ 
+#define _CGPP_Node_HPP_
 #pragma once
 #include "Includes.hxx"
 
@@ -14,32 +14,29 @@ namespace cgpp
 class Node
 {
   public:
-    
-    
+
     /// Empty Constructor - Avoid using
-    Node ( ) = default;
-    
+    Node ( )
+    {
+        _json_id = boost::uuids::random_generator()();
+    }
+
     /// Construct with Token
     Node ( Token token )
     {
         _token = std::make_shared<Token>( token );
+        _json_id = boost::uuids::random_generator()();
     }
 
     /// Copy Constructor
     Node ( const Node & node )
     {
         this->_token = node._token;
+        this->_json_id = node._json_id;
     }
 
     /// Empty Dtor
     virtual ~Node ( ){ }
-
-    
-    /// Node Position in a list
-    int Position ( ) const
-    {
-        return _node_position;
-    }
 
     /// Get Node's Token
     std::shared_ptr<Token> asToken ( ) const
@@ -52,34 +49,36 @@ class Node
     {
         return (*this->_token ) == (*rhs._token);
     }
-    
-    /// Set Node position (WARNING Should remove)
-    void SetPosition ( int pos )
+
+    boost::uuids::uuid UUID( ) const
     {
-        _node_position = pos;
+        return _json_id;
     }
-    
-    
+
   protected:
-   
+
     friend class cereal::access;
-    
+
     /// Token
     std::shared_ptr<Token> _token;
-    
+
+    /// json id
+    boost::uuids::uuid _json_id;
+
     /**
      * Position of Node within a Graph's List
      * e.g. if G = {n1, n2, n3} the number signifying the position
+     * WARNING THIS IS DEPRECATED
+     * DANGER: However, if I remove it, I will void all my previous serialised files!
      */
     int _node_position = -1;
-    
-    
+
+
     template <class Archive> void serialize ( Archive & archive )
     {
       archive( _token, _node_position );
     }
-    
-    
+
 };
 
 }

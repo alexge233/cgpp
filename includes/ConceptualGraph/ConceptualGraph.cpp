@@ -203,7 +203,7 @@ bool ConceptualGraph::AddConcept ( const std::shared_ptr<Concept> node )
              == _concepts.end() )
         {
             _concepts.push_back( node );
-            node->SetPosition ( std::addressof( _concepts.back() ) - std::addressof( _concepts[0] ) );
+            //node->SetPosition ( std::addressof( _concepts.back() ) - std::addressof( _concepts[0] ) );
             return true;
         }
         return false;
@@ -221,7 +221,7 @@ bool ConceptualGraph::AddRelation ( const std::shared_ptr<Relation> node )
             == _relations.end() )
         {
             _relations.push_back( node );
-            node->SetPosition ( std::addressof( _relations.back() ) - std::addressof( _relations[0] ) );
+            //node->SetPosition ( std::addressof( _relations.back() ) - std::addressof( _relations[0] ) );
             return true;
         }
         return false;

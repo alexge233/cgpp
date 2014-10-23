@@ -71,9 +71,6 @@ class Relation : public Node
     /// tokens[i]
     int _token_index = -1;
 
-    /// json id
-    std::size_t _json_id = -1;
-
     template <class Archive> void serialize ( Archive & archive )
     {
         archive ( cereal::base_class<Node>( this ), _token_index );
