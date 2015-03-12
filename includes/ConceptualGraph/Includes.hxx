@@ -5,6 +5,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <assert.h>
+
 //#include <regex>
 
 #include <boost/lexical_cast.hpp>

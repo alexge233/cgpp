@@ -3,10 +3,7 @@
 #pragma once
 #include "Includes.hxx"
 
-
-namespace cgpp
-{
-
+namespace cgpp {
 /**
  * Struct Encapsulating Edges
  *
@@ -21,6 +18,11 @@ struct Edge
     bool operator== ( const Edge & rhs ) const
     {
         return (*this->from == *rhs.from && *this->to == *rhs.to );
+    }
+
+    bool operator!= ( const Edge & rhs ) const
+    {
+        return ( *this == rhs ? false : true );
     }
 
     template <class Archive> void serialize ( Archive & archive )

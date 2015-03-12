@@ -4,14 +4,14 @@
 #include "Includes.hxx"
 
 
-namespace cgpp
-{
+namespace cgpp {
 
 /**
- * Conceptual Graph class as described by J.Sowa
- *
- * @version 8
- * @date 29-August-2014
+ * @brief Conceptual Graph class as described by J.Sowa
+ * @class ConceptualGraph
+ * @version 9
+ * @date 12-March-2015
+ * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
  */
 
 class ConceptualGraph
@@ -37,6 +37,8 @@ class ConceptualGraph
     /// Isomorphic Graph operator - @note Concept & Relation perumutations are allowed - but Edge Order must be preserved
     bool operator|= ( const ConceptualGraph & rhs ) const;
 
+
+
     /// Add a new Concept  @note will accept duplicates
     bool AddConcept ( const std::shared_ptr<Concept> );
 
@@ -48,6 +50,23 @@ class ConceptualGraph
 
     /// Add a new Edge (connect Concept to Relation) @note will only create if edge doesn't exist
     bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
+
+
+    /// Edge to Node ratio: |E| / |V|
+    float ratioEdgeVertex ( ) const;
+
+    /// Graph Sparseness: |V| / |E|
+    float graphSparseness ( ) const;
+
+    /// Tree Width Score
+    float treeWidth ( ) const;
+
+    /// Acerage Pathway Score
+    float avgPathLength ( ) const;
+
+    /// Edge Permutation State Size
+    float edgePermutations ( ) const;
+
 
     /// Get Graph's Concepts
     std::vector<std::shared_ptr<Concept>> Concepts ( ) const;

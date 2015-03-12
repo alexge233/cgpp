@@ -13,9 +13,9 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 		      /usr/local/lib64
 		      /usr/lib/x86_64-linux-gnu)
 
-set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
+set(INCLUDE_DIRS ${INCLUDE_DIRS} /usr/include)
 
-include_directories(SYSTEM ${INCLUDE_HEADERS})
+include_directories(SYSTEM ${INCLUDE_DIRS})
 
 add_subdirectory(includes/Concept)
 add_subdirectory(includes/ConceptualGraph)
@@ -26,11 +26,16 @@ add_subdirectory(includes/Edge)
 add_subdirectory(includes/Utilities)
 
 find_package( Boost 1.54 COMPONENTS regex REQUIRED )
+include_directories( ${Boost_INCLUDE_DIR} )
+
+find_path(CerealIncludes cereal/details/helpers.hpp PATHS ${INCLUDE_DIRS})
+if(NOT CerealIncludes)
+  message(FATAL_ERROR "Can't find Header Dir containing cereal/details/helpers.hpp")
+endif()
 
 # Enable 'make test'
 enable_testing()
 
-# Test executable "creategraph”
 add_executable ( creategraph 
                        tests/construct.cpp
 			           includes/ConceptualGraph/ConceptualGraph.cpp
@@ -38,30 +43,35 @@ add_executable ( creategraph
 			           includes/Utilities/Utilities.cpp)
 add_test ( ConstructGraph creategraph )
 
-# Test executable "jsontest"
 add_executable ( jsontest
                     tests/json.cpp
                     includes/ConceptualGraph/ConceptualGraph.cpp
                     includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 add_test( JSON_Serialise jsontest )
 
-# Test executable "deserialise"
 add_executable ( deserialise
                        tests/deserialise.cpp
 			           includes/ConceptualGraph/ConceptualGraph.cpp
 			           includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 add_test( JSON_Deserialise deserialise)
 
-# Test executable "deserialise"
 add_executable ( comparison
                        tests/comparison.cpp
                        includes/ConceptualGraph/ConceptualGraph.cpp
                        includes/ConceptualGraph/ConceptualGraphJSON.cpp)
 add_test( JSON_Comparison comparison)
 
+add_executable ( extras
+                       tests/extras.cpp
+                       includes/ConceptualGraph/ConceptualGraph.cpp
+                       includes/ConceptualGraph/ConceptualGraphJSON.cpp
+		       includes/ConceptualGraph/ConceptualGraphEXTRAS.cpp)
+add_test( test_extras extras)
+
 # Build Libraries (both static and shared)
 set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
                         includes/ConceptualGraph/ConceptualGraphJSON.cpp
+			includes/ConceptualGraph/ConceptualGraphEXTRAS.cpp
                         includes/Utilities/Utilities.cpp)
 
 add_library (lcgpp OBJECT ${SOURCES})
@@ -74,6 +84,7 @@ target_link_libraries(creategraph ${Boost_REGEX_LIBRARY} )
 target_link_libraries(jsontest ${Boost_REGEX_LIBRARY} )
 target_link_libraries(deserialise ${Boost_REGEX_LIBRARY} )
 target_link_libraries(comparison ${Boost_REGEX_LIBRARY} )
+target_link_libraries(extras ${Boost_REGEX_LIBRARY} )
 
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE on)
