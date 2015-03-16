@@ -16,26 +16,25 @@ float ConceptualGraph::avgPathLength ( ) const
 {
     std::vector<unsigned int> lengths;
 
-    std::function<void ( unsigned int i, unsigned int & len )> lambda;
-    lambda = [&]( unsigned int i, unsigned int & len )
+    // I think I should pass by value, NOT by reference !
+    std::function<void ( unsigned int i, unsigned int len )> lambda;
+    lambda = [&]( unsigned int i, unsigned int len )
     {
         for ( unsigned int k = i + 1; k < _edges.size(); k++ )
         {
             if ( (*_edges[i].to) == (*_edges[k].from) )
             {
                 len++;
-                find_next ( k, len );
+                lambda ( k, len );
             }
         }
+        // If it reaches this bit here, then: (a) there is no path, or (b) search has been exhausted
+        lengths.push_back ( len );
     };
 
+    // Theres already one edge, therefore set to 1
     for ( unsigned int i = 0; i < _edges.size(); i++ )
-    {
-        // Theres already one edge, therefore set to 1
-        unsigned int len = 1;
-        lambda ( i, len );
-        lengths.push_back ( len );
-    }
+        lambda ( i, 1 );
 
     // accumulate lengths
     unsigned int acc = 0;
@@ -56,6 +55,15 @@ float ConceptualGraph::treeWidth ( ) const
 
     // NOTE: find subgraphs / trees, by finding [Node1] -> [Node2] -> [Node3] or (NodeGroup1) -> (NodeGroup2) -> (NodeGroup3)
     // Count those subgroups, and then divide them by number of total nodes?
+    return 0.f;
+}
+
+float ConceptualGraph::subgraphRatio ( ) const
+{
+    // Do the following: 
+    //  x = Compute (# of diff edge.from) with (# of diff edge.to)
+    //  y = Compute (# of diff edge.from) with (# of same edge.to)
+    //  z = (x / y) / # edges ( Branching factor / subgraph ratio )
     return 0.f;
 }
 

@@ -58,11 +58,14 @@ class ConceptualGraph
     /// Graph Sparseness: |V| / |E|
     float graphSparseness ( ) const;
 
-    /// Tree Width Score
+    /// Tree Width Score - TODO / NOTE: Implement only if possible & easy
     float treeWidth ( ) const;
 
-    /// Acerage Pathway Score
+    /// Average Pathway Score
     float avgPathLength ( ) const;
+
+    /// Branching Factor / Suggraph Ratio
+    float sugraphRatio ( ) const;
 
     /// Edge Permutation State Size
     float edgePermutations ( ) const;
