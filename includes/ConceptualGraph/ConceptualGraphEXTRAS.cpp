@@ -48,23 +48,48 @@ float ConceptualGraph::avgPathLength ( ) const
         return 0.f;
 }
 
-float ConceptualGraph::treeWidth ( ) const
-{
-    // http://www.ti.inf.ethz.ch/ew/lehre/GA10/lec-treewidth-new.pdf
-    // http://www.cs.ox.ac.uk/people/paul.hunter/papers/GAMES05talk.pdf
-
-    // NOTE: find subgraphs / trees, by finding [Node1] -> [Node2] -> [Node3] or (NodeGroup1) -> (NodeGroup2) -> (NodeGroup3)
-    // Count those subgroups, and then divide them by number of total nodes?
-    return 0.f;
-}
-
-float ConceptualGraph::subgraphRatio ( ) const
+float ConceptualGraph::sugraphRatio ( ) const
 {
     // Do the following: 
     //  x = Compute (# of diff edge.from) with (# of diff edge.to)
     //  y = Compute (# of diff edge.from) with (# of same edge.to)
     //  z = (x / y) / # edges ( Branching factor / subgraph ratio )
-    return 0.f;
+
+    unsigned int same = 0;
+    unsigned int diff = 0;
+    
+    for ( unsigned int i = 0; i < _edges.size(); i++ )
+    {
+        for ( unsigned int k = i + 1; k < _edges.size(); k++ )
+        {
+            //std::cout << "[" << _edges[i].from->asToken()->value() << "," << _edges[k].from->asToken()->value() << "] == "
+            //          << "[" << _edges[i].to->asToken()->value() << "," << _edges[k].to->asToken()->value() << "]" << std::endl;
+                      
+            if ( ( (*_edges[i].from) == (*_edges[k].from) ) && ( (*_edges[i].to) == (*_edges[k].to) ) )
+                same++;
+
+            else if ( ( (*_edges[i].from) == (*_edges[k].from) ) && ( (*_edges[i].to) != (*_edges[k].to) ) )
+                diff++;
+
+            /*
+                NOTE: We do not bother with Edges that have a different `From` Node, because they are
+                      of no use to calculating branching subgroups.
+                      The problem with this, is that we can end up up with NaN's or Inf's.
+            */ 
+        }
+    }
+
+    //std::cout << "same edge.from && edge.to = " << same << std::endl;
+    //std::cout << "same edge.from && diff edge.to = " << diff << std::endl;
+
+    float same_norm = (float)same / (float)_edges.size();
+    float diff_norm = (float)diff / (float)_edges.size();
+
+    //std::cout << "normalised same = " << same_norm << std::endl;
+    //std::cout << "normalised diff = " << diff_norm << std::endl;
+
+    // WARNING - Be prepared to handle NaN and INF !!
+    return (float)( same_norm / diff_norm );
 }
 
 float ConceptualGraph::edgePermutations ( ) const

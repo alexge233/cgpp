@@ -7,8 +7,8 @@ namespace cgpp {
 /**
  * Struct Encapsulating Edges
  *
- * @version 1
- * @date 20-August-2014
+ * @version 2
+ * @date 19-March-2015
  */
 struct Edge
 {

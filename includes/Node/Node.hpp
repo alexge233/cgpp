@@ -50,6 +50,12 @@ class Node
         return (*this->_token ) == (*rhs._token);
     }
 
+    /// Inequality operator
+    virtual bool operator!= ( const Node & rhs ) const
+    {
+        return (*this->_token ) != (*rhs._token);
+    }
+
     boost::uuids::uuid UUID( ) const
     {
         return _json_id;

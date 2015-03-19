@@ -54,12 +54,20 @@ class Token
     /// Equality operator - Case insensitive
     bool operator== ( const Token & rhs  ) const
     {
-        if ( !this->_value.empty() && !rhs._value.empty() )
-            return boost::iequals( this->_value, rhs._value );
-        else
+        if ( this->_value.empty() || rhs._value.empty() )
             throw std::runtime_error ( "[Token::operator==] empty string" );
+
+        return boost::iequals( this->_value, rhs._value );
     }
 
+    /// Inequality operator - Case insensitive
+    bool operator!= ( const Token & rhs ) const
+    {
+        if ( this->_value.empty() || rhs._value.empty() )
+            throw std::runtime_error ( "[Token::operator!=] empty string" );
+
+        return ( boost::iequals( this->_value, rhs._value ) == false ? true : false );
+    }
 
     /// Sorting Operator
     bool operator< ( const Token & rhs ) const

@@ -18,6 +18,8 @@ class ConceptualGraph
 {
   public:
 
+    /* Constructors */
+
     /// Empty Constructor
     ConceptualGraph ( );
 
@@ -27,9 +29,11 @@ class ConceptualGraph
     /// Copy Constructor - Shallow copy - @note guid is copied
     ConceptualGraph ( const ConceptualGraph & rhs );
 
-    // ..
+    /// Cloning Constructor, see implementation for details
     ConceptualGraph Clone ( ) const;
 
+
+    /* Operators */
 
     /// Identical Graph operator - @note comparison of Concepts, Relations, Edges by Value and Index
     bool operator== ( const ConceptualGraph & rhs ) const;
@@ -37,7 +41,11 @@ class ConceptualGraph
     /// Isomorphic Graph operator - @note Concept & Relation perumutations are allowed - but Edge Order must be preserved
     bool operator|= ( const ConceptualGraph & rhs ) const;
 
+    /// TODO: Similarity Graph operator - @count min-max node & edge similarity as a metric
+    float operator%= ( const ConceptualGraph & rhs ) const;
 
+
+    /* Setters */
 
     /// Add a new Concept  @note will accept duplicates
     bool AddConcept ( const std::shared_ptr<Concept> );
@@ -52,24 +60,7 @@ class ConceptualGraph
     bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
 
 
-    /// Edge to Node ratio: |E| / |V|
-    float ratioEdgeVertex ( ) const;
-
-    /// Graph Sparseness: |V| / |E|
-    float graphSparseness ( ) const;
-
-    /// Tree Width Score - TODO / NOTE: Implement only if possible & easy
-    float treeWidth ( ) const;
-
-    /// Average Pathway Score
-    float avgPathLength ( ) const;
-
-    /// Branching Factor / Suggraph Ratio
-    float sugraphRatio ( ) const;
-
-    /// Edge Permutation State Size
-    float edgePermutations ( ) const;
-
+    /* Getters */
 
     /// Get Graph's Concepts
     std::vector<std::shared_ptr<Concept>> Concepts ( ) const;
@@ -87,6 +78,25 @@ class ConceptualGraph
     std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
 
 
+    /* Graph Meta-Metrics */
+
+    /// Edge to Node ratio: |E| / |V|
+    float ratioEdgeVertex ( ) const;
+
+    /// Graph Sparseness: |V| / |E|
+    float graphSparseness ( ) const;
+
+    /// Average Pathway Score
+    float avgPathLength ( ) const;
+
+    /// Branching Factor / Suggraph Ratio
+    float sugraphRatio ( ) const;
+
+    /// Edge Permutation State Size
+    float edgePermutations ( ) const;
+
+    
+    /* Graph Info and (De)Serialisation */
 
     /// Graph Unique ID @note this is a UUID v4
     boost::uuids::uuid GUID ( ) const;
