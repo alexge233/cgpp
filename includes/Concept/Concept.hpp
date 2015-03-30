@@ -2,17 +2,13 @@
 #define _CGPP_Concept_HPP_
 #pragma once
 #include "Includes.hxx"
-
-namespace cgpp
-{
-
+namespace cgpp {
 /**
- * Concept node as described by J. Sowa
- *
- * @version 1
- * @date 8-August-2014
+ * @brief Concept node as described by J. Sowa
+ * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
+ * @version 2
+ * @date 30-March-2015
  */
-
 class Concept : public Node
 {
   public:
@@ -50,7 +46,6 @@ class Concept : public Node
         return std::make_shared<Concept>( *this );
     }
 
-
     /// Concept's Token index
     int TokenIndex ( ) const
     {
@@ -59,14 +54,15 @@ class Concept : public Node
 
 
     /// Equality Operator
+    inline
     bool operator== ( const Concept & rhs ) const
     {
         return *this->_token == *rhs._token &&
                 this->_token_index == rhs._token_index;
     }
 
-
     /// Sorting operator
+    inline
     bool operator< ( const Concept & rhs ) const
     {
         return this->_token < rhs._token;

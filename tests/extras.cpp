@@ -58,7 +58,7 @@ int main ( void )
     std::cout << "Avg Path Length: " << graph2->avgPathLength() << std::endl;
     std::cout << "Branching Factor: " << graph2->sugraphRatio() << std::endl;
 
-    float sim = (*graph) %= (*graph2);<C-D-t>
+    float sim = (*graph) %= (*graph2);
     std::cout << "2nd Graph is %Similar to 1st Graph: " << sim << std::endl;
 
     return 0;

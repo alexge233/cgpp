@@ -28,31 +28,21 @@ ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
     this->_edges = rhs._edges;
 }
 
-
+// NOTE: This appears to be a bottle-neck - If it can be easily optimised, cool - if not, let it be
 bool ConceptualGraph::operator== ( const ConceptualGraph & rhs ) const
 {
     bool concepts = false, relations = false, edges = false;
 
-    auto c_pred = []( const std::shared_ptr<Concept> & lhs,
-                      const std::shared_ptr<Concept> & rhs )->bool { return *lhs == *rhs; };
-
-    auto r_pred = []( const std::shared_ptr<Relation> & lhs,
-                      const std::shared_ptr<Relation> & rhs )->bool { return *lhs == *rhs; };
-
     if ( this->_concepts.size() == rhs._concepts.size() )
-    {
-        concepts = std::equal ( this->_concepts.begin(), this->_concepts.end(), rhs._concepts.begin(), c_pred );
-    }
+        concepts = std::equal ( this->_concepts.begin(), this->_concepts.end(), rhs._concepts.begin(), 
+                                []( const std::shared_ptr<Concept> & lhs, const std::shared_ptr<Concept> & rhs )->bool { return *lhs == *rhs; } );
 
     if ( this->_relations.size() == rhs._relations.size() )
-    {
-        relations = std::equal ( this->_relations.begin(), this->_relations.end(), rhs._relations.begin(), r_pred );
-    }
+        relations = std::equal ( this->_relations.begin(), this->_relations.end(), rhs._relations.begin(), 
+                                 []( const std::shared_ptr<Relation> & lhs, const std::shared_ptr<Relation> & rhs )->bool { return *lhs == *rhs; } );
 
     if ( this->_edges.size() == rhs._edges.size() )
-    {
         edges = std::equal ( this->_edges.begin(), this->_edges.end(), rhs._edges.begin() );
-    }
 
     return concepts && relations && edges;
 }
@@ -81,9 +71,7 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
         auto my_concepts = this->_concepts;
         auto other_concepts = rhs._concepts;
         for ( const auto mine : my_concepts )
-        {
             for ( const auto other : other_concepts )
-            {
                 if ( *mine == *other )
                 {
                     const auto mines = this->Edges( mine );
@@ -99,15 +87,12 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
                     }
                     else edge_res.push_back( false );
                 }
-            }
-        }
+
         // keep local copies of vectors
         auto my_relations = this->_relations;
         auto other_relations = rhs._relations;
         for ( const auto mine : my_relations )
-        {
             for ( const auto other : other_relations )
-            {
                 if ( *mine == *other )
                 {
                     const auto mines = this->Edges( mine );
@@ -124,8 +109,6 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
                     }
                     else edge_res.push_back( false );
                 }
-            }
-        }
 
         bool ok = true;
         for ( auto res : edge_res ) { if ( !res ) ok = false; }

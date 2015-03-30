@@ -2,10 +2,7 @@
 #define _CGPP_ConceptualGraph_HPP_ 
 #pragma once
 #include "Includes.hxx"
-
-
 namespace cgpp {
-
 /**
  * @brief Conceptual Graph class as described by J.Sowa
  * @class ConceptualGraph
@@ -13,7 +10,6 @@ namespace cgpp {
  * @date 12-March-2015
  * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
  */
-
 class ConceptualGraph
 {
   public:
@@ -41,7 +37,7 @@ class ConceptualGraph
     /// Isomorphic Graph operator - @note Concept & Relation perumutations are allowed - but Edge Order must be preserved
     bool operator|= ( const ConceptualGraph & rhs ) const;
 
-    /// TODO: Similarity Graph operator - @count min-max node & edge similarity as a metric
+    /// Similarity Graph operator - count min-max node & edge similarity as a metric
     float operator%= ( const ConceptualGraph & rhs ) const;
 
 
@@ -159,8 +155,6 @@ class ConceptualGraph
     }
 
 };
-
 }
-
 
 #endif

@@ -2,20 +2,16 @@
 #define _CGPP_Relation_HPP_
 #pragma once
 #include "Includes.hxx"
-
-namespace cgpp
-{
-
+namespace cgpp {
 /**
- * Relation as defined by J. Sowa describes relational nodes
- *
- * @version 6
- * @date 8-August-2014
+ * @brief Relation as defined by J. Sowa describes relational nodes
+ * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
+ * @version 7
+ * @date 30-March-2015
  */
 class Relation : public Node
 {
   public:
-
 
     /// Empty Constructor - Avoid using
     Relation ( ) = default;
@@ -49,6 +45,7 @@ class Relation : public Node
     }
 
     /// Equality Operator
+    inline
     bool operator== ( const Relation & rhs ) const
     {
         return *this->_token == *rhs._token &&
