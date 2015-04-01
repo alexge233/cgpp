@@ -1,3 +1,4 @@
+#include <typeinfo>
 #include "../Node/Node.hpp"
 
 #include <cereal/access.hpp>

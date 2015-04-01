@@ -44,16 +44,15 @@ class Relation : public Node
         return std::make_shared<Relation>( * this );
     }
 
-    /// Equality Operator
-    inline
-    bool operator== ( const Relation & rhs ) const
+    /// Relation Equality Operator
+    inline bool operator== ( const Relation & rhs ) const
     {
         return *this->_token == *rhs._token &&
                 this->_token_index == rhs._token_index;
     }
 
     /// Get Token Index
-    int TokenIndex ( ) const
+    inline int TokenIndex ( ) const
     {
         return _token_index;
     }
@@ -75,7 +74,6 @@ class Relation : public Node
 
 
 };
-
 }
 #endif
 

@@ -47,27 +47,17 @@ class Concept : public Node
     }
 
     /// Concept's Token index
-    int TokenIndex ( ) const
+    inline int TokenIndex ( ) const
     {
         return _token_index;
     }
 
-
-    /// Equality Operator
-    inline
-    bool operator== ( const Concept & rhs ) const
+    /// Concept Equality Operator
+    inline bool operator== ( const Concept & rhs ) const
     {
         return *this->_token == *rhs._token &&
                 this->_token_index == rhs._token_index;
     }
-
-    /// Sorting operator
-    inline
-    bool operator< ( const Concept & rhs ) const
-    {
-        return this->_token < rhs._token;
-    }
-
 
   private:
 
@@ -84,6 +74,5 @@ class Concept : public Node
     }
 
 };
-
 }
 #endif
