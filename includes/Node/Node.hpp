@@ -4,12 +4,41 @@
 #include "Includes.hxx"
 namespace cgpp
 {
+
 /**
- * Base class node supports Node operations in graph
+ * @brief Inteface Abstract Base Class, used for Operators
+ */
+class Object
+{
+public:
+    
+    virtual ~Object() {}
+    
+    bool operator==( const Object & other ) const
+    {
+        // If the derived types are the same then compare them
+        return typeid (*this) == typeid(other) && isEqual ( other );
+    }
+    
+    bool operator!= ( const Object & other ) const
+    {
+        return typeid (*this) == typeid(other) && !isEqual ( other );
+    }
+
+private:
+    // A pure virtual function derived classes must implement.
+    // Furthermore, this function has a precondition that it will only
+    // be called when the 'other' is the same type as the instance
+    // invoking the function.
+    virtual bool isEqual ( const Object & other ) const = 0;
+};
+
+/**
+ * @brief Base Node Class supports Node operations in graph
  * @version 4
  * @date 31-March-2015
  */
-class Node
+class Node : public Object
 {
   public:
 
@@ -41,23 +70,16 @@ class Node
     { 
         return std::make_shared<Token>( (*this->_token) );
     }
-
-    /// Equality operator
-    inline virtual bool operator== ( const Node & rhs ) const
-    {
-        return (*this->_token ) == (*rhs._token);
-    }
-
-    /// Inequality operator
-    inline /*virtual*/ bool operator!= ( const Node & rhs ) const
-    {
-        return (*this->_token ) != (*rhs._token);
-    }
     
-    /// Sorting operator
+    /// Sorting operator - NOTE: Shouldn't this also be in class Object?
     inline bool operator< ( const Node & rhs ) const
     {
         return this->_token < rhs._token;
+    }
+    
+    virtual int TokenIndex ( ) const
+    {
+        return -1;
     }
 
     boost::uuids::uuid UUID( ) const
@@ -75,8 +97,11 @@ class Node
     /// json id
     boost::uuids::uuid _json_id;
 
-    /* DEPRECATED
-    int _node_position = -1; */
+    /// Equality operator for Node
+    inline virtual bool isEqual ( const Object & rhs ) const
+    {
+        return (*this->_token ) == (*static_cast<const Node&>(rhs)._token);
+    }
 
     template <class Archive> void serialize ( Archive & archive )
     {

@@ -14,11 +14,10 @@ class Relation : public Node
   public:
 
     /// Empty Constructor - Avoid using
-    Relation ( ) = default;
+    Relation ( ) : Node () {}
 
     /// Construct with Token
-    Relation ( Token & token ) : Node( token )
-    { }
+    Relation ( Token & token ) : Node( token ) {}
 
     /// Construct with Token & Token Index
     Relation (
@@ -26,7 +25,7 @@ class Relation : public Node
                 int index
              )
     : Node ( token ), _token_index ( index )
-    { }
+    {}
 
     /// Construct using another relation
     Relation ( const Relation & rhs ) : Node( rhs )
@@ -44,13 +43,6 @@ class Relation : public Node
         return std::make_shared<Relation>( * this );
     }
 
-    /// Relation Equality Operator
-    inline bool operator== ( const Relation & rhs ) const
-    {
-        return *this->_token == *rhs._token &&
-                this->_token_index == rhs._token_index;
-    }
-
     /// Get Token Index
     inline int TokenIndex ( ) const
     {
@@ -63,9 +55,15 @@ class Relation : public Node
     friend class ConceptualGraph;
     friend class cereal::access;
 
-
     /// tokens[i]
     int _token_index = -1;
+    
+    
+    inline bool isEqual ( const Object & rhs ) const
+    {
+        return (*this->_token ) == (*static_cast<const Relation &>(rhs)._token)
+                && this->_token_index == static_cast<const Relation &>(rhs)._token_index;
+    }
 
     template <class Archive> void serialize ( Archive & archive )
     {

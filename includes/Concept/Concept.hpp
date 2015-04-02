@@ -14,12 +14,10 @@ class Concept : public Node
   public:
 
     /// Empty Constructor
-    Concept ( ) : Node ( )
-    { }
+    Concept ( ) : Node ( ) {}
 
     /// Construct using a Token only
-    Concept ( Token & token ) : Node( token )
-    { }
+    Concept ( Token & token ) : Node( token ) {}
 
     /// Construct using Token and Token Index
     Concept (
@@ -27,7 +25,7 @@ class Concept : public Node
               int index
             )
     :   Node ( token ), _token_index ( index )
-    { }
+    {}
 
     /// Construct using another node
     Concept ( const Concept & rhs ) 
@@ -52,13 +50,6 @@ class Concept : public Node
         return _token_index;
     }
 
-    /// Concept Equality Operator
-    inline bool operator== ( const Concept & rhs ) const
-    {
-        return *this->_token == *rhs._token &&
-                this->_token_index == rhs._token_index;
-    }
-
   private:
 
     friend class ConceptualGraph;
@@ -67,6 +58,12 @@ class Concept : public Node
     /// tokens[i]
     int _token_index = -1;
 
+    
+    inline bool isEqual ( const Object &rhs ) const
+    {
+        return (*this->_token ) == (*static_cast<const Concept &>(rhs)._token)
+                && this->_token_index == static_cast<const Concept &>(rhs)._token_index;
+    }
 
     template <class Archive> void serialize ( Archive & archive )
     {

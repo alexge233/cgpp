@@ -21,10 +21,6 @@ int main ( void )
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2a ) );
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2b ) );
     graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2c ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2d ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2e ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2f ) );
-
 
     for ( unsigned int i = 0; i < graphs.size(); i++ )
     {
