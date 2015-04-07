@@ -118,6 +118,7 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
     return concepts && relations && edges;
 }
 
+// BUG: Wrong !!!
 float ConceptualGraph::operator%= ( const ConceptualGraph & rhs ) const
 {
     //  Count similar and different Nodes (nodes_same, nodes_diff)
@@ -142,13 +143,15 @@ float ConceptualGraph::operator%= ( const ConceptualGraph & rhs ) const
                 same_edges++;
 
     // node percentage #(same nodes)  / total ( nodes ) 
-    float node_prc = (float)(same_concepts + same_relations ) / (float)( this->_concepts.size() + this->_relations.size() );
+    float node_prc = (2.f * (float)(same_concepts + same_relations)) / 
+                     (float)( this->_concepts.size() + rhs._concepts.size() + this->_relations.size() + rhs._relations.size() );
 
     // edge percentage #(same edges) / total ( edges )
-    float edge_prc = ( (float)same_edges / (float)this->_edges.size() );
+    float edge_prc = (2.f * (float)same_edges) / 
+                     (float)( this->_edges.size() + rhs._edges.size() );
 
     // return node percentage + edge percentage / 2
-    return (float)( node_prc + edge_prc) / 2.f;
+    return (float)(node_prc + edge_prc) / 2.f;
 }
 
 ConceptualGraph ConceptualGraph::Clone ( ) const

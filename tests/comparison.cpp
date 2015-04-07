@@ -32,6 +32,7 @@ int main ( void )
             g2->Echo();
             std::cout << "Graphs Equal == " << (*g1 == *g2) << std::endl;
             std::cout << "Graphs Isomorphic |= " << (*g1  |= *g2) << std::endl;
+            std::cout << "Graph  Similarity %= " << (*g1 %= *g2) << std::endl;
         }
     }
 
