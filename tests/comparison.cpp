@@ -33,6 +33,8 @@ int main ( void )
             std::cout << "Graphs Equal == " << (*g1 == *g2) << std::endl;
             std::cout << "Graphs Isomorphic |= " << (*g1  |= *g2) << std::endl;
             std::cout << "Graph  Similarity %= " << (*g1 %= *g2) << std::endl;
+            std::cout << "Graph  Node Similarity %= " << g1->nodeSimilarity( *g2 ) << std::endl;
+            std::cout << "Graph  Edge Similarity %= " << g1->edgeSimilarity( *g2 ) << std::endl;
         }
     }
 

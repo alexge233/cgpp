@@ -97,4 +97,43 @@ float ConceptualGraph::edgePermutations ( ) const
     return (float)( _concepts.size() * _relations.size() );
 }
 
+float ConceptualGraph::nodeSimilarity ( const ConceptualGraph & rhs ) const
+{
+    //  Count similar and different Nodes (nodes_same, nodes_diff)
+    unsigned int same_concepts = 0, same_relations = 0;
+
+    for ( const auto this_concept : this->_concepts )
+        for ( const auto other_concept : rhs._concepts )
+            if ( *this_concept == *other_concept )
+                same_concepts++;
+
+    for ( const auto this_relation : this->_relations )
+        for ( const auto other_relation : rhs._relations )
+            if ( *this_relation == *other_relation )
+                same_relations++;
+
+    // node percentage #(same nodes)  / total ( nodes ) 
+    float node_prc = (2.f * (float)(same_concepts + same_relations)) / 
+                     (float)( this->_concepts.size() + rhs._concepts.size() + this->_relations.size() + rhs._relations.size() );
+                     
+    return node_prc;
+}
+
+float ConceptualGraph::edgeSimilarity ( const ConceptualGraph & rhs ) const
+{
+    // Count similar and different Edges (edges_same, edges_diff)
+    unsigned int same_edges = 0;
+
+    for ( const auto this_edge : this->_edges )
+        for ( const auto other_edge : rhs._edges )
+            if ( this_edge == other_edge )
+                same_edges++;
+            
+    // edge percentage #(same edges) / total ( edges )
+    float edge_prc = (2.f * (float)same_edges) / 
+                     (float)( this->_edges.size() + rhs._edges.size() );
+                     
+    return edge_prc;
+}
+
 }

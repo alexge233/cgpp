@@ -58,7 +58,8 @@ add_test( JSON_Deserialise deserialise)
 add_executable ( comparison
                        tests/comparison.cpp
                        includes/ConceptualGraph/ConceptualGraph.cpp
-                       includes/ConceptualGraph/ConceptualGraphJSON.cpp)
+                       includes/ConceptualGraph/ConceptualGraphJSON.cpp
+                       includes/ConceptualGraph/ConceptualGraphEXTRAS.cpp)
 add_test( JSON_Comparison comparison)
 
 add_executable ( extras

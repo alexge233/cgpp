@@ -118,7 +118,7 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
     return concepts && relations && edges;
 }
 
-// BUG: Wrong !!!
+
 float ConceptualGraph::operator%= ( const ConceptualGraph & rhs ) const
 {
     //  Count similar and different Nodes (nodes_same, nodes_diff)
@@ -338,19 +338,12 @@ std::vector<std::shared_ptr<Concept>> ConceptualGraph::Edges ( const std::shared
     std::vector<std::shared_ptr<Concept>> result;
 
     for ( const auto & edge : _edges )
-    {
         // [from] is a relation, [to] is a concept
-        if ( auto lhs = std::dynamic_pointer_cast<Relation>( edge.from ) )
-        {
+        if ( auto lhs = std::dynamic_pointer_cast<Relation>( edge.from ) )      // NOTE - this is not needed with the new operator
             if ( *lhs == *rhs )
-            {
                 if ( auto concept = std::dynamic_pointer_cast<Concept>( edge.to ) )
-                {
                     result.push_back ( std::make_shared<Concept>( *concept ) );
-                }
-            }
-        }
-    }
+
     return result;
 }
 
@@ -360,19 +353,12 @@ std::vector<std::shared_ptr<Relation>> ConceptualGraph::Edges ( const std::share
     std::vector<std::shared_ptr<Relation>> result;
 
     for ( const auto & edge : _edges )
-    {
         // [from] is a concept, [to] is a relation
-        if ( auto lhs = std::dynamic_pointer_cast<Concept>( edge.from ) )
-        {
+        if ( auto lhs = std::dynamic_pointer_cast<Concept>( edge.from ) )       // NOTE - this is not needed with the new operator
             if ( *lhs == *rhs )
-            {
                 if ( auto relation = std::dynamic_pointer_cast<Relation>( edge.to ) )
-                {
                     result.push_back ( std::make_shared<Relation>( *relation ) );
-                }
-            }
-        }
-    }
+
     return result;
 }
 

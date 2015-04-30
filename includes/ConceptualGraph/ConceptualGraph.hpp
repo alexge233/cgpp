@@ -67,6 +67,10 @@ class ConceptualGraph
     /// Get All Edges
     std::vector<Edge> Edges ( ) const;
 
+    // DEPRECATED
+    // The below two methods are not needed, and can be replaced by a single one taking as @param std::shared_ptr<Node>
+    // However, the method should be Templated, else we have to define the return Type (Concept/Relation)
+    
     /// Get Concepts to which @param Relation has edges to
     std::vector<std::shared_ptr<Concept>> Edges ( const std::shared_ptr<Relation> ) const;
 
@@ -85,11 +89,17 @@ class ConceptualGraph
     /// Average Pathway Score
     float avgPathLength ( ) const;
 
-    /// Branching Factor / Suggraph Ratio
+    /// Branching Factor / Subgraph Ratio
     float sugraphRatio ( ) const;
 
     /// Edge Permutation State Size
     float edgePermutations ( ) const;
+    
+    /// How similar are the nodes of those two graphs ?
+    float nodeSimilarity ( const ConceptualGraph & rhs ) const;
+    
+    /// How similar are the edges of those two graphs ?
+    float edgeSimilarity ( const ConceptualGraph & rhs ) const;
 
     
     /* Graph Info and (De)Serialisation */
