@@ -40,40 +40,48 @@ private:
  */
 class Node : public Object
 {
-  public:
+public:
 
-    /// Empty Constructor - Avoid using
     Node ( )
     {
         _json_id = boost::uuids::random_generator()();
     }
 
-    /// Construct with Token
     Node ( Token token )
     {
         _token = std::make_shared<Token>( token );
         _json_id = boost::uuids::random_generator()();
     }
 
-    /// Copy Constructor
     Node ( const Node & node )
     {
-        this->_token = node._token;
+        assert( node._token );
+        this->_token = std::make_shared<Token>( *node._token );
         this->_json_id = node._json_id;
     }
 
-    /// Empty Dtor
+    Node & operator= ( const Node & node ) 
+    {
+        assert( node._token );
+        if ( this != &node ) // prevent self-assignment
+        {
+            this->_token = std::make_shared<Token>( *node._token );
+            this->_json_id = node._json_id;
+        }
+        return *this;
+    }
+
     virtual ~Node ( ){ }
 
-    /// Get Node's Token
     inline std::shared_ptr<Token> asToken ( ) const
-    { 
+    {
+        assert( this->_token ); 
         return std::make_shared<Token>( (*this->_token) );
     }
     
-    /// Sorting operator - NOTE: Shouldn't this also be in class Object?
     inline bool operator< ( const Node & rhs ) const
     {
+        assert( this->_token && rhs._token );
         return this->_token < rhs._token;
     }
     
@@ -87,25 +95,28 @@ class Node : public Object
         return _json_id;
     }
 
-  protected:
+protected:
 
     friend class cereal::access;
 
     /// Token
     std::shared_ptr<Token> _token;
-
     /// json id
     boost::uuids::uuid _json_id;
 
-    /// Equality operator for Node
+    /// Equality operator for Node (@see class Object)
+    /// The equality depends upon Token Value only.
+    /// The class Object also uses class type equality
     inline virtual bool isEqual ( const Object & rhs ) const
     {
+        auto other = static_cast<const Node&>(rhs);
+        assert( this->_token && other._token );
         return (*this->_token ) == (*static_cast<const Node&>(rhs)._token);
     }
 
     template <class Archive> void serialize ( Archive & archive )
     {
-      archive( _token );
+        archive( _token );
     }
 
 };

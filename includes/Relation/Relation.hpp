@@ -6,15 +6,14 @@ namespace cgpp {
 /**
  * @brief Relation as defined by J. Sowa describes relational nodes
  * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- * @version 7
- * @date 30-March-2015
+ * @version 8
+ * @date 29-July-2015
  */
 class Relation : public Node
 {
-  public:
+public:
 
-    /// Empty Constructor - Avoid using
-    Relation ( ) : Node () {}
+    Relation () : Node () {}
 
     /// Construct with Token
     Relation ( Token & token ) : Node( token ) {}
@@ -27,42 +26,53 @@ class Relation : public Node
     : Node ( token ), _token_index ( index )
     {}
 
-    /// Construct using another relation
     Relation ( const Relation & rhs ) : Node( rhs )
     {
+        assert( rhs._token );
         this->_token_index = rhs._token_index;
         this->_json_id = rhs._json_id;
     }
+    
+    Relation & operator= ( const Relation & rhs )
+    {
+        assert( rhs._token );
+        if (this != &rhs )
+        {
+            Node::operator= ( rhs );
+            this->_token_index = rhs._token_index;
+        }
+        return *this;
+    }
 
-    /// Poly Destructor
+    bool operator< ( const Relation & rhs ) const
+    {
+        assert( rhs._token );
+        return ( *this->_token ) < ( *rhs._token );
+    }
+    
     ~Relation ( ) = default;
 
-    /// Clone: Deep copy
     std::shared_ptr<Relation> Clone ( ) const
     {
         return std::make_shared<Relation>( * this );
     }
 
-    /// Get Token Index
     inline int TokenIndex ( ) const
     {
         return _token_index;
     }
 
 
-  private:
+private:
 
     friend class ConceptualGraph;
     friend class cereal::access;
-
-    /// tokens[i]
     int _token_index = -1;
-    
-    
+        
     inline bool isEqual ( const Object & rhs ) const
     {
-        return (*this->_token ) == (*static_cast<const Relation &>(rhs)._token)
-                && this->_token_index == static_cast<const Relation &>(rhs)._token_index;
+        auto other = static_cast<const Relation &>(rhs); 
+        return (*this->_token ) == (*other._token) && (this->_token_index == other._token_index);
     }
 
     template <class Archive> void serialize ( Archive & archive )
@@ -74,4 +84,3 @@ class Relation : public Node
 };
 }
 #endif
-

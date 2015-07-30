@@ -88,10 +88,10 @@ target_link_libraries(comparison ${Boost_REGEX_LIBRARY} )
 target_link_libraries(extras ${Boost_REGEX_LIBRARY} )
 
 set(CMAKE_COLOR_MAKEFILE on)
-set(CMAKE_VERBOSE_MAKEFILE on)
+#set(CMAKE_VERBOSE_MAKEFILE off)
 
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
 
 # NOTE: C++14 is available as: -std=c++1y or -std=gnu++1y in GCC 4.9 - Don't know if Clang supports it yet.
 

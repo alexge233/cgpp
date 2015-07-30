@@ -6,17 +6,16 @@ namespace cgpp {
 /**
  * @brief Concept node as described by J. Sowa
  * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- * @version 2
- * @date 30-March-2015
+ * @version 8
+ * @date 29-July-2015
  */
 class Concept : public Node
 {
-  public:
+public:
 
-    /// Empty Constructor
     Concept ( ) : Node ( ) {}
 
-    /// Construct using a Token only
+    /// Construct with Token
     Concept ( Token & token ) : Node( token ) {}
 
     /// Construct using Token and Token Index
@@ -24,45 +23,58 @@ class Concept : public Node
               Token & token,
               int index
             )
-    :   Node ( token ), _token_index ( index )
+    : Node ( token ), _token_index ( index )
     {}
 
-    /// Construct using another node
-    Concept ( const Concept & rhs ) 
-    : Node( rhs )
+    Concept ( const Concept & rhs ) : Node( rhs )
     {
+        assert( rhs._token );
         this->_token_index = rhs._token_index;
         this->_json_id = rhs._json_id;
     }
 
-    /// Needed by Virtual inheritence
+    Concept & operator= ( const Concept & rhs )
+    {
+        assert( rhs._token );
+        if (this != &rhs )
+        {
+            Node::operator= ( rhs );
+            this->_token_index = rhs._token_index;
+        }
+        return *this;
+    }
+
+    bool operator< ( const Concept & rhs )
+    {
+        assert( rhs._token );
+        return (*this->_token) < (*rhs._token);
+    }
+
     ~Concept ( ) = default;
 
-    /// Cloner : Deep copy - TEST
+    /// Clone: Deep copy
     std::shared_ptr<Concept> Clone ( ) const
     {
         return std::make_shared<Concept>( *this );
     }
 
-    /// Concept's Token index
     inline int TokenIndex ( ) const
     {
         return _token_index;
     }
 
-  private:
+private:
 
     friend class ConceptualGraph;
     friend class cereal::access;
 
-    /// tokens[i]
     int _token_index = -1;
-
     
     inline bool isEqual ( const Object &rhs ) const
     {
-        return (*this->_token ) == (*static_cast<const Concept &>(rhs)._token)
-                && this->_token_index == static_cast<const Concept &>(rhs)._token_index;
+        auto other = static_cast<const Concept &>(rhs);
+        assert( this->_token && other._token );
+        return (*this->_token ) == (*other._token) && (this->_token_index == other._token_index);
     }
 
     template <class Archive> void serialize ( Archive & archive )

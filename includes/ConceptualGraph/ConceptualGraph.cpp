@@ -9,11 +9,13 @@ namespace cgpp
 
 int constexpr ConceptualGraph::_version;
 
+
 ConceptualGraph::ConceptualGraph ()
 {
     auto uuid = boost::uuids::random_generator()();         // Vagrind=uninitialised value
     _guid = boost::lexical_cast<std::string>( uuid );
 }
+
 
 ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
 {
@@ -28,6 +30,7 @@ ConceptualGraph::ConceptualGraph ( const ConceptualGraph & rhs )
     this->_edges = rhs._edges;
 }
 
+
 // NOTE: This appears to be a bottle-neck - If it can be easily optimised, cool - if not, let it be
 bool ConceptualGraph::operator== ( const ConceptualGraph & rhs ) const
 {
@@ -35,17 +38,20 @@ bool ConceptualGraph::operator== ( const ConceptualGraph & rhs ) const
 
     if ( this->_concepts.size() == rhs._concepts.size() )
         concepts = std::equal ( this->_concepts.begin(), this->_concepts.end(), rhs._concepts.begin(), 
-                                []( const std::shared_ptr<Concept> & lhs, const std::shared_ptr<Concept> & rhs )->bool { return *lhs == *rhs; } );
+                                []( const std::shared_ptr<Concept> & lhs, const std::shared_ptr<Concept> & rhs )->bool 
+                                { return *lhs == *rhs; } );
 
     if ( this->_relations.size() == rhs._relations.size() )
         relations = std::equal ( this->_relations.begin(), this->_relations.end(), rhs._relations.begin(), 
-                                 []( const std::shared_ptr<Relation> & lhs, const std::shared_ptr<Relation> & rhs )->bool { return *lhs == *rhs; } );
+                                 []( const std::shared_ptr<Relation> & lhs, const std::shared_ptr<Relation> & rhs )->bool 
+                                 { return *lhs == *rhs; } );
 
     if ( this->_edges.size() == rhs._edges.size() )
         edges = std::equal ( this->_edges.begin(), this->_edges.end(), rhs._edges.begin() );
 
     return concepts && relations && edges;
 }
+
 
 bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
 {
@@ -122,37 +128,50 @@ bool ConceptualGraph::operator|= ( const ConceptualGraph & rhs ) const
 float ConceptualGraph::operator%= ( const ConceptualGraph & rhs ) const
 {
     //  Count similar and different Nodes (nodes_same, nodes_diff)
-    unsigned int same_concepts = 0, same_relations = 0;
+    unsigned int same_concepts = 0;
 
-    for ( const auto this_concept : this->_concepts )
-        for ( const auto other_concept : rhs._concepts )
-            if ( *this_concept == *other_concept )
-                same_concepts++;
+    for ( const auto mine : this->_concepts )
+    {
+        auto it = std::find_if ( rhs._concepts.begin(), rhs._concepts.end(),
+                                 [&]( const std::shared_ptr<Concept> & other ){ return (*mine) == (*other); });
 
-    for ( const auto this_relation : this->_relations )
-        for ( const auto other_relation : rhs._relations )
-            if ( *this_relation == *other_relation )
-                same_relations++;
+        if ( it != rhs._concepts.end() )
+            same_concepts++;
+    }
+    
+    unsigned int same_relations = 0;
 
-    // Count similar and different Edges (edges_same, edges_diff)
+    for ( const auto mine : this->_relations )
+    {
+        auto it = std::find_if ( rhs._relations.begin(), rhs._relations.end(),
+                                 [&]( const std::shared_ptr<Relation> & other ){ return (*mine) == (*other); });
+
+        if ( it != rhs._relations.end() )
+            same_relations++;
+    }
+    
     unsigned int same_edges = 0;
 
-    for ( const auto this_edge : this->_edges )
-        for ( const auto other_edge : rhs._edges )
-            if ( this_edge == other_edge )
-                same_edges++;
+    for ( const auto mine : this->_edges )
+    {
+        auto it = std::find_if ( rhs._edges.begin(), rhs._edges.end(),
+                                 [&]( const Edge & other ){ return mine == other; });
 
+        if ( it != rhs._edges.end() )
+            same_edges++;
+    }
+    
     // node percentage #(same nodes)  / total ( nodes ) 
-    float node_prc = (2.f * (float)(same_concepts + same_relations)) / 
+    float node_prc = (float)(same_concepts + same_relations) / 
                      (float)( this->_concepts.size() + rhs._concepts.size() + this->_relations.size() + rhs._relations.size() );
 
-    // edge percentage #(same edges) / total ( edges )
-    float edge_prc = (2.f * (float)same_edges) / 
+    //edge percentage #(same edges) / total ( edges )
+    float edge_prc = (float)same_edges / 
                      (float)( this->_edges.size() + rhs._edges.size() );
 
-    // return node percentage + edge percentage / 2
-    return (float)(node_prc + edge_prc) / 2.f;
+    return node_prc + edge_prc;
 }
+
 
 ConceptualGraph ConceptualGraph::Clone ( ) const
 {
