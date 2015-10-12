@@ -64,14 +64,11 @@ std::string ConceptualGraph::JSON ( ) const
     /*
      * NOTE: adding \n\r so that json will appear readable to humans :-p
      *       if human readability is not an issue (e.g., nobody will ever read the json) feel free to remove "\n\r" and "\t"
-     *
      * WARNING: Save your self a lot of trouble: Validate output: http://jsonlint.com before using it anywhere.
-     * 
      * ATTENTION: The id should NOT BE THE MURMUR HASH OF THE VALUE!!! IT SHOULD BE A UNIQUE ID !!!
      */
-
     std::stringstream ss;
-    ss << "{\n\r\t\"version\":1,\n\r\t\"guid\":\"" << _guid << "\",\n\r\t\"creator\":null,\n\r\t\"relations\":["; // BUG valgrind reports uninitialised value here
+    ss << "{\n\r\t\"version\":1,\n\r\t\"guid\":\"" << _guid << "\",\n\r\t\"creator\":null,\n\r\t\"relations\":["; 
 
     std::string rstr;
     for ( auto r : _relations )
@@ -135,7 +132,7 @@ std::string ConceptualGraph::JSON ( ) const
 std::string ConceptualGraph::minifiedJSON ( ) const
 {
     std::stringstream ss;
-    ss << "{\"version\":1,\"guid\":\"" << _guid << "\",\"creator\":null,\"relations\":["; // BUG valgrind reports uninitialised value here
+    ss << "{\"version\":1,\"guid\":\"" << _guid << "\",\"creator\":null,\"relations\":["; 
 
     std::string rstr;
     for ( auto r : _relations )
@@ -171,8 +168,7 @@ std::string ConceptualGraph::minifiedJSON ( ) const
     {
         estr += "{\"nodeFrom\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.from->asToken()->value() ) ) + ",";
         estr += "\"nodeTo\":" + boost::lexical_cast<std::string>( std::hash<std::string>()( e.to->asToken()->value() ) ) + ",";
-        estr += "\"index\":" + boost::lexical_cast<std::string>( index ) + ","; // BUG: Not what I want - I need an index respective to the origination nodeFrom - not global
-
+        estr += "\"index\":" + boost::lexical_cast<std::string>( index ) + ","; 
         if ( std::dynamic_pointer_cast<Concept>( e.from ) && std::dynamic_pointer_cast<Relation>( e.to ) )
             estr+= "\"order\":\"cr\"";
 
