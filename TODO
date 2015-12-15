@@ -1,5 +1,13 @@
 TODO:
 
-    (1) Include/Redistribute cereal
+    1 - Jaccard index for two graphs
 
+    2 - Sorensen coefficient for two graphs
 
+    3 - Matrix similarity for edges (?)
+
+    4 - Consider optimising the library
+
+    5 - Remove cereal if possible and use boost serialisation
+
+    6 - Remove rapidjson and use boost instead
