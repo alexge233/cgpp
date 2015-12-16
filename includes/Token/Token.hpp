@@ -1,13 +1,12 @@
 #ifndef _CGPP_Token_HPP_
 #define _CGPP_Token_HPP_
-#pragma once
 #include "Includes.hxx"
 namespace cgpp {
 /**
  * @brief Class Wrapping around a Token/Word which has a Part-Of-Speech Tag
- * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- * @version 10
- * @date 29-July-2014
+ * @author Alex Giokas <a.gkiokas@warwick.ac.uk>
+ * @version 11
+ * @date 15-December-2015
  */
 class Token
 {
@@ -35,7 +34,6 @@ public:
             this->_postag = token._postag;
         }
         return *this;
-
     }
 
     /// Get raw value
@@ -52,12 +50,17 @@ public:
         return _postag;
     }
 
+    /// Get Token value by to a std::string
+    inline operator std::string() const
+    {
+        return _value;
+    }
+
     /// Equality operator - Case insensitive
     inline bool operator== ( const Token & rhs  ) const
     {
         if ( this->_value.empty() || rhs._value.empty() )
-            throw std::runtime_error ( "Token::operator== empty string" );
-        //return boost::iequals( this->_value, rhs._value );
+            throw std::runtime_error ( "empty string" );
         return ( strcasecmp( this->_value.c_str(), rhs._value.c_str() ) == 0 ? true : false );
     }
 
@@ -65,8 +68,7 @@ public:
     inline bool operator!= ( const Token & rhs ) const
     {
         if ( this->_value.empty() || rhs._value.empty() )
-            throw std::runtime_error ( "Token::operator!= empty string" );
-        //return ( boost::iequals( this->_value, rhs._value ) == false ? true : false );
+            throw std::runtime_error ( "empty string" );
         return ( strcasecmp( this->_value.c_str(), rhs._value.c_str() ) != 0 ? true : false );
     }
 
@@ -76,7 +78,6 @@ public:
         return this->_value < rhs._value;
     }
 
-
 private:
 
     friend class cereal::access;
@@ -85,7 +86,6 @@ private:
     std::string _value;
     /// Part of speech tag
     std::string _postag;
-
 
     template <class Archive> void serialize ( Archive & archive )
     {

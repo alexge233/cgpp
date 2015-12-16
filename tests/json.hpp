@@ -1,7 +1,6 @@
 #ifndef _CGPP_JSON1_HPP_
 #define _CGPP_JSON1_HPP_
 
-#pragma once
 
 const std::string json = "{\"version\":\"1\",\"guid\":\"201c3501-9867-48c8-8065-a0400a723c4c\",\"creator\":\"null\",\"relations\":[{\"label\":\"needed\",\"id\":\"04418253-0315-4206-86ea-ad395ea6e911\",\"index\":\"1\",\"postag\":\"NA\"},{\"label\":\"over\",\"id\":\"cd529225-15b1-4a2a-996a-37b8162d22c3\",\"index\":\"2\",\"postag\":\"NA\"}],\"concepts\":[{\"label\":\"Clarity\",\"id\":\"8bb0b3ec-7c20-4338-9195-4362a9db487c\",\"index\":\"0\",\"postag\":\"NA\"},{\"label\":\"resuscitation\",\"id\":\"450a9368-e978-4e47-b879-603ce3eb4c0a\",\"index\":\"3\",\"postag\":\"NA\"}],\"adjacencies\":[{\"nodeFrom\":\"8bb0b3ec-7c20-4338-9195-4362a9db487c\",\"nodeTo\":\"04418253-0315-4206-86ea-ad395ea6e911\",\"index\":\"1\",\"order\":\"cr\"},{\"nodeFrom\":\"8bb0b3ec-7c20-4338-9195-4362a9db487c\",\"nodeTo\":\"cd529225-15b1-4a2a-996a-37b8162d22c3\",\"index\":\"2\",\"order\":\"cr\"},{\"nodeFrom\":\"cd529225-15b1-4a2a-996a-37b8162d22c3\",\"nodeTo\":\"450a9368-e978-4e47-b879-603ce3eb4c0a\",\"index\":\"1\",\"order\":\"rc\"}]}";
 

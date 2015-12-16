@@ -1,34 +1,12 @@
-/**
- *
- *  _____                            _               _   _____                 _
- * /  __ \                          | |             | | |  __ \               | |        _     _
- * | /  \/ ___  _ __   ___ ___ _ __ | |_ _   _  __ _| | | |  \/_ __ __ _ _ __ | |__    _| |_ _| |
- * | |    / _ \| '_ \ / __/ _ \ '_ \| __| | | |/ _` | | | | __| '__/ _` | '_ \| '_ \  |_   _|_   _|
- * | \__/\ (_) | | | | (_|  __/ |_) | |_| |_| | (_| | | | |_\ \ | | (_| | |_) | | | |   |_|   |_|
- *  \____/\___/|_| |_|\___\___| .__/ \__|\__,_|\__,_|_|  \____/_|  \__,_| .__/|_| |_|
- *                            | |                                       | |
- *                            |_|                                       |_|
- *
- * @brief Helper functions used for a variety of purposes
- *
- * A variety of graph operations and set operations using conceptual graphs
- *
- * @see ConceptualGraph
- * @version 1
- * @date 5-September-2014
- * @author Alexandros Gkiokas <a.gkiokas@warwick.ac.uk>
- * @copyright BSD-3 license
- */
-
 #ifndef _CGPP_Utilities_HPP_
 #define _CGPP_Utilities_HPP_
-#pragma once
 #include "Includes.hxx"
-
 namespace cgpp
 {
 namespace util
 {
+
+/// TODO: RENAME, IMPLEMENT and TEST
 
 /**
  * Check if each Node in Graph has at least one Edge
@@ -36,7 +14,6 @@ namespace util
  * @warning This does NOT check if the graph is fully connected !
  */
 bool MinimumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
-
 
 /**
  * Check if all possible Edges exist in @param graph
@@ -125,12 +102,7 @@ std::vector<
                               );
 
 }
-
  */
-
 }
-
 }
-
 #endif
-

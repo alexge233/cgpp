@@ -1,6 +1,0 @@
-This is the base class for Sowa’s Conceptual Graphs. 
-It utilises a form of directed bipartite diagram, where nodes are categorised either as “Relations” or as “Concepts”.
-
-The graph has: Concepts, Relations and Edges between those types of vertices.
-
-Isomorphism is examined by checking if two graphs have the exact same relations and concepts and the exact same edges.

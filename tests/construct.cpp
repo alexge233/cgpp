@@ -13,7 +13,7 @@ int main ( void )
 
     std::cout << "Creating Graph" << std::endl;
     auto graph = std::make_shared<ConceptualGraph>();
-    std::cout << "Graph 1 GUID: " << graph->GUID() << std::endl;
+    std::cout << "Graph 1 GUID: " << graph->guid() << std::endl;
 
     // Try to manually populate the empty graph
     Token sky = Token( "sky", "NA" );
@@ -35,17 +35,17 @@ int main ( void )
     graph->AddEdge( is_node, blue_node );
 
     // Echo
-    graph->Echo();
+    graph->print();
 
     std::cout << "Saving Graph" << std::endl;
-    // Save them to file
-    graph->Save( "graph_1.bin" );
+    // save them to file
+    graph->save( "graph_1.bin" );
 
     std::cout << "Copying Graph" << std::endl;
     // Copy Constructor
     auto copy = std::make_shared<ConceptualGraph>( *graph );
-    std::cout << "Copy GUID: " << copy ->GUID() << std::endl;
-    copy->Echo();
+    std::cout << "Copy GUID: " << copy ->guid() << std::endl;
+    copy->print();
 
     std::cout << "Cmp : Graph == Copy" << std::endl;
 
@@ -73,7 +73,7 @@ int main ( void )
 
     std::cout << "Creating Graph2" << std::endl;
     auto graph2 = std::make_shared<ConceptualGraph>();
-    std::cout << "Graph2 GUID: " <<  graph2->GUID() << std::endl;
+    std::cout << "Graph2 GUID: " <<  graph2->guid() << std::endl;
     
     // manually populate the empty graph
     Token sea = Token( "sea", "NA" );
@@ -89,7 +89,7 @@ int main ( void )
     graph2->AddEdge( is_node, blue_node );
     
     // Echo
-    graph2->Echo();
+    graph2->print();
     
     std::cout << "Cmp: Graph == Graph2" << std::endl;
     bool equal2 = (*graph == *graph2);
@@ -97,12 +97,12 @@ int main ( void )
     
     std::cout << "Creating Graph3" << std::endl;
     auto graph3 = std::make_shared<ConceptualGraph>();
-    std::cout << "Graph3 GUID: " << graph3->GUID() << std::endl;
+    std::cout << "Graph3 GUID: " << graph3->guid() << std::endl;
     
     graph3->AddConcept( sea_node );
     graph3->AddConcept( blue_node );
     
-    graph3->Echo();
+    graph3->print();
     
     std::cout << "Cmp: Graph3 == Graph2" << std::endl;
     bool equal3 = (*graph3 == *graph2);
@@ -118,17 +118,17 @@ int main ( void )
     graph2->AddEdge( sea_node, is_node );
     graph2->AddEdge( is_node, blue_node );
     
-    graph2->Echo();
+    graph2->print();
     
     std::cout << "Minimum Edges Connected for Graph: " << util::MinimumEdgesConnected ( graph ) << std::endl;
     std::cout << "Minimum Edges Connected for Graph2: " << util::MinimumEdgesConnected ( graph2 ) << std::endl;
     std::cout << "Minimum Edges Connected for Graph3: " << util::MinimumEdgesConnected ( graph3 ) << std::endl;
     
     std::cout << "JSON for Graph" << std::endl;
-    std::cout << graph->JSON() << std::endl;
+    std::cout << graph->json() << std::endl;
     
     std::cout << "minified JSON for Graph" << std::endl;
-    std::cout << graph->minifiedJSON() << std::endl;
+    std::cout << graph->minif_json() << std::endl;
     
     // Final TEST: try to serialise all graphs
     std::cout << "Adding all graphs into a vector" << std::endl;
@@ -140,6 +140,5 @@ int main ( void )
         cereal::BinaryOutputArchive archive( output );
         archive ( graphs );
     }
-    
     return 0;
 }

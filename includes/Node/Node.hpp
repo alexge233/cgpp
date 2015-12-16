@@ -5,22 +5,20 @@
 namespace cgpp
 {
 
-/**
- * @brief Inteface Abstract Base Class, used for Operators
- */
+/// @brief Inteface Abstract Base Class, used for Operators
 class Object
 {
 public:
     
     virtual ~Object() {}
     
-    bool operator==( const Object & other ) const
+    bool operator== (const Object & other) const
     {
         // If the derived types are the same then compare them
         return typeid (*this) == typeid(other) && isEqual ( other );
     }
     
-    bool operator!= ( const Object & other ) const
+    bool operator!= (const Object & other) const
     {
         return typeid (*this) == typeid(other) && !isEqual ( other );
     }
@@ -35,62 +33,77 @@ private:
 
 /**
  * @brief Base Node Class supports Node operations in graph
- * @version 4
- * @date 31-March-2015
+ * @version 5
+ * @date 15-December-2015
  */
 class Node : public Object
 {
 public:
 
-    Node ( )
+    Node()
     {
         _json_id = boost::uuids::random_generator()();
     }
 
-    Node ( Token token )
+    Node(Token token)
     {
         _token = std::make_shared<Token>( token );
         _json_id = boost::uuids::random_generator()();
     }
 
-    Node ( const Node & node )
+    Node(const Node & node)
     {
-        assert( node._token );
+        assert(node._token);
         this->_token = std::make_shared<Token>( *node._token );
         this->_json_id = node._json_id;
     }
 
-    Node & operator= ( const Node & node ) 
+    Node & operator=(const Node & node) 
     {
         assert( node._token );
         if ( this != &node ) // prevent self-assignment
         {
-            this->_token = std::make_shared<Token>( *node._token );
+            this->_token = std::make_shared<Token>(*node._token);
             this->_json_id = node._json_id;
         }
         return *this;
     }
 
-    virtual ~Node ( ){ }
+    virtual ~Node(){}
 
-    inline std::shared_ptr<Token> asToken ( ) const
+    /// Cast to a Token by @return a Token by value
+    inline operator Token() const
     {
-        assert( this->_token ); 
-        return std::make_shared<Token>( (*this->_token) );
+        assert(_token);
+        return *_token;
+    }
+
+    /// Cast to a string by @return a std::string
+    inline operator std::string() const
+    {
+        assert(_token);
+        return _token->value();
+    }
+
+    /// @deprecated - TODO: refactor Icarus project
+    inline std::shared_ptr<Token> asToken() const
+    {
+        assert(_token); 
+        return std::make_shared<Token>(*_token);
     }
     
-    inline bool operator< ( const Node & rhs ) const
+    inline bool operator< (const Node & rhs) const
     {
         assert( this->_token && rhs._token );
         return this->_token < rhs._token;
     }
     
-    virtual int TokenIndex ( ) const
+    virtual int TokenIndex() const
     {
         return -1;
     }
 
-    boost::uuids::uuid UUID( ) const
+    boost::uuids::uuid UUID() const
     {
         return _json_id;
     }
@@ -118,9 +131,6 @@ protected:
     {
         archive( _token );
     }
-
 };
-
 }
-
 #endif

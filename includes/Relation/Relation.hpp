@@ -50,7 +50,7 @@ public:
         return ( *this->_token ) < ( *rhs._token );
     }
     
-    ~Relation ( ) = default;
+    ~Relation() = default;
 
     std::shared_ptr<Relation> Clone ( ) const
     {
@@ -61,7 +61,6 @@ public:
     {
         return _token_index;
     }
-
 
 private:
 
@@ -79,8 +78,6 @@ private:
     {
         archive ( cereal::base_class<Node>( this ), _token_index );
     }
-
-
 };
 }
 #endif

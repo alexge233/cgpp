@@ -1,21 +1,16 @@
-/**
-
-    Test JSON deserialisation onto a Conceptual Graph object
-
- */
-
 #include <iostream>
 #include <memory>
 #include "../includes/cgpp"
 #include "json.hpp"
 
-int main ( void )
+/// Load Hardcoded JSON strings
+/// @see "json.hpp"
+int main()
 {
-    // TEST: Try to load from this one JSON file - TODO: Try to load from a series of Test JSON files (erroneous and correct ones)
     try
     {
         auto jsongraph = std::make_shared<cgpp::ConceptualGraph>( json );
-        jsongraph->Echo();
+        jsongraph->print();
     }
     catch ( std::exception & e )
     {

@@ -1,13 +1,18 @@
-TODO:
+TODO [branch development]:
 
-    1 - Jaccard index for two graphs
+    1 - Remove cereal and replace with boost serialisation (Boost 1.55 supports std::shared_ptr)
 
-    2 - Sorensen coefficient for two graphs
+    2 - Remove rapidjson and use boost
 
-    3 - Matrix similarity for edges (?)
+    3 - Implement Utilities: 
+                - Intersections, 
+                - Differences,
+                - Cluster of Nodes: find for current node, what other nodes it has common edges with.
+                - Fully connected: are two groups (vectors, arrays, lists) of Nodes (R,C || C,R) fully connected by edges?
 
-    4 - Consider optimising the library
+    4 - Implement Conversion of a Conceptual Graph to CGIF (string), or FOL.
+                - Consider other FOL,HOL or Ontology Schemas (RDF?OWL?) to which we can translate Conceptual Graphs
 
-    5 - Remove cereal if possible and use boost serialisation
+    5 - Consider optimising the library (Token/Node/Relation/Concept/Edge already are more or less)
+        Look into ConceptualGraph and see if anything can be made better/faster
 
-    6 - Remove rapidjson and use boost instead

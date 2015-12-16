@@ -1,129 +1,112 @@
 #ifndef _CGPP_ConceptualGraph_HPP_
 #define _CGPP_ConceptualGraph_HPP_ 
-#pragma once
 #include "Includes.hxx"
 namespace cgpp {
 /**
  * @brief Conceptual Graph class as described by J.Sowa
  * @class ConceptualGraph
- * @version 9
- * @date 12-March-2015
+ * @date 15-December-2015
  * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
+ * TODO: Rename all methods (but the Constructors) with lowercase and underscores.
  */
 class ConceptualGraph
 {
-  public:
-
-    /* Constructors */
+public:
 
     /// Empty Constructor
-    ConceptualGraph ( );
+    ConceptualGraph();
 
     /// Construct using a string @param json - @note guid is randomly generated (uid v4)
-    ConceptualGraph ( const std::string json );
+    /// @param json must be a valid cgpp json string - else a runtime exception is thrown
+    ConceptualGraph(const std::string json);
 
     /// Copy Constructor - Shallow copy - @note guid is copied
-    ConceptualGraph ( const ConceptualGraph & rhs );
+    ConceptualGraph(const ConceptualGraph &);
 
-    /// Cloning Constructor, see implementation for details
-    ConceptualGraph Clone ( ) const;
+    /// Identical Graph operator: comparison of Concepts, Relations, Edges by Value and Index
+    bool operator==(const ConceptualGraph &) const;
 
-
-    /* Operators */
-
-    /// Identical Graph operator - @note comparison of Concepts, Relations, Edges by Value and Index
-    bool operator== ( const ConceptualGraph & rhs ) const;
-
-    /// Isomorphic Graph operator - @note Concept & Relation perumutations are allowed - but Edge Order must be preserved
-    bool operator|= ( const ConceptualGraph & rhs ) const;
-
-    /// Similarity Graph operator - count min-max node & edge similarity as a metric
-    float operator%= ( const ConceptualGraph & rhs ) const;
-
-
-    /* Setters */
+    /// Isomorphic Graph operator: Concept & Relation perumutations are allowed
+    /// but Edge Order must be preserved
+    bool operator|=(const ConceptualGraph &) const;
 
     /// Add a new Concept  @note will accept duplicates
-    bool AddConcept ( const std::shared_ptr<Concept> );
+    bool AddConcept(const std::shared_ptr<Concept>);
 
     /// Add a new Relation @note will accept duplicates
-    bool AddRelation ( const std::shared_ptr<Relation> );
+    bool AddRelation(const std::shared_ptr<Relation>);
 
     /// Add a new Edge (connect Relation to Concept) @note will only create if edge doesn't exist
-    bool AddEdge ( const std::shared_ptr<Relation>, const std::shared_ptr<Concept> );
+    bool AddEdge(
+                    const std::shared_ptr<Relation>, 
+                    const std::shared_ptr<Concept>
+                );
 
     /// Add a new Edge (connect Concept to Relation) @note will only create if edge doesn't exist
-    bool AddEdge ( const std::shared_ptr<Concept>, const std::shared_ptr<Relation> );
-
-
-    /* Getters */
+    bool AddEdge(
+                    const std::shared_ptr<Concept>, 
+                    const std::shared_ptr<Relation>
+                );
 
     /// Get Graph's Concepts
-    std::vector<std::shared_ptr<Concept>> Concepts ( ) const;
+    std::vector<std::shared_ptr<Concept>> Concepts() const;
 
     /// Get Graph's Relations
-    std::vector<std::shared_ptr<Relation>> Relations ( ) const;
+    std::vector<std::shared_ptr<Relation>> Relations() const;
 
     /// Get All Edges
-    std::vector<Edge> Edges ( ) const;
-
-    // DEPRECATED
-    // The below two methods are not needed, and can be replaced by a single one taking as @param std::shared_ptr<Node>
-    // However, the method should be Templated, else we have to define the return Type (Concept/Relation)
+    std::vector<Edge> Edges() const;
     
     /// Get Concepts to which @param Relation has edges to
-    std::vector<std::shared_ptr<Concept>> Edges ( const std::shared_ptr<Relation> ) const;
+    std::vector<std::shared_ptr<Concept>> Edges(const std::shared_ptr<Relation>) const;
 
     /// Get Relations to which of @param Concept has edges to
-    std::vector<std::shared_ptr<Relation>> Edges (const std::shared_ptr<Concept> ) const;
+    std::vector<std::shared_ptr<Relation>> Edges(const std::shared_ptr<Concept>) const;
 
+    /// Jaccard Index for two graph's |V| and |E|, using: 
+    ///     `J(G,G') = |G ∩ G'| / (|G|+|G'| - |G ∩ G'|)`
+    float jaccard_coeff(const ConceptualGraph &) const;
 
-    /* Graph Meta-Metrics */
-
-    /// Edge to Node ratio: |E| / |V|
-    float ratioEdgeVertex ( ) const;
+    /// Sørensen–Dice coefficient for Graphs G and G':
+    ///     `S(G,G') = 2 |G ∩ G'| / |G| + |G'|`
+    float sorensen_coeff(const ConceptualGraph &) const;
 
     /// Graph Sparseness: |V| / |E|
-    float graphSparseness ( ) const;
+    float sparseness() const;
 
-    /// Average Pathway Score
-    float avgPathLength ( ) const;
+    /// Average path length
+    float avg_path_length() const;
 
-    /// Branching Factor / Subgraph Ratio
-    float sugraphRatio ( ) const;
-
-    /// Edge Permutation State Size
-    float edgePermutations ( ) const;
+    /// Edge search space
+    float edge_space() const;
     
-    /// How similar are the nodes of those two graphs ?
-    float nodeSimilarity ( const ConceptualGraph & rhs ) const;
+    /// Sørensen–Dice coefficient for Graph Nodes V and V':
+    ///    `S(V,V') = 2 |V ∩ V'|/|V|+|V'|`
+    float node_similarity(const ConceptualGraph &) const;
     
-    /// How similar are the edges of those two graphs ?
-    float edgeSimilarity ( const ConceptualGraph & rhs ) const;
-
-    
-    /* Graph Info and (De)Serialisation */
+    /// Sørensen–Dice coefficient for Graph Edges E and E':
+    ///    `S(E,E') = 2 |E ∩ E'|/|E|+|E'|`
+    float edge_similarity(const ConceptualGraph &) const;
 
     /// Graph Unique ID @note this is a UUID v4
-    boost::uuids::uuid GUID ( ) const;
+    boost::uuids::uuid guid() const;
+
+    /// Print Graph G' = (V,E) where V = (C,R) on stdout
+    void print() const;
 
     /// Output this graph as JSON well-formatted string
-    std::string JSON ( ) const;
+    std::string json() const;
 
     /// Outpit this graph as a JSON minified string
-    std::string minifiedJSON ( ) const;
-
-    /// print graph on std::out
-    void Echo ( );
+    std::string minif_json() const;
 
     /// Serialise graph to a binary file with filename @param file
-    void Save ( const std::string ) const;
+    void save(const std::string) const;
 
     /// Deserialise graph from a binary file with filename @param file
-    void Load ( const std::string );
+    void load(const std::string);
 
-
-  protected:
+protected:
 
     friend class cereal::access;
 
@@ -146,24 +129,20 @@ class ConceptualGraph
     static constexpr int _version = 1;
 
 
-    /**             @note JSON methods                      */
-
     /// parse relation objects from json
-    void _parseRelations ( rapidjson::Document & );
+    void _parse_relations ( rapidjson::Document & );
 
     /// parse concept objects from json
-    void _parseConcepts ( rapidjson::Document & );
+    void _parse_concepts ( rapidjson::Document & );
 
     /// parse edge from json adjacencies
-    void _parseEdges ( rapidjson::Document & );
-
+    void _parse_edges ( rapidjson::Document & );
 
     /// (De)Serialisation delegate for cereal library
     template <class Archive> void serialize ( Archive & archive )
     {
          archive( _concepts, _relations, _edges, _guid );
     }
-
 };
 }
 
