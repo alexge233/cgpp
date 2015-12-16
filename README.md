@@ -10,7 +10,7 @@ and should be very easy to use for simple Knowledge Representation.
 
 * json protocol is under `/includes/Proto`
 * C++ headers and source code are in: `/includes`
-( test apps are in : `/test`
+* test apps are in : `/test`
 
 ## Tested with:
 
@@ -37,7 +37,7 @@ You can build both static and shared libraries with:
 
 You can disable shared with:
 
-`cmake .. -DSTATIC=ON -DSHARED=ON`
+`cmake .. -DSTATIC=ON -DSHARED=OFF`
 
 By default only shared is built.
 
@@ -53,26 +53,26 @@ and once built:
 
 ## Installing 
 
-By default the headers installed in `/usr/local/include`
+The headers are installed in `/usr/local/include`
 and the library is installed in `/usr/local/libs`
 
 If those directories don't exist in your distro or system,
 you can edit the CMakeLists.txt.
 
-`
+```
 $ su
 $ make install
-`
+```
 
 OR
 
-`
+```
 $ sudo make install
-`
+```
 
 ## Contributor
 
-- Alexander Gkiokas, **[a.gkiokas@warwick.co.uk]**
+- Alexander Giokas, **[a.gkiokas@warwick.co.uk]**
 
 ## References
 
