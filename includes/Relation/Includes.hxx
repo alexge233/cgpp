@@ -2,7 +2,7 @@
 #include "../Node/Node.hpp"
 #include "../Concept/Concept.hpp"
 
-#include <cereal/access.hpp>
-#include <cereal/types/memory.hpp>
-#include <cereal/types/base_class.hpp>
-#include <cereal/types/polymorphic.hpp>
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/export.hpp>

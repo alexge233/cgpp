@@ -1,10 +1,8 @@
 #ifndef _CGPP_Node_HPP_
 #define _CGPP_Node_HPP_
-#pragma once
 #include "Includes.hxx"
 namespace cgpp
 {
-
 /// @brief Inteface Abstract Base Class, used for Operators
 class Object
 {
@@ -12,124 +10,120 @@ public:
     
     virtual ~Object() {}
     
-    bool operator== (const Object & other) const
+    bool operator==(const Object & rhs) const
     {
         // If the derived types are the same then compare them
-        return typeid (*this) == typeid(other) && isEqual ( other );
+        return typeid(*this) == typeid(rhs) && is_equal(rhs);
     }
     
-    bool operator!= (const Object & other) const
+    bool operator!=(const Object & rhs) const
     {
-        return typeid (*this) == typeid(other) && !isEqual ( other );
+		// The exact oposite
+        return typeid(*this) == typeid(rhs) && !is_equal(rhs);
     }
 
 private:
-    // A pure virtual function derived classes must implement.
-    // Furthermore, this function has a precondition that it will only
-    // be called when the 'other' is the same type as the instance
-    // invoking the function.
-    virtual bool isEqual ( const Object & other ) const = 0;
+	// pure virtual used by all inheriting classes for comparison
+    virtual bool is_equal(const Object &) const = 0;
 };
 
 /**
  * @brief Base Node Class supports Node operations in graph
- * @version 5
  * @date 15-December-2015
  */
 class Node : public Object
 {
 public:
 
-    Node()
+	/// Empty Ctor
+    Node() 
+	: _token()
     {
         _json_id = boost::uuids::random_generator()();
     }
 
+	/// Construct with value and POS
+	Node(
+			const std::string & value,
+			const std::string & tag
+        )  
+	: _token(value,tag)
+	{
+		_json_id = boost::uuids::random_generator()();
+	}
+
+	/// Construct using Token
     Node(Token token)
+	: _token(token)
     {
-        _token = std::make_shared<Token>( token );
         _json_id = boost::uuids::random_generator()();
     }
 
-    Node(const Node & node)
+	/// Copy constructor
+    Node(const Node & rhs) 
+	: _token(rhs.as_token())
     {
-        assert(node._token);
-        this->_token = std::make_shared<Token>( *node._token );
-        this->_json_id = node._json_id;
+        this->_json_id = rhs._json_id;
     }
 
-    Node & operator=(const Node & node) 
+	/// Assignment
+    Node & operator=(const Node & rhs) 
     {
-        assert( node._token );
-        if ( this != &node ) // prevent self-assignment
+        if (this != &rhs)
         {
-            this->_token = std::make_shared<Token>(*node._token);
-            this->_json_id = node._json_id;
+			this->_token = rhs._token;
+            this->_json_id = rhs._json_id;
         }
         return *this;
     }
 
-    virtual ~Node(){}
+    virtual ~Node()
+	{}
 
-    /// Cast to a Token by @return a Token by value
-    inline operator Token() const
-    {
-        assert(_token);
-        return *_token;
-    }
+	// Get Node as Token
+	Token as_token() const
+	{
+		return _token;
+	}
 
-    /// Cast to a string by @return a std::string
-    inline operator std::string() const
-    {
-        assert(_token);
-        return _token->value();
-    }
+	/// Get the Token/Node label
+	std::string label() const
+	{
+		return _token.value();
+	}
 
-    /// @deprecated - TODO: refactor Icarus project
-    inline std::shared_ptr<Token> asToken() const
+	/// Sort comparison based on Token string
+    bool operator<(const Node & rhs) const
     {
-        assert(_token); 
-        return std::make_shared<Token>(*_token);
-    }
-    
-    inline bool operator< (const Node & rhs) const
-    {
-        assert( this->_token && rhs._token );
         return this->_token < rhs._token;
     }
-    
-    virtual int TokenIndex() const
+   
+	/// Virtual for Node	
+    virtual int token_index() const
     {
         return -1;
     }
 
-    boost::uuids::uuid UUID() const
+    boost::uuids::uuid uuid() const
     {
         return _json_id;
     }
 
 protected:
 
-    friend class cereal::access;
-
-    /// Token
-    std::shared_ptr<Token> _token;
-    /// json id
+	friend class boost::serialization::access;
+	Token _token;
     boost::uuids::uuid _json_id;
 
-    /// Equality operator for Node (@see class Object)
-    /// The equality depends upon Token Value only.
-    /// The class Object also uses class type equality
-    inline virtual bool isEqual ( const Object & rhs ) const
+    virtual bool is_equal(const Object & rhs) const
     {
-        auto other = static_cast<const Node&>(rhs);
-        assert( this->_token && other._token );
-        return (*this->_token ) == (*static_cast<const Node&>(rhs)._token);
+        return *this == rhs;
     }
 
-    template <class Archive> void serialize ( Archive & archive )
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int)
     {
-        archive( _token );
+        ar & _token; 
     }
 };
 }

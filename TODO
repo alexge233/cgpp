@@ -3,6 +3,7 @@ TODO [branch development]:
     1 - Remove cereal and replace with boost serialisation (Boost 1.55 supports std::shared_ptr)
 
     2 - Remove rapidjson and use boost
+	    - Serialise using Boost (instead of manual JSON creation)
 
     3 - Implement Utilities: 
                 - Intersections, 

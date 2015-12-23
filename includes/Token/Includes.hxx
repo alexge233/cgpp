@@ -3,9 +3,7 @@
 #include <functional>
 
 #include <boost/algorithm/string.hpp>
-
-#include <cereal/access.hpp>
-#include <cereal/types/string.hpp>
-#include <cereal/types/memory.hpp>
-
-
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/string.hpp>

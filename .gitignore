@@ -21,5 +21,9 @@
 *.app
 *.swp
 
+# Vim files
+*.vim
+*.swap
+
 Build/
 build/

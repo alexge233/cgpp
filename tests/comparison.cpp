@@ -38,34 +38,39 @@ int main ( void )
     Token is = Token( "is", "NA" );
     Token blue = Token( "blue", "NA" );
     // 2 Concepts, 1 Relation
-    auto sky_node  = std::make_shared<Concept>( sky, 0 );
-    auto is_node   = std::make_shared<Relation>( is, 1 );
-    auto blue_node = std::make_shared<Concept>( blue, 2 );
+    auto sky_node  = Concept(sky, 0);
+    auto is_node   = Relation(is, 1);
+    auto blue_node = Concept(blue, 2);
     auto graph = std::make_shared<ConceptualGraph>();
     // Add them
-    graph->AddConcept( sky_node );
-    graph->AddConcept( blue_node );
-    graph->AddRelation( is_node );
+    graph->add_concept( sky_node );
+    graph->add_concept( blue_node );
+    graph->add_relation( is_node );
     // Connect them
-    graph->AddEdge( sky_node, is_node );
-    graph->AddEdge( is_node, blue_node );
+    graph->add_edge(std::make_shared<Concept>(sky_node), 
+					std::make_shared<Relation>(is_node));
+    graph->add_edge(std::make_shared<Relation>(is_node),
+					std::make_shared<Concept>(blue_node));
     // manually populate the empty graph
     Token sea = Token( "sea", "NA" );
-    auto sea_node = std::make_shared<Concept>( sea, 0 );
+    auto sea_node = Concept(sea, 0);
     auto graph2 = std::make_shared<ConceptualGraph>();
     // Add them
-    graph2->AddConcept( sea_node );
-    graph2->AddConcept( blue_node );
-    graph2->AddRelation( is_node );
+    graph2->add_concept( sea_node );
+    graph2->add_concept( blue_node );
+    graph2->add_relation( is_node );
     // Connect them
-    graph2->AddEdge( sea_node, is_node );
-    graph2->AddEdge( is_node, blue_node );
+    graph2->add_edge(std::make_shared<Concept>(sea_node), 
+					 std::make_shared<Relation>(is_node));
+    graph2->add_edge(std::make_shared<Relation>(is_node), 
+					 std::make_shared<Concept>(blue_node));
     auto graph3 = std::make_shared<ConceptualGraph>();
-    graph3->AddConcept( sea_node );
-    graph3->AddConcept( blue_node );
-    graph3->AddRelation( is_node );
+    graph3->add_concept( sea_node );
+    graph3->add_concept( blue_node );
+    graph3->add_relation( is_node );
     // Connect them
-    graph3->AddEdge( sea_node, is_node );
+    graph3->add_edge(std::make_shared<Concept>(sea_node), 
+					 std::make_shared<Relation>(is_node));
     
     // print
     std::cout << "Graph 1" << std::endl;

@@ -7,7 +7,6 @@ namespace cgpp {
  * @class ConceptualGraph
  * @date 15-December-2015
  * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- * TODO: Rename all methods (but the Constructors) with lowercase and underscores.
  */
 class ConceptualGraph
 {
@@ -31,37 +30,37 @@ public:
     bool operator|=(const ConceptualGraph &) const;
 
     /// Add a new Concept  @note will accept duplicates
-    bool AddConcept(const std::shared_ptr<Concept>);
+    bool add_concept(Concept concept);
 
     /// Add a new Relation @note will accept duplicates
-    bool AddRelation(const std::shared_ptr<Relation>);
+    bool add_relation(Relation relation);
 
     /// Add a new Edge (connect Relation to Concept) @note will only create if edge doesn't exist
-    bool AddEdge(
+    bool add_edge(
                     const std::shared_ptr<Relation>, 
                     const std::shared_ptr<Concept>
-                );
+                 );
 
     /// Add a new Edge (connect Concept to Relation) @note will only create if edge doesn't exist
-    bool AddEdge(
+    bool add_edge(
                     const std::shared_ptr<Concept>, 
                     const std::shared_ptr<Relation>
-                );
+                 );
 
     /// Get Graph's Concepts
-    std::vector<std::shared_ptr<Concept>> Concepts() const;
+    std::vector<Concept> concepts() const;
 
     /// Get Graph's Relations
-    std::vector<std::shared_ptr<Relation>> Relations() const;
+    std::vector<Relation> relations() const;
 
     /// Get All Edges
-    std::vector<Edge> Edges() const;
+    std::vector<Edge> edges() const;
     
     /// Get Concepts to which @param Relation has edges to
-    std::vector<std::shared_ptr<Concept>> Edges(const std::shared_ptr<Relation>) const;
+    std::vector<Concept> has_edges(const Relation &) const;
 
     /// Get Relations to which of @param Concept has edges to
-    std::vector<std::shared_ptr<Relation>> Edges(const std::shared_ptr<Concept>) const;
+    std::vector<Relation> has_edges(const Concept &) const;
 
     /// Jaccard Index for two graph's |V| and |E|, using: 
     ///     `J(G,G') = |G ∩ G'| / (|G|+|G'| - |G ∩ G'|)`
@@ -108,42 +107,39 @@ public:
 
 protected:
 
-    friend class cereal::access;
+    friend class boost::serialization::access;
 
     /// Graph Unique ID
     std::string _guid;
-
     /// JSON string
     std::string _json;
-
     /// current concepts
-    std::vector<std::shared_ptr<Concept>> _concepts;
-
+    std::vector<Concept> _concepts;
     /// current relations
-    std::vector<std::shared_ptr<Relation>> _relations;
-
+    std::vector<Relation> _relations;
     /// current edges: [Relation,Concept] or [Concept,Relation]
     std::vector<Edge> _edges;
-
     /// Current Proto version
     static constexpr int _version = 1;
 
 
     /// parse relation objects from json
-    void _parse_relations ( rapidjson::Document & );
+    void _parse_relations(rapidjson::Document &);
 
     /// parse concept objects from json
-    void _parse_concepts ( rapidjson::Document & );
+    void _parse_concepts(rapidjson::Document &);
 
     /// parse edge from json adjacencies
-    void _parse_edges ( rapidjson::Document & );
+    void _parse_edges(rapidjson::Document &);
 
-    /// (De)Serialisation delegate for cereal library
-    template <class Archive> void serialize ( Archive & archive )
+    template <class Archive> 
+	void serialize(Archive & ar, const unsigned int)
     {
-         archive( _concepts, _relations, _edges, _guid );
+         ar & _concepts;
+		 ar & _relations; 
+		 ar & _edges; 
+		 ar & _guid;
     }
 };
 }
-
 #endif

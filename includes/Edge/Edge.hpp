@@ -1,61 +1,64 @@
 #ifndef _CGPP_Edge_HPP_
 #define _CGPP_Edge_HPP_
-#pragma once
 #include "Includes.hxx"
-
 namespace cgpp {
 /**
- * Struct Encapsulating Edges
- *
- * @version 2
- * @date 19-March-2015
+ * @brief Edge between Concept and Relation, or Relation and Concept
+ * @date 22-December-2015
  */
 struct Edge
 {
-    std::shared_ptr<Node> from;
-    std::shared_ptr<Node> to;
+	friend class boost::serialization::access;
 
-    bool operator== ( const Edge & rhs ) const
+	std::shared_ptr<Node> from;
+	std::shared_ptr<Node> to;
+
+	/// Equality: Both Edge nodes must be same
+    bool operator==(const Edge & rhs) const
     {
-        assert( this->from && this->to && rhs.from && rhs.to );
-        return (*this->from == *rhs.from && *this->to == *rhs.to );
+        assert(this->from && this->to && rhs.from && rhs.to);
+        return *this->from == *rhs.from && 
+			   *this->to == *rhs.to;
     }
 
-    bool operator!= ( const Edge & rhs ) const
+	/// inequality
+    bool operator!=(const Edge & rhs) const
     {
-        return ( *this == rhs ? false : true );
+        return *this == rhs;
     }
 
-    bool operator< ( const Edge & rhs )
+    Edge & operator=(const Edge & rhs)
     {
-        assert( this->from && this->to && rhs.from && rhs.to );
-        return (*this->from < *rhs.from && *this->to < *rhs.to );
-    }
-
-    Edge & operator= ( const Edge & rhs )
-    {
-        assert( rhs.from && rhs.to );
+        assert(rhs.from && rhs.to);
         if (this != &rhs) // prevent self-assignment
         {
-            this->from = std::make_shared<Node>( *rhs.from );
-            this->to = std::make_shared<Node>( *rhs.to );
+            this->from = std::make_shared<Node>(*rhs.from);
+            this->to = std::make_shared<Node>(*rhs.to);
         }
         return *this;
     }
 
-    bool operator< ( const Edge & rhs ) const
+	/// Sort comparator based on both Node Token labels
+    bool operator<(const Edge & rhs) const
     {
-        assert( rhs.from && rhs.to );
+        assert(rhs.from && rhs.to);
         return (*this->from) < (*rhs.from) && (*this->to) < (*rhs.to);
     }
 
-    template <class Archive> void serialize ( Archive & archive )
+	/// Sort comparator (non-const) 
+    bool operator<(const Edge & rhs)
     {
-        archive( from, to );
+        assert(this->from && this->to && rhs.from && rhs.to);
+        return (*this->from < *rhs.from && *this->to < *rhs.to);
+    }
+
+    template <class Archive> 
+	void serialize(Archive & ar, const unsigned int)
+    {
+        ar & from;
+		ar & to;
     }
 
 };
-
 }
-
 #endif

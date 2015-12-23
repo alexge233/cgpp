@@ -13,7 +13,7 @@ namespace util
  * @note Each and every Node (Concept/Relation) must have minimum one edge
  * @warning This does NOT check if the graph is fully connected !
  */
-bool MinimumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
+bool MinimumEdgesConnected(const std::shared_ptr<ConceptualGraph> & graph);
 
 /**
  * Check if all possible Edges exist in @param graph
@@ -28,20 +28,20 @@ bool MaximumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
  * Find which Concepts don't exist in  both @param lhs and @param rhs Conceptual Graphs
  * @return a vector of different Concepts pointers found in <b 1st parameter rhs>
  */
-std::vector<std::shared_ptr<Concept>> Compare_Concepts_Difference (
-                                                                    const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                    const std::shared_ptr<ConceptualGraph> & rhs
-                                                                  );
+std::vector<Concept> Compare_Concepts_Difference(
+													const std::shared_ptr<ConceptualGraph> & lhs,
+													const std::shared_ptr<ConceptualGraph> & rhs
+												);
 
 
 /**
  * Find which Relations don't exist in  both @param lhs and @param rhs Conceptual Graphs
  * @return a vector of different Relation pointers found in <b 1st parameter rhs>
  */
-std::vector<std::shared_ptr<Relation>> Compare_Relations_Difference (
-                                                                      const std::shared_ptr<ConceptualGraph> & lhs,
-                                                                      const std::shared_ptr<ConceptualGraph> & rhs
-                                                                    );
+std::vector<Relation> Compare_Relations_Difference (
+													const std::shared_ptr<ConceptualGraph> & lhs,
+													const std::shared_ptr<ConceptualGraph> & rhs
+												   );
 
 
 /**
