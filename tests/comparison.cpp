@@ -7,33 +7,6 @@ int main ( void )
 {
     using namespace cgpp;
 
-    /* 
-    std::vector<std::shared_ptr<cgpp::ConceptualGraph>> graphs;
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1a ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1a ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1b ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json1c ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2a ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2b ) );
-    graphs.push_back( std::make_shared<cgpp::ConceptualGraph>( json2c ) );
-
-    for ( unsigned int i = 0; i < graphs.size(); i++ )
-    {
-        if ( i +1 < graphs.size() )
-        {
-            auto g1 = graphs.at(i);
-            auto g2 = graphs.at( i+1 );
-            g1->print();
-            g2->print();
-            //std::cout << "Graphs Equal == " << (*g1 == *g2) << std::endl;
-            //std::cout << "Graphs Isomorphic |= " << (*g1  |= *g2) << std::endl;
-            std::cout << "Graph  Similarity %= " << (*g1 %= *g2) << std::endl;
-            //std::cout << "Graph  Node Similarity %= " << g1->nodeSimilarity( *g2 ) << std::endl;
-            //std::cout << "Graph  Edge Similarity %= " << g1->edgeSimilarity( *g2 ) << std::endl;
-        }
-    }
-    */
-
     Token sky = Token( "sky", "NA" );
     Token is = Token( "is", "NA" );
     Token blue = Token( "blue", "NA" );
@@ -71,35 +44,75 @@ int main ( void )
     // Connect them
     graph3->add_edge(std::make_shared<Concept>(sea_node), 
 					 std::make_shared<Relation>(is_node));
-    
     // print
-    std::cout << "Graph 1" << std::endl;
     graph->print();
-    std::cout << "Graph 2" << std::endl;
     graph2->print();
-    std::cout << "Graph 3" << std::endl;
     graph3->print();
     std::cout << std::endl;
  
-    std::cout << "Jaccard Coeff(Graph 1, Graph 1) = " << graph->jaccard_coeff(*graph) << std::endl;
-    std::cout << "Sørensen Coeff(Graph 1, Graph 1) = " << graph->sorensen_coeff(*graph) << std::endl;
+    std::cout << "Jaccard Coeff(Graph 1, Graph 1) = " 
+			  << graph->jaccard_coeff(*graph) << std::endl;
+	std::cout << "Sørensen Coeff(Graph 1, Graph 1) = " 
+			  << graph->sorensen_coeff(*graph) << std::endl;
+	std::cout << "graph1 |= graph1: " << (*graph |= *graph) << std::endl;	
     std::cout << std::endl;
 
-    std::cout << "Jaccard Coeff(Graph 1, Graph 2) = " << graph->jaccard_coeff(*graph2) << std::endl;
-    std::cout << "Sørensen Coeff(Graph 1, Graph 2) = " << graph->sorensen_coeff(*graph2) << std::endl;
+    std::cout << "Jaccard Coeff(Graph 1, Graph 2) = " 
+			  << graph->jaccard_coeff(*graph2) << std::endl;
+    std::cout << "Sørensen Coeff(Graph 1, Graph 2) = " 
+			  << graph->sorensen_coeff(*graph2) << std::endl;
+	std::cout << "graph1 |= graph2: " << (*graph |= *graph2) << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Jaccard Coeff(Graph 2, Graph 3) = " << graph2->jaccard_coeff(*graph3) << std::endl;
-    std::cout << "Sørensen Coeff(Graph 2, Graph 3) = " << graph2->sorensen_coeff(*graph3) << std::endl;
+    std::cout << "Jaccard Coeff(Graph 2, Graph 3) = " 
+			  << graph2->jaccard_coeff(*graph3) << std::endl;
+    std::cout << "Sørensen Coeff(Graph 2, Graph 3) = " 
+			  << graph2->sorensen_coeff(*graph3) << std::endl;
+	std::cout << "graph2 |= graph3: " << (*graph2 |= *graph3) << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Jaccard Coeff(Graph 3, Graph 2) = " << graph3->jaccard_coeff(*graph2) << std::endl;
-    std::cout << "Sørensen Coeff(Graph 3, Graph 2) = " << graph3->sorensen_coeff(*graph2) << std::endl;
+    std::cout << "Jaccard Coeff(Graph 3, Graph 2) = " 
+			  << graph3->jaccard_coeff(*graph2) << std::endl;
+    std::cout << "Sørensen Coeff(Graph 3, Graph 2) = " 
+			  << graph3->sorensen_coeff(*graph2) << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Jaccard Coeff(Graph 1, Graph 3) = " << graph->jaccard_coeff(*graph3) << std::endl;
-    std::cout << "Sørensen Coeff(Graph 1, Graph 3) = " << graph->sorensen_coeff(*graph3) << std::endl;
+    std::cout << "Jaccard Coeff(Graph 1, Graph 3) = " 
+			  << graph->jaccard_coeff(*graph3) << std::endl;
+    std::cout << "Sørensen Coeff(Graph 1, Graph 3) = " 
+			  << graph->sorensen_coeff(*graph3) << std::endl;
+	std::cout << "graph3 |= graph2: " << (*graph3 |= *graph2) << std::endl;
     std::cout << std::endl;
 
+	std::cout << "graph 1 members and their addresses" << std::endl;
+	for (const auto & i: graph->concepts())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() << " @ " << &i << std::endl;
+	for (const auto & i: graph->relations())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() <<  " @ " << &i << std::endl;
+	for (const auto & i: graph->edges())
+	{
+		std::cout << i.from->label() << " " << i.from->as_token().tag() << " " << i.from->token_index() <<  " @ " << &i.from << std::endl;
+		std::cout << i.to->label() << " " << i.to->as_token().tag() << " " << i.to->token_index() << " @ " << &i.to << std::endl;
+	}
+	std::cout << "graph 2 members and their addresses" << std::endl;
+	for (const auto & i: graph2->concepts())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() <<  " @ " << &i << std::endl;
+	for (const auto & i: graph2->relations())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() <<  " @ " << &i << std::endl;
+	for (const auto & i: graph2->edges())
+	{
+		std::cout << i.from->label() << " " << i.from->as_token().tag() << " " << i.from->token_index() <<  " @ " << &i.from << std::endl;
+		std::cout << i.to->label() << " " << i.to->as_token().tag() << " " << i.to->token_index() <<  " @ " << &i.to << std::endl;
+	}
+	std::cout << "graph 3 members and their addresses" << std::endl;
+	for (const auto & i: graph3->concepts())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() <<  " @ " << &i << std::endl;
+	for (const auto & i: graph3->relations())
+		std::cout << i.label() << " " << i.as_token().tag() << " " << i.token_index() <<  " @ " << &i << std::endl;
+	for (const auto & i: graph3->edges())
+	{
+		std::cout << i.from->label() << " " << i.from->as_token().tag() << " " << i.from->token_index() <<  " @ " << &i.from << std::endl;
+		std::cout << i.to->label() << " " << i.to->as_token().tag() << " " << i.to->token_index() <<  " @ " << &i.to << std::endl;
+	}
     return 0;
 }

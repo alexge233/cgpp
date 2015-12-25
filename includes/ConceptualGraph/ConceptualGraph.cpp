@@ -25,7 +25,7 @@ ConceptualGraph::ConceptualGraph(const ConceptualGraph & rhs)
     this->_edges = rhs._edges;
 }
 
-bool ConceptualGraph::operator==( const ConceptualGraph & rhs ) const
+bool ConceptualGraph::operator==(const ConceptualGraph & rhs) const
 {
     bool concepts = false, relations = false, edges = false;
 
@@ -47,9 +47,10 @@ bool ConceptualGraph::operator==( const ConceptualGraph & rhs ) const
     return concepts && relations && edges;
 }
 
-bool ConceptualGraph::operator|=( const ConceptualGraph & rhs ) const
+bool ConceptualGraph::operator|=(const ConceptualGraph & rhs) const
 {
-    bool concepts = false, relations = false, edges = false;
+    bool concepts = false, relations = false;
+	bool edges = true;
 
     if ( this->_concepts.size() == rhs._concepts.size() )
     {
@@ -60,7 +61,6 @@ bool ConceptualGraph::operator|=( const ConceptualGraph & rhs ) const
 										   const Concept & item2)->bool
                                         { return item1 == item2;});
     }
-	else return false;
 
     if ( this->_relations.size() == rhs._relations.size() )
     {
@@ -70,7 +70,6 @@ bool ConceptualGraph::operator|=( const ConceptualGraph & rhs ) const
 											const Relation & item2)->bool
                                          { return item1 == item2;});
     }
-	else return false;
 
     if ( this->_edges.size() != rhs._edges.size() )
 		return false;

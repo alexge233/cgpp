@@ -26,7 +26,6 @@ public:
     bool operator==(const ConceptualGraph &) const;
 
     /// Isomorphic Graph operator: Concept & Relation perumutations are allowed
-    /// but Edge Order must be preserved
     bool operator|=(const ConceptualGraph &) const;
 
     /// Add a new Concept  @note will accept duplicates
@@ -35,13 +34,13 @@ public:
     /// Add a new Relation @note will accept duplicates
     bool add_relation(Relation relation);
 
-    /// Add a new Edge (connect Relation to Concept) @note will only create if edge doesn't exist
+    /// Add a new Edge (connect Relation to Concept)
     bool add_edge(
                     const std::shared_ptr<Relation>, 
                     const std::shared_ptr<Concept>
                  );
 
-    /// Add a new Edge (connect Concept to Relation) @note will only create if edge doesn't exist
+    /// Add a new Edge (connect Concept to Relation)
     bool add_edge(
                     const std::shared_ptr<Concept>, 
                     const std::shared_ptr<Relation>
@@ -138,7 +137,7 @@ protected:
          ar & _concepts;
 		 ar & _relations; 
 		 ar & _edges; 
-		 ar & _guid;
+		 ar & _guid; 
     }
 };
 }
