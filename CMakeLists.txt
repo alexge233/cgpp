@@ -41,15 +41,15 @@ add_library(lcgpp OBJECT ${SOURCES})
 
 if (${STATIC})
     message(STATUS "Building static library")
-    add_library(cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lcgpp>)
-    target_link_libraries(cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static ${Boost_REGEX_LIBRARY})
-    set(LIBOBJ ${LIBOBJ} cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static)
+    add_library(cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lcgpp>)
+    target_link_libraries(cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static ${Boost_REGEX_LIBRARY})
+    set(LIBOBJ ${LIBOBJ} cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static)
 endif()
 if ( (${SHARED}) OR ( NOT (${STATIC}) ) )
     message(STATUS "Building shared library, you can enable static lib with \"-DSTATIC=ON\"")
-    add_library(cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lcgpp>)
-    target_link_libraries(cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR} ${Boost_REGEX_LIBRARY} )
-    set(LIBOBJ ${LIBOBJ} cgpp-${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR})
+    add_library(cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lcgpp>)
+    target_link_libraries(cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR} ${Boost_REGEX_LIBRARY} )
+    set(LIBOBJ ${LIBOBJ} cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR})
 endif()
 
 # Enable 'make test'
@@ -78,8 +78,8 @@ endif()
 
 set(CMAKE_COLOR_MAKEFILE on)
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
 message(STATUS "building ${CMAKE_BUILD_TYPE}")
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
