@@ -71,7 +71,7 @@ public:
     ///     `S(G,G') = 2 |G ∩ G'| / |G| + |G'|`
     float sorensen_coeff(const ConceptualGraph &) const;
 
-    /// Graph Sparseness: |V| / |E|
+    /// Graph Sparseness: |V|/|E|
     float sparseness() const;
 
     /// Average path length
