@@ -1,5 +1,8 @@
 TODO [branch development]:
 
+    0 - ASAP: fix Jaccard Coefficient Weights, by using the Ratio of each Set (Concepts,Relations,Edges)
+            : fix Sorensen Coefficeint Weights, instead of using 50%-50%
+
     1 - Remove rapidjson and use boost
 	    - Serialise using Boost (instead of manual JSON creation)
 
@@ -11,7 +14,3 @@ TODO [branch development]:
 
     3 - Implement Conversion of a Conceptual Graph to CGIF (string), or FOL.
                 - Consider other FOL,HOL or Ontology Schemas (RDF?OWL?) to which we can translate Conceptual Graphs
-
-    4 - Consider optimising the library (Token/Node/Relation/Concept/Edge already are more or less)
-        Look into ConceptualGraph and see if anything can be made better/faster
-

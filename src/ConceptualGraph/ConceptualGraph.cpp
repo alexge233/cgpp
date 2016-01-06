@@ -16,10 +16,10 @@ ConceptualGraph::ConceptualGraph()
 ConceptualGraph::ConceptualGraph(const ConceptualGraph & rhs)
 {
     // WARNING Generate a new UUID for each Graph Object
+    // Is this a BUG or was it a requirement? I can't remember!
     //auto uuid = boost::uuids::random_generator()();
     //this->_guid = boost::lexical_cast<std::string>( uuid );
 	this->_guid = rhs._guid;
-    // Copy Concepts, Relations, Edges
     this->_concepts = rhs._concepts;
     this->_relations = rhs._relations;
     this->_edges = rhs._edges;
@@ -261,17 +261,11 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
     unsigned int r_size = this->_relations.size()+rhs._relations.size();
     unsigned int e_size = this->_edges.size()+rhs._edges.size();
 
-    // G = (V,E) and G' = (V',E') then
-    //      J(V,V') = |V ∩ V'| / |V| + |V'| - |V ∩ V'|
-    // where V = (C,R) and V' = (C',R')
-    // and 
-    //      J(E,E') = |E ∩ E'| / |E| + |E'| - |E ∩ E'|
-    // then
-    //      J(G,G') = J(V,V') + J(E,E') / 2.
-
     // J(C,C') and J(R,R')
     float j_c = (float)c_same / (float)(c_size - c_same);
     float j_r = (float)r_same / (float)(r_size - r_same);
+
+    // TODO: Fix & add weight for each ratio don't divide by two
 
     // normalise node Jaccard = J(V,V')
     float j_v = (j_c + j_r) / 2.f;
