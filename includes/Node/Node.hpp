@@ -1,10 +1,8 @@
 #ifndef _CGPP_Node_HPP_
 #define _CGPP_Node_HPP_
-#pragma once
 #include "Includes.hxx"
 namespace cgpp
 {
-
 /// @brief Inteface Abstract Base Class, used for Operators
 class Object
 {
@@ -15,12 +13,12 @@ public:
     bool operator== (const Object & other) const
     {
         // If the derived types are the same then compare them
-        return typeid (*this) == typeid(other) && isEqual ( other );
+        return typeid (*this) == typeid(other) && isEqual(other);
     }
     
     bool operator!= (const Object & other) const
     {
-        return typeid (*this) == typeid(other) && !isEqual ( other );
+        return typeid (*this) == typeid(other) && !isEqual(other);
     }
 
 private:
@@ -28,7 +26,7 @@ private:
     // Furthermore, this function has a precondition that it will only
     // be called when the 'other' is the same type as the instance
     // invoking the function.
-    virtual bool isEqual ( const Object & other ) const = 0;
+    virtual bool isEqual(const Object & other) const = 0;
 };
 
 /**
