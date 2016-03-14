@@ -36,8 +36,7 @@ public:
 	/// Assignment
     Concept & operator=(const Concept & rhs)
     {
-        if (this != &rhs)
-        {
+        if (this != &rhs){
             Node::operator=(rhs);
             this->_token_index = rhs._token_index;
         }
@@ -49,6 +48,22 @@ public:
     {
         return static_cast<const Node&>(*this) < static_cast<const Node&>(rhs);
     }
+
+	/// Addition (concatenation) of two Concepts creates a new one
+	Concept operator+(const Concept &rhs)
+	{
+		/// TODO: allocate and assign values, token index and json id (if applicable)
+		/// WARNING: what happens to edges? Do we invalidate them?
+		/// This is complex and tricky
+	}
+
+	/// Addition (concatenation) of multiple Concepts into a new one
+	Concept operator+(std::vector<Concept> & nodes)
+	{
+		/// TODO: allocate and assign values, token index and json id (if applicable)
+		/// TODO: should I use a vector param, deque or maybe a map/set ?
+		/// WARNING: what happens to edges? Do we invalidate them?
+	}
 
     ~Concept() = default;
 
