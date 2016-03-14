@@ -1,6 +1,6 @@
 #include <memory>
-#include "../includes/cgpp"
-#include "../includes/Utilities/Utilities.hpp"
+#include "../src/cgpp"
+#include "../src/Utilities/Utilities.hpp"
 #include "json.hpp"
 
 #include <boost/serialization/vector.hpp>

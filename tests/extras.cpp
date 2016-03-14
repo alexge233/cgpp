@@ -1,5 +1,5 @@
 #include <memory>
-#include "../includes/cgpp"
+#include "../src/cgpp"
 
 int main ( void )
 {

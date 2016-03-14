@@ -13,24 +13,26 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 		      /usr/local/lib
 		      /usr/local/lib64
 		      /usr/lib/x86_64-linux-gnu)
-set(INCLUDE_DIRS ${INCLUDE_DIRS} /usr/include)
+
+set(INCLUDE_DIRS ${INCLUDE_DIRS} /usr/include
+                                 /usr/local/include)
 
 include_directories(SYSTEM ${INCLUDE_DIRS})
 
-add_subdirectory(includes/Concept)
-add_subdirectory(includes/ConceptualGraph)
-add_subdirectory(includes/Node)
-add_subdirectory(includes/Relation)
-add_subdirectory(includes/Token)
-add_subdirectory(includes/Edge)
-add_subdirectory(includes/Utilities)
+add_subdirectory(src/Concept)
+add_subdirectory(src/ConceptualGraph)
+add_subdirectory(src/Node)
+add_subdirectory(src/Relation)
+add_subdirectory(src/Token)
+add_subdirectory(src/Edge)
+add_subdirectory(src/Utilities)
 
 find_package( Boost 1.55 COMPONENTS regex serialization REQUIRED )
 include_directories( ${Boost_INCLUDE_DIR} )
 
 # Build Libraries (both static and shared)
-set (SOURCES ${SOURCES} includes/ConceptualGraph/ConceptualGraph.cpp
-                        includes/Utilities/Utilities.cpp)
+set (SOURCES ${SOURCES} src/ConceptualGraph/ConceptualGraph.cpp
+                        src/Utilities/Utilities.cpp)
 
 add_library(lcgpp OBJECT ${SOURCES})
 
@@ -52,7 +54,7 @@ if (${BUILD_TESTS})
     enable_testing()
     message(STATUS "building tests")
     add_executable(construct tests/construct.cpp)
-    add_test(ConstructGraph construct)
+    add_test(construct_example construct)
     add_executable(jsontest tests/json.cpp)
     add_test(json_load jsontest)
     add_executable(deserialise tests/deserialise.cpp)
@@ -116,6 +118,6 @@ endif()
 #set(MACOSX_RPATH ON)
 # Install stuff
 install(TARGETS ${LIBOBJ}  DESTINATION /usr/local/lib/)
-install(DIRECTORY includes/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.hxx")
-install(FILES includes/cgpp DESTINATION /usr/local/include/${PROJECT_NAME})
+install(DIRECTORY src/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.hxx")
+install(FILES src/cgpp DESTINATION /usr/local/include/${PROJECT_NAME})
 

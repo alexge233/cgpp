@@ -19,8 +19,7 @@ and should be very easy to use for simple Knowledge Representation.
 
 ## Dependencies:
 
-* boost       >= 1.54     [http://www.boost.org]
-* cereal      >= 1.0.0    [http://uscilab.github.io/cereal/] expected to be in /usr/local/include
+* boost       >= 1.56     [http://www.boost.org]
 * rapidjson   >= 0.1 (?)  [https://github.com/pah/rapidjson] included under /includes/rapidjson
 
 ## Building (Linux or OSX):
@@ -40,6 +39,11 @@ You can disable shared with:
 `cmake .. -DSTATIC=ON -DSHARED=OFF`
 
 By default only shared is built.
+
+**boost** If CMake fails to find BOOST and you have it installed under a different directory (e.g., `/usr/local`)
+then use the following flag (or similar for your location):
+
+`cmake .. -DBOOST_ROOT=/usr/local`
 
 ## Tests (Examples)
 
