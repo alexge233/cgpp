@@ -4,11 +4,11 @@
 namespace cgpp
 {
 
-template <class N>
-struct cluster
+/// cluster struct of N-type Nodes
+template <class N> struct cluster
 {
 	std::vector<N> nodes;
-}
+};
 
 namespace util
 {
@@ -17,25 +17,29 @@ namespace util
  * @note Each and every Node (Concept/Relation) must have minimum one edge
  * @warning This does NOT check if the graph is fully connected !
  */
-bool min_edges_connected(const std::shared_ptr<ConceptualGraph> & graph);
+bool min_edges_set(const ConceptualGraph & graph);
 
-/**
- * Check if all possible Edges exist in @param graph
- * @note Each Node (Concept/Relation) must have an amount of edges equal to the amount of opposite type Nodes
-bool MaximumEdgesConnected ( const std::shared_ptr<ConceptualGraph> & graph );
- */
+/// @brief find different concepts
+/// @return a list of the different concepts
+std::vector<Concept> concepts_diff(
+                                    const ConceptualGraph & lhs,
+                                    const ConceptualGraph & rhs
+                                  );
 
-///
-/// @brief Find groups of nodes which have identical edges.
-///		   Having indentical edges indicates that a group is a sub-cluster.
-///	TODO:  make it a template function
-///		   
-template <class N>
-std::vector<cluster<N>> find_clusters(const std::vector<N> nodes)
-{
-	// TODO: search and find nodes with identical edges and return them.
-}
+/// @brief find different concepts
+/// @return a list of the different concepts
+std::vector<Relation> relation_diff(
+                                    const ConceptualGraph & lhs,
+                                    const ConceptualGraph & rhs
+                                   );
 
+/// @brief Find clusters of concepts which have identical edges.
+/// @return a vector of clusters
+std::vector<cluster<Concept>> concept_clusters(const std::vector<Concept> nodes);
+
+/// @brief Find clusters of relations which have identical edges.
+/// @return a vector of clusters
+std::vector<cluster<Relation>> relation_clusters(const std::vector<Relation> nodes);
 
 }
 }

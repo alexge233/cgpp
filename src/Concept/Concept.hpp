@@ -46,24 +46,15 @@ public:
 	/// Sort comparator based on Token (label & POS tag)
     bool operator<(const Concept & rhs)
     {
-        return static_cast<const Node&>(*this) < static_cast<const Node&>(rhs);
+        return (static_cast<const Node&>(*this) 
+                < static_cast<const Node&>(rhs));
     }
 
-	/// Addition (concatenation) of two Concepts creates a new one
-	Concept operator+(const Concept &rhs)
-	{
-		/// TODO: allocate and assign values, token index and json id (if applicable)
-		/// WARNING: what happens to edges? Do we invalidate them?
-		/// This is complex and tricky
-	}
+	// TODO. [dev] Addition (concatenation) of two Concepts creates a new one
+	// Concept operator+(const Concept &rhs){}
 
-	/// Addition (concatenation) of multiple Concepts into a new one
-	Concept operator+(std::vector<Concept> & nodes)
-	{
-		/// TODO: allocate and assign values, token index and json id (if applicable)
-		/// TODO: should I use a vector param, deque or maybe a map/set ?
-		/// WARNING: what happens to edges? Do we invalidate them?
-	}
+	// TODO. [dev] Addition (concatenation) of multiple Concepts into a new one
+	// Concept operator+(std::vector<Concept> & nodes){}
 
     ~Concept() = default;
 
@@ -82,7 +73,9 @@ private:
     
     bool is_equal(const Object &rhs) const
     {
-        return this->_token_index == static_cast<const Concept&>(rhs)._token_index;
+        return (this->_token_index ==
+                static_cast<const Concept&>(rhs)._token_index)
+                && (this->_token == static_cast<const Concept&>(rhs)._token);
     }
 
 	template<class Archive>

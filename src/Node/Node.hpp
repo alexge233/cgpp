@@ -36,8 +36,7 @@ class Node : public Object
 public:
 
 	/// Empty Ctor
-    Node() 
-	: _token()
+    Node() : _token()
     {
         _json_id = boost::uuids::random_generator()();
     }
@@ -47,7 +46,7 @@ public:
 			const std::string & value,
 			const std::string & tag
         )  
-	: _token(value,tag)
+    : _token(value,tag)
 	{
 		_json_id = boost::uuids::random_generator()();
 	}
@@ -112,12 +111,15 @@ public:
 protected:
 
 	friend class boost::serialization::access;
+    friend class ConceptualGraph;
+
 	Token _token;
     boost::uuids::uuid _json_id;
 
     virtual bool is_equal(const Object & rhs) const
     {
-        return *this == rhs;
+        return (this->_token == 
+                static_cast<const Node&>(rhs)._token);
     }
 
 	template<class Archive>

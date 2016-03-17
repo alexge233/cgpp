@@ -1,10 +1,10 @@
 #include "ConceptualGraph.hpp"
-
 BOOST_CLASS_EXPORT(cgpp::Concept);
 BOOST_CLASS_EXPORT(cgpp::Relation);
 
 namespace cgpp
 {
+
 int constexpr ConceptualGraph::_version;
 
 ConceptualGraph::ConceptualGraph()
@@ -29,19 +29,19 @@ bool ConceptualGraph::operator==(const ConceptualGraph & rhs) const
 {
     bool concepts = false, relations = false, edges = false;
 
-    if ( this->_concepts.size() == rhs._concepts.size() )
+    if (this->_concepts.size() == rhs._concepts.size())
         concepts = std::equal(this->_concepts.begin(), this->_concepts.end(), 
 							  rhs._concepts.begin(), 
                               [](const Concept& lhs, const Concept& rhs)->bool 
                               { return lhs == rhs;});
 
-    if ( this->_relations.size() == rhs._relations.size() )
+    if (this->_relations.size() == rhs._relations.size())
         relations = std::equal(this->_relations.begin(), this->_relations.end(),
 							   rhs._relations.begin(), 
 							   [](const Relation& lhs, const Relation& rhs )->bool 
                                { return lhs == rhs;});
 
-    if ( this->_edges.size() == rhs._edges.size() )
+    if (this->_edges.size() == rhs._edges.size())
         edges = std::equal(this->_edges.begin(), this->_edges.end(), rhs._edges.begin());
 
     return concepts && relations && edges;
@@ -52,7 +52,7 @@ bool ConceptualGraph::operator|=(const ConceptualGraph & rhs) const
     bool concepts = false, relations = false;
 	bool edges = true;
 
-    if ( this->_concepts.size() == rhs._concepts.size() )
+    if (this->_concepts.size() == rhs._concepts.size())
     {
         concepts = std::is_permutation(this->_concepts.begin(), 
 									   this->_concepts.end(), 
@@ -62,7 +62,7 @@ bool ConceptualGraph::operator|=(const ConceptualGraph & rhs) const
                                         { return item1 == item2;});
     }
 
-    if ( this->_relations.size() == rhs._relations.size() )
+    if (this->_relations.size() == rhs._relations.size())
     {
         relations = std::is_permutation(this->_relations.begin(), 
 										this->_relations.end(), rhs._relations.begin(),
@@ -71,26 +71,27 @@ bool ConceptualGraph::operator|=(const ConceptualGraph & rhs) const
                                          { return item1 == item2;});
     }
 
-    if ( this->_edges.size() != rhs._edges.size() )
+    if (this->_edges.size() != rhs._edges.size())
 		return false;
 
 	auto my_concepts = this->_concepts;
 	auto other_concepts = rhs._concepts;
-	for ( const auto & mine : my_concepts )
+	for (const auto & mine : my_concepts)
 	{
-		for ( const auto & other : other_concepts )
+		for (const auto & other : other_concepts)
 		{
 			if (mine == other)
 			{
 				const auto mines = this->has_edges(mine);
 				const auto othrs = rhs.has_edges(other);
-				// Same Edged for This Concept ?
-				if ( mines.size() == othrs.size() )
+
+				// Same Edges for This Concept
+				if (mines.size() == othrs.size())
 				{
-					if ( !std::equal( mines.begin(), mines.end(), othrs.begin(),
+					if (!std::equal( mines.begin(), mines.end(), othrs.begin(),
 										[&](const Relation& item1, 
 											const Relation& item2)->bool
-										{return (item1 == item2);})) return false;
+										{return (item1 == item2);})){ return false; }
 				}
 				else return false;
 			}
@@ -133,7 +134,7 @@ bool ConceptualGraph::add_concept(Concept concept)
     return false;
 }
 
-bool ConceptualGraph::add_relation (Relation relation)
+bool ConceptualGraph::add_relation(Relation relation)
 {
     if (std::find_if(_relations.begin(),_relations.end(),
                     [&](const Relation & rhs)
@@ -155,7 +156,7 @@ bool ConceptualGraph::add_edge (
     auto r_it = std::find(_relations.begin(), _relations.end(), *relation);
 
     // Both exist
-    if ( c_it != _concepts.end() && r_it != _relations.end() )
+    if (c_it != _concepts.end() && r_it != _relations.end())
     {
         if (std::find_if(_edges.begin(),_edges.end(),
                          [&]( const Edge & rhs )
@@ -168,6 +169,7 @@ bool ConceptualGraph::add_edge (
             return true;
         }
     }
+    // TODO: throw runtime exception
     else
         std::cerr << "Warning AddEdge: Concept or Relation doesn't exist in graph,\n\
 		Edge not created" << std::endl;
@@ -197,6 +199,7 @@ bool ConceptualGraph::add_edge (
             return true;
         }
     }
+    // TODO: throw runtime exception
     else
         std::cerr << "Warning AddEdge: Concept or Relation doesn't exist in graph,\n\
 		Edge not created" << std::endl;
@@ -266,6 +269,7 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
     float j_r = (float)r_same / (float)(r_size - r_same);
 
     // TODO: Fix & add weight for each ratio don't divide by two
+    // @see `tested` branch on github - it has the correct formula
 
     // normalise node Jaccard = J(V,V')
     float j_v = (j_c + j_r) / 2.f;
@@ -279,13 +283,13 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
 
 float ConceptualGraph::sorensen_coeff(const ConceptualGraph & rhs) const
 {
-    ///     `S(G,G') = 2 |G ∩ G'| / |G| + |G'|`
     return (node_similarity(rhs) + edge_similarity(rhs)) / 2.f;
 }
 
 float ConceptualGraph::sparseness() const
 {
-    return (float)( _concepts.size() + _relations.size() ) / (float)(_edges.size());
+    return (float)(_concepts.size() + _relations.size()) 
+            / (float)(_edges.size());
 }
 
 float ConceptualGraph::avg_path_length() const
@@ -294,26 +298,26 @@ float ConceptualGraph::avg_path_length() const
     std::function<void ( unsigned int i, unsigned int len )> lambda;
     lambda = [&]( unsigned int i, unsigned int len )
     {
-        for ( unsigned int k = i + 1; k < _edges.size(); k++ )
+        for (unsigned int k = i + 1; k < _edges.size(); k++)
         {
-            if ( (*_edges[i].to) == (*_edges[k].from) )
+            if ((*_edges[i].to) == (*_edges[k].from))
             {
                 len++;
-                lambda ( k, len );
+                lambda (k, len);
             }
         }
         // If it reaches this bit here, then: (a) there is no path, or (b) search has been exhausted
-        lengths.push_back ( len );
+        lengths.push_back(len);
     };
     // Theres already one edge, therefore set to 1
-    for ( unsigned int i = 0; i < _edges.size(); i++ )
+    for (unsigned int i = 0; i < _edges.size(); i++)
         lambda ( i, 1 );
     // accumulate lengths
     unsigned int acc = 0;
-    if ( lengths.size() > 0 )
+    if (lengths.size() > 0)
     {
-        for ( const auto i : lengths ) acc += i;
-        return (float)( (float)acc / (float)lengths.size() );
+        for (const auto i : lengths) acc += i;
+        return (float)((float)acc / (float)lengths.size());
     }
     else
         return 0.f;
@@ -321,7 +325,7 @@ float ConceptualGraph::avg_path_length() const
 
 float ConceptualGraph::edge_space() const
 {
-    return (float)( _concepts.size() * _relations.size() );
+    return (float)(_concepts.size() * _relations.size());
 }
 
 float ConceptualGraph::node_similarity(const ConceptualGraph & rhs) const
@@ -332,13 +336,17 @@ float ConceptualGraph::node_similarity(const ConceptualGraph & rhs) const
         for ( const auto other_concept : rhs._concepts )
             if ( this_concept == other_concept )
                 same_concepts++;
+
     for ( const auto this_relation : this->_relations )
         for ( const auto other_relation : rhs._relations )
             if ( this_relation == other_relation )
                 same_relations++;
+
     // node percentage #(same nodes)  / total ( nodes ) 
     float node_prc = (2.f * (float)(same_concepts + same_relations)) / 
-                     (float)(this->_concepts.size()+rhs._concepts.size()+this->_relations.size()+rhs._relations.size());
+                     (float)(this->_concepts.size()+rhs._concepts.size()
+                     + this->_relations.size()+rhs._relations.size());
+
     return node_prc;
 }
 
@@ -350,9 +358,11 @@ float ConceptualGraph::edge_similarity(const ConceptualGraph & rhs) const
         for ( const auto other_edge : rhs._edges )
             if ( this_edge == other_edge )
                 same_edges++;
+
     // edge percentage #(same edges) / total ( edges )
     float edge_prc = (2.f * (float)same_edges) / 
                      (float)( this->_edges.size() + rhs._edges.size() );
+
     return edge_prc;
 }
 
@@ -371,7 +381,8 @@ void  ConceptualGraph::save( const std::string fname ) const
         ar & _edges;
 		ar & _guid;
      }
-     else throw std::runtime_error("can't open file for saving");;
+     else 
+        throw std::runtime_error("can't open file for saving");;
 }
 
 void  ConceptualGraph::load( const std::string fname )
@@ -385,12 +396,13 @@ void  ConceptualGraph::load( const std::string fname )
 		ar & _edges;
 		ar & _guid;
     }
-    else throw std::runtime_error("can't open file for loading");
+    else
+        throw std::runtime_error("can't open file for loading");
 }
 
 boost::uuids::uuid ConceptualGraph::guid() const
 {
-    return boost::lexical_cast<boost::uuids::uuid>( _guid );
+    return boost::lexical_cast<boost::uuids::uuid>(_guid);
 }
 
 void ConceptualGraph::print() const

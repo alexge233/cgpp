@@ -61,13 +61,15 @@ public:
     /// Equality operator - Case insensitive
     bool operator==(const Token & rhs) const
     {
-        return strcasecmp(this->_value.c_str(), rhs._value.c_str()) == 0 ? true : false;
+        return strcasecmp(this->_value.c_str(), rhs._value.c_str()) 
+               == 0 ? true : false;
     }
 
     /// Inequality operator - Case insensitive
     bool operator!=(const Token & rhs) const
     {
-        return strcasecmp(this->_value.c_str(), rhs._value.c_str()) != 0 ? true : false;
+        return strcasecmp(this->_value.c_str(), rhs._value.c_str()) 
+               != 0 ? true : false;
     }
 
     /// Sorting Operator

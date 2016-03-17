@@ -42,24 +42,15 @@ public:
 	/// Sort comparsion based on Relation's Token Label
     bool operator<(const Relation & rhs) const
     {
-        return static_cast<const Node&>(*this) < static_cast<const Node&>(rhs);
+        return (static_cast<const Node&>(*this) 
+                < static_cast<const Node&>(rhs));
     }
 
 	/// Concatenate two Relations into a new One.
-	Relation operator+(const Relation &rhs)
-	{
-		/// TODO: allocate and assign values, token index and json id (if applicable)
-		/// WARNING: what happens to edges? Do we invalidate them?
-		/// This is complex and tricky
-	}
+	// Relation operator+(const Relation &rhs){}
 
 	/// Addition (concatenation) of multiple Relations into a new one
-	Relation operator+(std::vector<Relation> & nodes)
-	{
-		/// TODO: allocate and assign values, token index and json id (if applicable)
-		/// TODO: should I use a vector param, deque or maybe a map/set ?
-		/// WARNING: what happens to edges? Do we invalidate them?
-	}
+	// Relation operator+(std::vector<Relation> & nodes){}
     
     ~Relation() = default;
 
@@ -77,7 +68,9 @@ private:
         
     bool is_equal(const Object & rhs) const
     {
-        return this->_token_index == static_cast<const Relation&>(rhs)._token_index;
+        return (this->_token_index == 
+                static_cast<const Relation&>(rhs)._token_index)
+                && (this->_token == static_cast<const Relation&>(rhs)._token);
     }
 
     template<class Archive>
