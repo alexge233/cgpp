@@ -1,18 +1,19 @@
-TODO [branch development]:
+TODO [ASAP!!!]:
 
-    1 - Remove rapidjson and use boost
-	    - deserialise using Boost (load from json)
-        - rapidjson is used in class `ConceptualGraph` only
-        - serialise using Boost (save to json) instead of manually creating them
-
-    2 - Implement Utilities: 
+    1 - Implement Utilities: 
 		- Cluster of Nodes: find for current node, what other nodes it has common edges with.
-		- Fully connected: are two groups (vectors, arrays, lists) of Nodes (R,C || C,R) fully connected by edges?
+        - Cluster of Concepts (to Relations)
+        - Cluster of Relations (to Concepts)
 
-    3 - IMPORTANT: Add Unit Tests for basic classes: Token, Node, Concept, Relation, ConceptualGraph
+    2 - IMPORTANT: Add Unit Tests for basic classes: Token, Node, Concept, Relation, ConceptualGraph
         - constructor tests
         - operator tests
         - use Boost and verify there is no undefined behaviour
+
+    3 - Remove rapidjson and use boost
+	    - deserialise using Boost (load from json)
+        - rapidjson is used in class `ConceptualGraph` only
+        - serialise using Boost (save to json) instead of manually creating them
 
 [DEADLINE 29th MARCH 2016]
 

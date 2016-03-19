@@ -96,13 +96,12 @@ std::vector<Relation> relations_diff(
 
 std::vector<cluster<Concept>> concept_clusters(const ConceptualGraph & graph)
 {
-    // local copy of concepts
     auto concepts = graph.concepts();
+    std::vector<cgpp::cluster<cgpp::Concept>> clusters;
 
-    // edge comparison lambda - use for a node combination
-    std::function<bool(const std::vector<Edge>&, 
-                       const std::vector<Edge>&)> lambda =
-    [=](const std::vector<Edge> & lhs, const std::vector<Edge> & rhs)
+    std::function<bool(const std::vector<Relation>&, 
+                       const std::vector<Relation>&)> lambda =
+    [=](const std::vector<Relation> & lhs, const std::vector<Relation> & rhs)
     {
         if (lhs.size() == rhs.size())
             return std::equal(lhs.begin(), lhs.end(), rhs.begin());
@@ -110,29 +109,68 @@ std::vector<cluster<Concept>> concept_clusters(const ConceptualGraph & graph)
             return false;
     };
 
-    // fw iter
     for (unsigned int i = 0; i < concepts.size(); i++)
     {
+        cgpp::cluster<cgpp::Concept> group;
+        group.nodes.push_back(concepts[i]);
         auto edges_i = graph.has_edges(concepts[i]);
-
         for (unsigned int k = i + 1; k < concepts.size(); k++)
         {
             if (k < concepts.size())
             {
-                // does nodes[i].edges == nodes[k].edges ?
-                // if yes, then we have append to cluste[i]
-                // problem is this creates duplicate clusters
-                // if not, then move on to next node[k]
-                // TODO
+                auto edges_k = graph.has_edges(concepts[k]);
+                if (lambda(edges_i, edges_k))
+                    group.nodes.push_back(concepts[k]);
             }
         }
+        // more than 1 (no single concepts can form a cluster)
+        if (group.nodes.size() > 1)
+            clusters.push_back(group);
     }
+
+    // filter: TODO clusters will contain supersets and subsets.
+    //              subsets will have identical concepts multiple times.
+
+    return clusters;
 }
 
 std::vector<cluster<Relation>> relation_clusters(const ConceptualGraph & graph)
 {
-    // TODO
-}
+    auto relations = graph.relations();
+    std::vector<cgpp::cluster<cgpp::Relation>> clusters;
 
+    std::function<bool(const std::vector<Concept>&, 
+                       const std::vector<Concept>&)> lambda =
+    [=](const std::vector<Concept> & lhs, const std::vector<Concept> & rhs)
+    {
+        if (lhs.size() == rhs.size())
+            return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+        else
+            return false;
+    };
+
+    for (unsigned int i = 0; i < relations.size(); i++)
+    {
+        cgpp::cluster<cgpp::Relation> group;
+        group.nodes.push_back(relations[i]);
+        auto edges_i = graph.has_edges(relations[i]);
+        for (unsigned int k = i + 1; k < relations.size(); k++)
+        {
+            if (k < relations.size())
+            {
+                auto edges_k = graph.has_edges(relations[k]);
+                if (lambda(edges_i, edges_k))
+                    group.nodes.push_back(relations[k]);
+            }
+        }
+        // more than 1 (no single relations can form a cluster)
+        if (group.nodes.size() > 1)
+            clusters.push_back(group);
+    }
+
+    // filter: TODO clusters will contain supersets and subsets.
+    //              subsets will have identical concepts multiple times.
+
+    return clusters;}
 }
 }

@@ -8,6 +8,24 @@ namespace cgpp
 template <class N> struct cluster
 {
 	std::vector<N> nodes;
+
+    /// \brief `this` is subset of `arg`
+    bool is_subset_of(const cluster &arg) const
+    {
+        std::vector<N> same;
+        std::vector<N> lhs = this->nodes;
+        std::vector<N> rhs = arg.nodes;
+
+        std::set_intersection(lhs.begin(),
+                              rhs.end(),
+                              arg.nodes.begin(),
+                              arg.nodes.end(),
+                              std::inserter(same, same.begin()));
+
+        // if the intersection is this nodes (identical)
+        // then this is a subset of arg
+        return (same == lhs ? true : false);
+    }
 };
 
 namespace util
@@ -35,11 +53,11 @@ std::vector<Relation> relation_diff(
 
 /// @brief Find clusters of concepts which have identical edges.
 /// @return a vector of clusters
-std::vector<cluster<Concept>> concept_clusters(const std::vector<Concept> nodes);
+std::vector<cluster<Concept>> concept_clusters(const ConceptualGraph & graph);
 
 /// @brief Find clusters of relations which have identical edges.
 /// @return a vector of clusters
-std::vector<cluster<Relation>> relation_clusters(const std::vector<Relation> nodes);
+std::vector<cluster<Relation>> relation_clusters(const ConceptualGraph & graph);
 
 }
 }

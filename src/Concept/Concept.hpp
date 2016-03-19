@@ -11,20 +11,17 @@ class Concept : public Node
 {
 public:
 
-    Concept() : Node() 
-	{}
+    Concept() : Node(){}
 
     /// Construct with Token
-    Concept(Token & token) : Node(token)
-	{}
+    Concept(Token & token) : Node(token){}
 
     /// Construct using Token and Token Index
     Concept(
               Token & token,
               int index
            )
-    : Node(token),_token_index(index)
-    {}
+    : Node(token),_token_index(index){}
 
 	/// Copy Constructor
     Concept(const Concept & rhs) : Node(rhs)
@@ -52,7 +49,6 @@ public:
 
 	// TODO. [dev] Addition (concatenation) of two Concepts creates a new one
 	// Concept operator+(const Concept &rhs){}
-
 	// TODO. [dev] Addition (concatenation) of multiple Concepts into a new one
 	// Concept operator+(std::vector<Concept> & nodes){}
 

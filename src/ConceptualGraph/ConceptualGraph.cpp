@@ -421,34 +421,35 @@ void ConceptualGraph::print() const
 
 // 
 // Construct directly from a JSON string
-//
-
+// TODO: REPLACE WITH BOOST !!!
 ConceptualGraph::ConceptualGraph(const std::string json)
 {
     _json = json;
     rapidjson::Document doc;
     const char * txt = _json.c_str();
     doc.Parse<0>( txt );
-    if ( doc.IsObject() )
+    if (doc.IsObject())
     {
         // Check JSON has all needed members
-        if ( doc.HasMember( "version" ) &&
-             doc.HasMember( "guid" ) &&
-             doc.HasMember( "creator" ) &&
-             doc.HasMember( "relations") &&
-             doc.HasMember( "concepts") &&
-             doc.HasMember( "adjacencies") )
+        if ( doc.HasMember("version") &&
+             doc.HasMember("guid") &&
+             doc.HasMember("creator") &&
+             doc.HasMember("relations") &&
+             doc.HasMember("concepts") &&
+             doc.HasMember("adjacencies") )
         {
-            auto version = boost::lexical_cast<int>( doc["version"].GetString() );
-            if ( ConceptualGraph::_version == version )
+            auto version = boost::lexical_cast<int>(doc["version"].GetString());
+            if (ConceptualGraph::_version == version)
             {
                 // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
                 std::string uuid = doc["guid"].GetString();
                 static const boost::regex expr("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", 
                                                 boost::regex_constants::icase);
 
-                if ( boost::regex_match ( uuid, expr ) ) _guid = uuid;
-                else throw std::runtime_error ( "ConceptualGraph invalid UUID" );
+                if (boost::regex_match(uuid, expr))
+                    _guid = uuid;
+                else 
+                    throw std::runtime_error("ConceptualGraph invalid UUID");
 
                 // Parse Concepts first
                 _parse_concepts(doc);
@@ -457,11 +458,14 @@ ConceptualGraph::ConceptualGraph(const std::string json)
                 // Finally, parse Edges (adjacencies)
                 _parse_edges(doc);
             }
-            else throw std::runtime_error ( "ConceptualGraph JSON: wrong proto version" );
+            else 
+                throw std::runtime_error("ConceptualGraph JSON: wrong proto version");
         }
-        else throw std::runtime_error ( "ConceptualGraph JSON: missing member" );
+        else 
+            throw std::runtime_error("ConceptualGraph JSON: missing member");
     }
-    else throw std::runtime_error ( "ConceptualGraph JSON: not a valid object" ) ;
+    else 
+        throw std::runtime_error("ConceptualGraph JSON: not a valid object") ;
 }
 
 //

@@ -100,22 +100,6 @@ int main ( void )
 					 std::make_shared<Concept>(blue_node));
     graph2->print();
 
-	/*
-    std::cout << "Minimum Edges Connected for Graph: " << 
-				 util::min_edges_set(graph) << std::endl;
-    std::cout << "Minimum Edges Connected for Graph2: " << 
-				 util::min_edges_set(graph2) << std::endl;
-    std::cout << "Minimum Edges Connected for Graph3: " << 
-				 util::min_edges_set(graph3) << std::endl;
-	*/
-
-	/*
-    std::cout << "JSON for Graph" << std::endl;
-    std::cout << graph->json() << std::endl;
-    std::cout << "minified JSON for Graph" << std::endl;
-    std::cout << graph->minif_json() << std::endl;
-    */
-
     // Final TEST: try to serialise all graphs
 	std::vector<ConceptualGraph> graphs = { *graph, *graph2, *graph3 };
     std::ofstream output("graphs.bin");

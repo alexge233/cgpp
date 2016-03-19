@@ -9,10 +9,10 @@ int main()
 {
     try
     {
-        auto jsongraph = std::make_shared<cgpp::ConceptualGraph>( json );
+        auto jsongraph = std::make_shared<cgpp::ConceptualGraph>(json);
         jsongraph->print();
     }
-    catch ( std::exception & e )
+    catch (std::exception & e)
     {
         std::cerr << e.what() << std::endl;
     }

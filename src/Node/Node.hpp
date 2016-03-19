@@ -129,4 +129,20 @@ protected:
     }
 };
 }
+///
+/// \brief `std::hash` specialization for cgpp::Node
+///
+namespace std
+{
+template<> struct hash<cgpp::Node>
+{
+    inline size_t operator()(const cgpp::Node &arg) const
+    {
+       std::size_t seed = 0;
+       boost::hash_combine(seed, arg.label());
+       boost::hash_combine(seed, arg.token_index());
+       return seed;
+    }
+};
+}
 #endif
