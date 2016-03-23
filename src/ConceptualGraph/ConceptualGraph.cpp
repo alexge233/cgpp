@@ -407,16 +407,22 @@ boost::uuids::uuid ConceptualGraph::guid() const
 
 void ConceptualGraph::print() const
 {
-   std::cout << "∃(Gₜ): Gₜ(C)={";
-   for ( auto con : _concepts )
-        std::cout << con.as_token().value() << ",";
-   std::cout << "}, Gₜ(R)= {";
-   for ( auto rel : _relations )
-        std::cout << rel.as_token().value() << ",";
-   std::cout << "}, Gₜ(E)= {";
-   for ( auto edge : _edges )
-        std::cout << "[" << edge.from->as_token().value() << "→" << edge.to->as_token().value() << "],";
-   std::cout << "}" << std::endl;
+	std::cout << "∃(Gₜ): " << std::endl;
+	std::cout << "\tGₜ(C)={" << std::endl;
+	for ( auto con : _concepts )
+		std::cout << "\t\t" << con.as_token().value() << "," << std::endl;
+
+	std::cout <<  "\t}," << std::endl;;
+	std::cout << "\tGₜ(R)= {" << std::endl;
+	for ( auto rel : _relations )
+		std::cout << "\t\t" << rel.as_token().value() << "," << std::endl;
+
+	std::cout << "\t}," << std::endl;
+	std::cout << "\tGₜ(E)= {" << std::endl;
+	for ( auto edge : _edges )
+		std::cout << "\t\t[" << edge.from->as_token().value() 
+			      << " → " << edge.to->as_token().value() << "]," << std::endl;
+	std::cout << "\t}" << std::endl;
 }
 
 // 

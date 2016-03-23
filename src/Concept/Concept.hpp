@@ -41,7 +41,7 @@ public:
     }
 
 	/// Sort comparator based on Token (label & POS tag)
-    bool operator<(const Concept & rhs)
+    bool operator<(const Concept & rhs) const
     {
         return (static_cast<const Node&>(*this) 
                 < static_cast<const Node&>(rhs));

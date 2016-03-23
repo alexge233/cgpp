@@ -9,32 +9,39 @@ template <class N> struct cluster
 {
 	std::vector<N> nodes;
 
-    /// \brief `this` is subset of `arg`
-    bool is_subset_of(const cluster &arg) const
-    {
-        std::vector<N> same;
-        std::vector<N> lhs = this->nodes;
-        std::vector<N> rhs = arg.nodes;
+	std::vector<N> set_intersection(const cluster<N> rhs) const
+	{
+		std::vector<N> common;
+		std::vector<N> A = this->nodes;
+		std::vector<N> B = rhs.nodes;
+		std::sort(A.begin(), A.end());
+		std::sort(B.begin(), B.end());
+		std::set_intersection(A.begin(), A.end(),
+							  B.begin(), B.end(),
+							  std::inserter(common, common.begin()));
+		return common;
+	}
 
-        std::set_intersection(lhs.begin(),
-                              rhs.end(),
-                              arg.nodes.begin(),
-                              arg.nodes.end(),
-                              std::inserter(same, same.begin()));
-
-        // if the intersection is this nodes (identical)
-        // then this is a subset of arg
-        return (same == lhs ? true : false);
-    }
+	std::vector<N> set_difference(const cluster<N> rhs) const
+	{
+		std::vector<N> diff;
+		std::vector<N> A = this->nodes;
+		std::vector<N> B = rhs.nodes;
+		std::sort(A.begin(), A.end());
+		std::sort(B.begin(), B.end());
+		std::set_difference(A.begin(), A.end(),
+							B.begin(), B.end(),
+							std::inserter(diff, diff.begin()));
+		return diff;
+	}	
 };
 
 namespace util
 {
-/**
- * Check if each Node in Graph has at least one Edge
- * @note Each and every Node (Concept/Relation) must have minimum one edge
- * @warning This does NOT check if the graph is fully connected !
- */
+
+/// Check if each Node in Graph has at least one Edge
+/// @note Each and every Node (Concept/Relation) must have minimum one edge
+/// @warning This does NOT check if the graph is fully connected !
 bool min_edges_set(const ConceptualGraph & graph);
 
 /// @brief find different concepts
@@ -53,10 +60,12 @@ std::vector<Relation> relation_diff(
 
 /// @brief Find clusters of concepts which have identical edges.
 /// @return a vector of clusters
+/// @note returns sub-sets of super-cluster in order to provide variations
 std::vector<cluster<Concept>> concept_clusters(const ConceptualGraph & graph);
 
 /// @brief Find clusters of relations which have identical edges.
 /// @return a vector of clusters
+/// @note returns sub-sets of same super-cluster in order to provide variations
 std::vector<cluster<Relation>> relation_clusters(const ConceptualGraph & graph);
 
 }
