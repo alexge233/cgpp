@@ -92,9 +92,25 @@ std::vector<cluster<Concept>> concept_clusters(const ConceptualGraph & graph)
                     group.nodes.push_back(concepts[k]);
 			}
         }
-		// TODO: filter sub-sets somehow?
         if (group.nodes.size() > 1)
-			clusters.push_back(group);
+		{
+			bool add = true;
+			for (auto & lhs : clusters)
+			{
+				if (lhs.is_superset_of(group))						
+				{
+					add = false;
+					break;
+				}
+				else if (lhs.is_subset_of(group))
+				{
+					add = false;
+					lhs = group;
+					break;
+				}
+			}
+			if (add) clusters.push_back(group);
+		}
     }
     return clusters;
 }

@@ -33,6 +33,22 @@ template <class N> struct cluster
 							B.begin(), B.end(),
 							std::inserter(diff, diff.begin()));
 		return diff;
+	}
+
+	bool is_superset_of(const cluster<N> rhs) const
+	{
+		std::vector<N> A = this->nodes;
+		std::vector<N> B = rhs.nodes;
+		return std::includes(A.begin(), A.end(),
+							 B.begin(), B.end());
+	}
+
+	bool is_subset_of(const cluster<N> rhs) const
+	{
+		std::vector<N> A = this->nodes;
+		std::vector<N> B = rhs.nodes;
+		return std::includes(B.begin(), B.end(),
+							 A.begin(), A.end());
 	}	
 };
 
