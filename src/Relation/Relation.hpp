@@ -17,10 +17,7 @@ public:
     Relation(Token & token) : Node(token) {}
 
     /// Construct with Token & Token Index
-    Relation(
-                Token & token,
-                int index
-            )
+    Relation(Token & token, unsigned int index)
     : Node(token),_token_index(index)
     {}
 
@@ -48,8 +45,6 @@ public:
 
 	/// Concatenate two Relations into a new One.
 	// Relation operator+(const Relation &rhs){}
-
-	/// Addition (concatenation) of multiple Relations into a new one
 	// Relation operator+(std::vector<Relation> & nodes){}
     
     ~Relation() = default;
@@ -68,8 +63,7 @@ private:
         
     bool is_equal(const Object & rhs) const
     {
-        return (this->_token_index == 
-                static_cast<const Relation&>(rhs)._token_index)
+        return (this->_token_index == static_cast<const Relation&>(rhs)._token_index)
                 && (this->_token == static_cast<const Relation&>(rhs)._token);
     }
 

@@ -42,18 +42,14 @@ public:
     }
 
 	/// Construct with value and POS
-	Node(
-			const std::string & value,
-			const std::string & tag
-        )  
+	Node(const std::string & value, const std::string & tag)
     : _token(value,tag)
 	{
 		_json_id = boost::uuids::random_generator()();
 	}
 
 	/// Construct using Token
-    Node(Token token)
-	: _token(token)
+    Node(Token token): _token(token)
     {
         _json_id = boost::uuids::random_generator()();
     }
@@ -68,8 +64,7 @@ public:
 	/// Assignment
     Node & operator=(const Node & rhs) 
     {
-        if (this != &rhs)
-        {
+        if (this != &rhs){
 			this->_token = rhs._token;
             this->_json_id = rhs._json_id;
         }

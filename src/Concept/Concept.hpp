@@ -2,11 +2,10 @@
 #define _CGPP_Concept_HPP_
 #include "Includes.hxx"
 namespace cgpp {
-/**
- * @brief Concept node as described by J. Sowa
- * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- * @date 22-December-2015
- */
+/// @brief Concept node as described by J. Sowa
+/// @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
+/// @date 22-December-2015
+///
 class Concept : public Node
 {
 public:
@@ -17,11 +16,8 @@ public:
     Concept(Token & token) : Node(token){}
 
     /// Construct using Token and Token Index
-    Concept(
-              Token & token,
-              int index
-           )
-    : Node(token),_token_index(index){}
+    Concept(Token token, unsigned int index)
+    : Node(token), _token_index(index){}
 
 	/// Copy Constructor
     Concept(const Concept & rhs) : Node(rhs)
@@ -49,7 +45,6 @@ public:
 
 	// TODO. [dev] Addition (concatenation) of two Concepts creates a new one
 	// Concept operator+(const Concept &rhs){}
-	// TODO. [dev] Addition (concatenation) of multiple Concepts into a new one
 	// Concept operator+(std::vector<Concept> & nodes){}
 
     ~Concept() = default;
@@ -65,12 +60,13 @@ private:
     friend class ConceptualGraph;
 	friend class boost::serialization::access;
 
+	// token index must be positive
     int _token_index = -1;
     
+	/// @see ABC Object
     bool is_equal(const Object &rhs) const
     {
-        return (this->_token_index ==
-                static_cast<const Concept&>(rhs)._token_index)
+        return (this->_token_index == static_cast<const Concept&>(rhs)._token_index)
                 && (this->_token == static_cast<const Concept&>(rhs)._token);
     }
 

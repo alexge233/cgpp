@@ -42,14 +42,6 @@ template <class N> struct cluster
 		return std::includes(A.begin(), A.end(),
 							 B.begin(), B.end());
 	}
-
-	bool is_subset_of(const cluster<N> rhs) const
-	{
-		std::vector<N> A = this->nodes;
-		std::vector<N> B = rhs.nodes;
-		return std::includes(B.begin(), B.end(),
-							 A.begin(), A.end());
-	}	
 };
 
 namespace util

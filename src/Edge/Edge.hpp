@@ -6,11 +6,12 @@ namespace cgpp
 ///
 /// @brief Edge between Concept and Relation, or Relation and Concept
 /// @date 22-December-2015
+/// @note the @struct Edge is the owner of shared pointers
+///	@warning! Edge can have *same-typed* Nodes, but @class ConceptualGraph won't allow that
 ///
 struct Edge
 {
-	friend class boost::serialization::access;
-
+	// from Node and To node, adjacency matrix row
 	std::shared_ptr<Node> from;
 	std::shared_ptr<Node> to;
 
@@ -19,23 +20,20 @@ struct Edge
     bool operator==(const Edge & rhs) const
     {
         assert(this->from && this->to && rhs.from && rhs.to);
-
-        // comparison delegated to object::operator==
-        return *this->from == *rhs.from && 
-			   *this->to == *rhs.to;
+        return *this->from == *rhs.from && *this->to == *rhs.to;
     }
 
 	/// inequality
     bool operator!=(const Edge & rhs) const
     {
-        return *this == rhs;
+		assert(this->from && this->to && rhs.from && rhs.to);
+        return *this->from != *rhs.from && *this->to != *rhs.to;
     }
 
     Edge & operator=(const Edge & rhs)
     {
         assert(rhs.from && rhs.to);
-        if (this != &rhs)
-        {
+        if (this != &rhs){
             this->from = std::make_shared<Node>(*rhs.from);
             this->to = std::make_shared<Node>(*rhs.to);
         }
@@ -57,6 +55,8 @@ struct Edge
         return (*this->from < *rhs.from 
                && *this->to < *rhs.to);
     }
+
+	friend class boost::serialization::access;
 
     template <class Archive> 
 	void serialize(Archive & ar, const unsigned int)

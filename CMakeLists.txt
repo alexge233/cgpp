@@ -36,6 +36,9 @@ set (SOURCES ${SOURCES} src/ConceptualGraph/ConceptualGraph.cpp
 
 add_library(lcgpp OBJECT ${SOURCES})
 
+# Regardless of static or shared cgpp library, boost is always dynamically linked.
+add_definitions(-DBOOST_TEST_DYN_LINK) 
+
 if (${STATIC})
     message(STATUS "Building static library")
     add_library(cgpp.${cgpp_VERSION_MAJOR}.${cgpp_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lcgpp>)
@@ -52,7 +55,6 @@ endif()
 # Enable 'make test'
 if (${BUILD_TESTS})
     enable_testing()
-	link_directories(${Boost_LIBRARY_DIRS})
 
     message(STATUS "building tests")
     add_executable(construct tests/construct.cpp)
@@ -65,15 +67,15 @@ if (${BUILD_TESTS})
     add_test(Comparison comparison)
     add_executable(utils tests/utils.cpp)
     add_test(utilities utils)
-    add_executable(unit_tests tests/unit_tests.cpp)
-    add_test(unit_testing unit_tests)
+    add_executable(class_test tests/class_test.cpp)
+    add_test(unit_testing class_test)
 
     target_link_libraries(comparison ${LIBOBJ})
     target_link_libraries(construct ${LIBOBJ})
     target_link_libraries(jsontest ${LIBOBJ})
     target_link_libraries(deserialise ${LIBOBJ})
     target_link_libraries(utils ${LIBOBJ})
-	target_link_libraries(unit_tests ${LIBOBJ} ${Boost_LIBRARIES})
+	target_link_libraries(class_test ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBOBJ})
 else()
     message(STATUS "not building tests, you can make tests with: \"-DBUILD_TESTS=ON\"")
 endif()

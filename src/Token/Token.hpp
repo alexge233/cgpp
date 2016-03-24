@@ -32,8 +32,7 @@ public:
 	/// Assignment
     Token & operator=(const Token & token)
     {
-        if (this != &token) // prevent self-assignment
-        {
+        if (this != &token) {
             this->_value = token._value;
             this->_postag = token._postag;
         }
