@@ -161,18 +161,31 @@ BOOST_AUTO_TEST_CASE(edge_test)
 	auto ptr1 = std::make_shared<cgpp::Concept>(c_a1);
 	auto ptr2 = std::make_shared<cgpp::Relation>(r_a1);
 
-	cgpp::Edge e1;
-	cgpp::Edge e2;
-    e1.from = ptr1;
-	e1.to = ptr2;
-	e2.from = ptr2;
-	e2.to = ptr1;	
+	cgpp::Edge e1{ptr1, ptr2};
+	cgpp::Edge e2{ptr2, ptr1};
 
-	// BUG - doesn't work!
-	BOOST_CHECK(e1 != e2);	
 	BOOST_CHECK(e1 == e1);
+    BOOST_CHECK(e2 == e2);
+	BOOST_CHECK(e1 != e2);
+    BOOST_CHECK(e2 != e1);
+
+    cgpp::Edge e3 = e1;
+    cgpp::Edge e4 = e2;
+	BOOST_CHECK(e1 == e3);
+    BOOST_CHECK(e2 == e4);
+	BOOST_CHECK(e3 != e4);
 }
 
-// Construct a ConceptualGraph
+// TODO: Construct a ConceptualGraph and use operators
+BOOST_AUTO_TEST_CASE(graph_test)
+{
+    //  e.g., create graphs
+    //             add nodes (concepts, relations)
+    //             add edges
+    //             check has concepts, relations
+    //             check has edges
+    //             check equality
+    //             check similarity
+}
 
 BOOST_AUTO_TEST_SUITE_END( )

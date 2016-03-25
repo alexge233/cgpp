@@ -1,9 +1,8 @@
 TODO [ASAP!!!]:
 
-    1 - IMPORTANT: Add Unit Tests for basic classes: Token, Node, Concept, Relation, ConceptualGraph
-        - constructor tests
-        - operator tests
-        - use Boost and verify there is no undefined behaviour
+    1 - IMPORTANT:
+        - Add Class Unit Tests for `ConceptualGraph` (construct, operators)
+        - Add Graph Logic Tests for `ConceptualGraph` (add nodes, add edges, similarity, metrics)
 
     2 - Remove rapidjson and use boost
 	    - deserialise using Boost (load from json)
