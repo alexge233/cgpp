@@ -176,16 +176,29 @@ BOOST_AUTO_TEST_CASE(edge_test)
 	BOOST_CHECK(e3 != e4);
 }
 
-// TODO: Construct a ConceptualGraph and use operators
+// Construct a ConceptualGraph and use operators
 BOOST_AUTO_TEST_CASE(graph_test)
 {
-    //  e.g., create graphs
-    //             add nodes (concepts, relations)
-    //             add edges
-    //             check has concepts, relations
-    //             check has edges
-    //             check equality
-    //             check similarity
+    BOOST_TEST_MESSAGE("Conceptual Graph test");
+
+	std::string value1 = "concept";
+	std::string tag1 = "tag1";
+	std::string value2 = "relation";
+	std::string tag2 = "tag2";
+
+	auto tok1 = cgpp::Token(value1, tag1);
+	cgpp::Concept c_a1 = cgpp::Concept(tok1);
+	auto tok2 = cgpp::Token(value2, tag2);
+	cgpp::Relation r_a1 = cgpp::Relation(tok2);
+
+	auto ptr1 = std::make_shared<cgpp::Concept>(c_a1);
+	auto ptr2 = std::make_shared<cgpp::Relation>(r_a1);
+	cgpp::Edge e1{ptr1, ptr2};
+	cgpp::Edge e2{ptr2, ptr1};
+
+    // TODO: construct a couple of graphs, add concepts, relations
+    //       check them for equality, inequality, isomorphism
+    // 
 }
 
-BOOST_AUTO_TEST_SUITE_END( )
+BOOST_AUTO_TEST_SUITE_END()

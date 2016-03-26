@@ -1,13 +1,12 @@
 #ifndef _CGPP_ConceptualGraph_HPP_
 #define _CGPP_ConceptualGraph_HPP_ 
 #include "Includes.hxx"
-namespace cgpp {
-/**
- * @brief Conceptual Graph class as described by J.Sowa
- * @class ConceptualGraph
- * @date 15-December-2015
- * @author Alex Gkiokas <a.gkiokas@warwick.ac.uk>
- */
+namespace cgpp
+{
+/// @brief Conceptual Graph class as described by J.Sowa
+/// @class ConceptualGraph
+/// @date 15-December-2015
+///
 class ConceptualGraph
 {
 public:
@@ -35,12 +34,14 @@ public:
     bool add_relation(Relation relation);
 
     /// Add a new Edge (connect Relation to Concept)
+    /// TODO: pass a reference and internally allocate pointers to edge
     bool add_edge(
                     const std::shared_ptr<Relation>, 
                     const std::shared_ptr<Concept>
                  );
 
     /// Add a new Edge (connect Concept to Relation)
+    /// TODO: pass a reference and internally allocate pointers to edge
     bool add_edge(
                     const std::shared_ptr<Concept>, 
                     const std::shared_ptr<Relation>
