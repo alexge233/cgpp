@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE ObjectTest
 #include <boost/test/unit_test.hpp>
 #include "../src/cgpp"
+#include "json.hpp"
 
 BOOST_AUTO_TEST_SUITE(object_test)
 
@@ -196,9 +197,22 @@ BOOST_AUTO_TEST_CASE(graph_test)
 	cgpp::Edge e1{ptr1, ptr2};
 	cgpp::Edge e2{ptr2, ptr1};
 
-    // TODO: construct a couple of graphs, add concepts, relations
-    //       check them for equality, inequality, isomorphism
-    // 
+    auto graph1 = cgpp::ConceptualGraph();
+    graph1.add_concept(c_a1);
+    graph1.add_relation(r_a1);
+    graph1.add_edge(c_a1, r_a1);
+
+    auto graph1c1 = cgpp::ConceptualGraph(graph1);
+    auto graph1c2 = graph1c1;
+
+    BOOST_CHECK(graph1 == graph1c1);
+    BOOST_CHECK(graph1 == graph1c2);
+    BOOST_CHECK(graph1c1 == graph1c2);
+
+    auto jgraph = cgpp::ConceptualGraph(json);
+    BOOST_CHECK(jgraph != graph1);
+
+    // TODO: check inequality, similarity, etc.
 }
 
 BOOST_AUTO_TEST_SUITE_END()

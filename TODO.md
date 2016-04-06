@@ -4,8 +4,6 @@
     * Add Class Unit Tests for `ConceptualGraph` (construct, operators)
     * Add Graph Logic Tests for `ConceptualGraph` (add nodes, add edges, similarity, metrics)
 
-**DEADLINE 29th MARCH 2016**
-
 #TODO: 0.4.0
 
 1. Remove rapidjson and use boost

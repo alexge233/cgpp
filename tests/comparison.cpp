@@ -19,11 +19,11 @@ int main ( void )
     graph->add_concept( sky_node );
     graph->add_concept( blue_node );
     graph->add_relation( is_node );
+    
     // Connect them
-    graph->add_edge(std::make_shared<Concept>(sky_node), 
-					std::make_shared<Relation>(is_node));
-    graph->add_edge(std::make_shared<Relation>(is_node),
-					std::make_shared<Concept>(blue_node));
+    graph->add_edge(sky_node, is_node);
+    graph->add_edge(is_node, blue_node);
+
     // manually populate the empty graph
     Token sea = Token( "sea", "NA" );
     auto sea_node = Concept(sea, 0);
@@ -33,17 +33,14 @@ int main ( void )
     graph2->add_concept( blue_node );
     graph2->add_relation( is_node );
     // Connect them
-    graph2->add_edge(std::make_shared<Concept>(sea_node), 
-					 std::make_shared<Relation>(is_node));
-    graph2->add_edge(std::make_shared<Relation>(is_node), 
-					 std::make_shared<Concept>(blue_node));
+    graph2->add_edge(sea_node, is_node);
+    graph2->add_edge(is_node, blue_node);
     auto graph3 = std::make_shared<ConceptualGraph>();
-    graph3->add_concept( sea_node );
-    graph3->add_concept( blue_node );
-    graph3->add_relation( is_node );
+    graph3->add_concept(sea_node);
+    graph3->add_concept(blue_node);
+    graph3->add_relation(is_node);
     // Connect them
-    graph3->add_edge(std::make_shared<Concept>(sea_node), 
-					 std::make_shared<Relation>(is_node));
+    graph3->add_edge(sea_node, is_node);
     // print
     graph->print();
     graph2->print();

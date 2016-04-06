@@ -24,6 +24,9 @@ public:
     /// Identical Graph operator: comparison of Concepts, Relations, Edges by Value and Index
     bool operator==(const ConceptualGraph &) const;
 
+    /// Non-Identical graphs
+    bool operator!=(const ConceptualGraph &) const;
+
     /// Isomorphic Graph operator: Concept & Relation perumutations are allowed
     bool operator|=(const ConceptualGraph &) const;
 
@@ -34,18 +37,10 @@ public:
     bool add_relation(Relation relation);
 
     /// Add a new Edge (connect Relation to Concept)
-    /// TODO: pass a reference and internally allocate pointers to edge
-    bool add_edge(
-                    const std::shared_ptr<Relation>, 
-                    const std::shared_ptr<Concept>
-                 );
+    bool add_edge(const Relation & relation, const Concept & concept);
 
     /// Add a new Edge (connect Concept to Relation)
-    /// TODO: pass a reference and internally allocate pointers to edge
-    bool add_edge(
-                    const std::shared_ptr<Concept>, 
-                    const std::shared_ptr<Relation>
-                 );
+    bool add_edge(const Concept & concept, const Relation & relation);
 
     /// Get Graph's Concepts
     std::vector<Concept> concepts() const;
