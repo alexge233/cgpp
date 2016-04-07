@@ -212,7 +212,23 @@ BOOST_AUTO_TEST_CASE(graph_test)
     auto jgraph = cgpp::ConceptualGraph(json);
     BOOST_CHECK(jgraph != graph1);
 
-    // TODO: check inequality, similarity, etc.
+    BOOST_CHECK(graph1.concepts().size() == 1);
+    BOOST_CHECK(graph1.relations().size() == 1);
+    BOOST_CHECK(graph1.edges().size() == 1);
+
+    BOOST_CHECK(jgraph.concepts().size() == 2);
+    BOOST_CHECK(jgraph.relations().size() == 2);
+    BOOST_CHECK(jgraph.edges().size() == 3);
+
+    auto graph1c4 = cgpp::ConceptualGraph(graph1);
+    BOOST_CHECK(graph1c4.concepts().size() == 1);
+    BOOST_CHECK(graph1c4.relations().size() == 1);
+    BOOST_CHECK(graph1c4.edges().size() == 1);
+
+    auto graph2 = cgpp::ConceptualGraph(jgraph);
+    BOOST_CHECK(graph2.concepts().size() == 2);
+    BOOST_CHECK(graph2.relations().size() == 2);
+    BOOST_CHECK(graph2.edges().size() == 3);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

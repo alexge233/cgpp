@@ -263,26 +263,27 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
     unsigned int c_size = this->_concepts.size()+rhs._concepts.size();
     unsigned int r_size = this->_relations.size()+rhs._relations.size();
     unsigned int e_size = this->_edges.size()+rhs._edges.size();
+    unsigned int v_size = c_size + r_size;
 
     // J(C,C') and J(R,R')
     float j_c = (float)c_same / (float)(c_size - c_same);
     float j_r = (float)r_same / (float)(r_size - r_same);
 
-    // TODO: Fix & add weight for each ratio don't divide by two
-    // @see `tested` branch on github - it has the correct formula
-
     // normalise node Jaccard = J(V,V')
-    float j_v = (j_c + j_r) / 2.f;
+    float j_v = (c_size*j_c + r_size*j_r) / (c_size+r_size);
 
     // J(E,E')
     float j_e = (float)e_same / (float)(e_size - e_same);
 
-    // return normalised Jacard = J(G,G')
-    return (j_v + j_e) / 2.f;
+    // |C| * J(C,C') + |R| * J(R,R') + |E| * J(E,E')
+    // ---------------------------------------------
+    //              |C| + |R| + |E|
+    return (v_size*j_v + e_size*j_e) / (v_size+e_size);
 }
 
 float ConceptualGraph::sorensen_coeff(const ConceptualGraph & rhs) const
 {
+    //     `S(G,G') = 2 |G ∩ G'| / |G| + |G'|`
     return (node_similarity(rhs) + edge_similarity(rhs)) / 2.f;
 }
 
