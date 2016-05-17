@@ -42,6 +42,11 @@ template <class N> struct cluster
 		return std::includes(A.begin(), A.end(),
 							 B.begin(), B.end());
 	}
+
+    bool operator==(const cluster<N> rhs) const
+    {
+        return this->nodes == rhs.nodes;
+    }
 };
 
 namespace util

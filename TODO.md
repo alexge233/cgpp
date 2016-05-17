@@ -4,6 +4,9 @@
     * Add Class Unit Tests for `ConceptualGraph` (construct, operators)
     * Add Graph Logic Tests for `ConceptualGraph` (add nodes, add edges, similarity, metrics)
 
+# TODO: 0.3.1
+    * Add distance between tokens(either a functor for graphs, or a utility)
+
 #TODO: 0.4.0
 
 1. Remove rapidjson and use boost
