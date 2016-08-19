@@ -20,14 +20,14 @@ struct Edge
     bool operator==(const Edge & rhs) const
     {
         assert(this->from && this->to && rhs.from && rhs.to);
-        return *this->from == *rhs.from && *this->to == *rhs.to;
+        return (*this->from == *rhs.from) && (*this->to == *rhs.to);
     }
 
 	/// inequality
     bool operator!=(const Edge & rhs) const
     {
 		assert(this->from && this->to && rhs.from && rhs.to);
-        return *this->from != *rhs.from && *this->to != *rhs.to;
+        return (*this == rhs ? false : true);
     }
 
     Edge & operator=(const Edge & rhs)
@@ -43,17 +43,15 @@ struct Edge
 	/// Sort comparator based on both Node Token labels
     bool operator<(const Edge & rhs) const
     {
-        assert(rhs.from && rhs.to);
-        return (*this->from) < (*rhs.from) 
-               && (*this->to) < (*rhs.to);
+        assert(this->from && this->to && rhs.from && rhs.to);
+        return (*this->from) < (*rhs.from) && (*this->to) < (*rhs.to);
     }
 
 	/// Sort comparator (non-const) 
     bool operator<(const Edge & rhs)
     {
         assert(this->from && this->to && rhs.from && rhs.to);
-        return (*this->from < *rhs.from 
-               && *this->to < *rhs.to);
+        return (*this->from < *rhs.from && *this->to < *rhs.to);
     }
 
 	friend class boost::serialization::access;
@@ -65,6 +63,20 @@ struct Edge
 		ar & to;
     }
 
+};
+}
+namespace std
+{
+template <>
+struct hash<cgpp::Edge>
+{
+    size_t operator()(const cgpp::Edge & rhs) const
+    {
+        std::size_t seed = 0;
+        boost::hash_combine(seed, *rhs.from);
+        boost::hash_combine(seed, *rhs.to);
+        return seed;
+    }
 };
 }
 #endif

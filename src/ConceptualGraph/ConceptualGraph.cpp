@@ -47,6 +47,11 @@ bool ConceptualGraph::operator==(const ConceptualGraph & rhs) const
     return concepts && relations && edges;
 }
 
+bool ConceptualGraph::operator!=(const ConceptualGraph & rhs) const
+{
+    return (*this == rhs ? false : true);
+}
+
 bool ConceptualGraph::operator|=(const ConceptualGraph & rhs) const
 {
     bool concepts = false, relations = false;
@@ -146,64 +151,59 @@ bool ConceptualGraph::add_relation(Relation relation)
     return false;
 }
 
-bool ConceptualGraph::add_edge (
-                                const std::shared_ptr<Relation> relation,
-                                const std::shared_ptr<Concept> concept
-                              )
+bool ConceptualGraph::add_edge(const Relation& relation, const Concept& concept)
 {
-    assert(concept && relation);
-    auto c_it = std::find(_concepts.begin(), _concepts.end(), *concept);
-    auto r_it = std::find(_relations.begin(), _relations.end(), *relation);
+    auto e_it = std::find_if(_edges.begin(),_edges.end(),
+                             [&](const Edge & rhs)
+                             {return *rhs.from == relation && *rhs.to == concept;});
 
-    // Both exist
-    if (c_it != _concepts.end() && r_it != _relations.end())
-    {
-        if (std::find_if(_edges.begin(),_edges.end(),
-                         [&]( const Edge & rhs )
-                         { return *rhs.from == *relation && *rhs.to == *concept; }) 
-						== _edges.end())
-        {
-            // create new edge: [Relation,Concept]
-            Edge edge = { relation, concept };
-            _edges.push_back( edge );
-            return true;
-        }
+    if (e_it != _edges.end()){
+        return false;
     }
-    // TODO: throw runtime exception
     else
-        std::cerr << "Warning AddEdge: Concept or Relation doesn't exist in graph,\n\
-		Edge not created" << std::endl;
-    return false;
+    {
+        auto c_it = std::find(_concepts.begin(), _concepts.end(), concept);
+        auto r_it = std::find(_relations.begin(), _relations.end(), relation);
+
+        if (c_it == _concepts.end()){
+            this->add_concept(concept);
+        }
+        if (r_it == _relations.end()){
+            this->add_relation(relation);
+        }
+        Edge edge = {std::make_shared<cgpp::Relation>(relation), 
+                     std::make_shared<cgpp::Concept>(concept)};
+        _edges.push_back(edge);
+        return true;
+    }
 }
 
-bool ConceptualGraph::add_edge (
-                                const std::shared_ptr<Concept> concept,
-                                const std::shared_ptr<Relation> relation
-                              )
+bool ConceptualGraph::add_edge(const Concept& concept, const Relation& relation)
 {
-    assert(concept && relation);
-    auto c_it = std::find(_concepts.begin(), _concepts.end(), *concept);
-    auto r_it = std::find(_relations.begin(), _relations.end(), *relation);
-    // Both exist
-    if ( c_it != _concepts.end() && r_it != _relations.end() )
-    {
-        // Find if edge already exists
-        if (std::find_if(_edges.begin(),_edges.end(),
-                        [&]( const Edge & rhs )
-                        {return *rhs.from == *concept && *rhs.to == *relation;}) 
-						== _edges.end())
-        {
-            // create new edge: [Concept,Relation]
-            Edge edge = { concept, relation };
-            _edges.push_back( edge );
-            return true;
-        }
+    auto e_it = std::find_if(_edges.begin(),_edges.end(),
+                             [&](const Edge & rhs)
+                             {return *rhs.from == concept && *rhs.to == relation;});
+    
+    if (e_it != _edges.end()){
+        return false;
     }
-    // TODO: throw runtime exception
+    // doesn't exist
     else
-        std::cerr << "Warning AddEdge: Concept or Relation doesn't exist in graph,\n\
-		Edge not created" << std::endl;
-    return false;
+    {
+        auto c_it = std::find(_concepts.begin(), _concepts.end(), concept);
+        auto r_it = std::find(_relations.begin(), _relations.end(), relation);
+
+        if (c_it == _concepts.end()){
+            this->add_concept(concept);
+        }
+        if (r_it == _relations.end()){
+            this->add_relation(relation);
+        }
+        Edge edge = {std::make_shared<Concept>(concept),
+                     std::make_shared<Relation>(relation)};
+        _edges.push_back(edge);
+        return true;
+    }
 }
 
 std::vector<Concept> ConceptualGraph::concepts() const
@@ -271,19 +271,22 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
     unsigned int r_size = this->_relations.size()+rhs._relations.size();
     // E + E'
     unsigned int e_size = this->_edges.size()+rhs._edges.size();
+    unsigned int v_size = c_size + r_size;
 
     // J(C,C') and J(R,R')
     float j_c = (float)c_same / (float)(c_size - c_same);
     float j_r = (float)r_same / (float)(r_size - r_same);
 
     // normalise node Jaccard = J(V,V')
-    float j_v = (j_c + j_r) / 2.f;
+    float j_v = (c_size*j_c + r_size*j_r) / (c_size+r_size);
 
     // J(E,E')
     float j_e = (float)e_same / (float)(e_size - e_same);
 
-    // return normalised Jacard = J(G,G')
-    return (j_v + j_e) / 2.f;
+    // |C| * J(C,C') + |R| * J(R,R') + |E| * J(E,E')
+    // ---------------------------------------------
+    //              |C| + |R| + |E|
+    return (v_size*j_v + e_size*j_e) / (v_size+e_size);
 }
 
 float ConceptualGraph::sorensen_coeff(const ConceptualGraph & rhs) const
@@ -740,13 +743,11 @@ void ConceptualGraph::_parse_edges(rapidjson::Document & doc)
 
                 // [Concept, Relation] - Note: from and to are std::shared_ptrs
                 if ( from_concept != _concepts.end() && to_relation != _relations.end() )
-                    add_edge(std::make_shared<Concept>(*from_concept),
-							 std::make_shared<Relation>(*to_relation));
+                    add_edge(*from_concept, *to_relation);
 
                 // [Relation, Concept]
-                else if ( from_relation != _relations.end() && to_concept != _concepts.end() )
-                    add_edge(std::make_shared<Relation>(*from_relation),
-						     std::make_shared<Concept>(*to_concept));
+                else if (from_relation != _relations.end() && to_concept != _concepts.end())
+                    add_edge(*from_relation, *to_concept);
 
                 // Sanity Checks - Missmatching Edges or non-existant nodes
                 else if ( from_relation != _relations.end() && to_concept == _concepts.end() )

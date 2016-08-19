@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE ObjectTest
 #include <boost/test/unit_test.hpp>
 #include "../src/cgpp"
+#include "json.hpp"
 
 BOOST_AUTO_TEST_SUITE(object_test)
 
@@ -161,18 +162,73 @@ BOOST_AUTO_TEST_CASE(edge_test)
 	auto ptr1 = std::make_shared<cgpp::Concept>(c_a1);
 	auto ptr2 = std::make_shared<cgpp::Relation>(r_a1);
 
-	cgpp::Edge e1;
-	cgpp::Edge e2;
-    e1.from = ptr1;
-	e1.to = ptr2;
-	e2.from = ptr2;
-	e2.to = ptr1;	
+	cgpp::Edge e1{ptr1, ptr2};
+	cgpp::Edge e2{ptr2, ptr1};
 
-	// BUG - doesn't work!
-	BOOST_CHECK(e1 != e2);	
 	BOOST_CHECK(e1 == e1);
+    BOOST_CHECK(e2 == e2);
+	BOOST_CHECK(e1 != e2);
+    BOOST_CHECK(e2 != e1);
+
+    cgpp::Edge e3 = e1;
+    cgpp::Edge e4 = e2;
+	BOOST_CHECK(e1 == e3);
+    BOOST_CHECK(e2 == e4);
+	BOOST_CHECK(e3 != e4);
 }
 
-// Construct a ConceptualGraph
+// Construct a ConceptualGraph and use operators
+BOOST_AUTO_TEST_CASE(graph_test)
+{
+    BOOST_TEST_MESSAGE("Conceptual Graph test");
 
-BOOST_AUTO_TEST_SUITE_END( )
+	std::string value1 = "concept";
+	std::string tag1 = "tag1";
+	std::string value2 = "relation";
+	std::string tag2 = "tag2";
+
+	auto tok1 = cgpp::Token(value1, tag1);
+	cgpp::Concept c_a1 = cgpp::Concept(tok1);
+	auto tok2 = cgpp::Token(value2, tag2);
+	cgpp::Relation r_a1 = cgpp::Relation(tok2);
+
+	auto ptr1 = std::make_shared<cgpp::Concept>(c_a1);
+	auto ptr2 = std::make_shared<cgpp::Relation>(r_a1);
+	cgpp::Edge e1{ptr1, ptr2};
+	cgpp::Edge e2{ptr2, ptr1};
+
+    auto graph1 = cgpp::ConceptualGraph();
+    graph1.add_concept(c_a1);
+    graph1.add_relation(r_a1);
+    graph1.add_edge(c_a1, r_a1);
+
+    auto graph1c1 = cgpp::ConceptualGraph(graph1);
+    auto graph1c2 = graph1c1;
+
+    BOOST_CHECK(graph1 == graph1c1);
+    BOOST_CHECK(graph1 == graph1c2);
+    BOOST_CHECK(graph1c1 == graph1c2);
+
+    auto jgraph = cgpp::ConceptualGraph(json);
+    BOOST_CHECK(jgraph != graph1);
+
+    BOOST_CHECK(graph1.concepts().size() == 1);
+    BOOST_CHECK(graph1.relations().size() == 1);
+    BOOST_CHECK(graph1.edges().size() == 1);
+
+    BOOST_CHECK(jgraph.concepts().size() == 2);
+    BOOST_CHECK(jgraph.relations().size() == 2);
+    BOOST_CHECK(jgraph.edges().size() == 3);
+
+    auto graph1c4 = cgpp::ConceptualGraph(graph1);
+    BOOST_CHECK(graph1c4.concepts().size() == 1);
+    BOOST_CHECK(graph1c4.relations().size() == 1);
+    BOOST_CHECK(graph1c4.edges().size() == 1);
+
+    auto graph2 = cgpp::ConceptualGraph(jgraph);
+    BOOST_CHECK(graph2.concepts().size() == 2);
+    BOOST_CHECK(graph2.relations().size() == 2);
+    BOOST_CHECK(graph2.edges().size() == 3);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
