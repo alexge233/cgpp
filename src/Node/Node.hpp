@@ -127,6 +127,7 @@ protected:
 ///
 /// \brief `std::hash` specialization for cgpp::Node
 ///
+/*
 namespace std
 {
 template<> struct hash<cgpp::Node>
@@ -140,4 +141,5 @@ template<> struct hash<cgpp::Node>
     }
 };
 }
+*/
 #endif

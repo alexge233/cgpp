@@ -65,6 +65,7 @@ struct Edge
 
 };
 }
+/*
 namespace std
 {
 template <>
@@ -79,4 +80,5 @@ struct hash<cgpp::Edge>
     }
 };
 }
+*/
 #endif
