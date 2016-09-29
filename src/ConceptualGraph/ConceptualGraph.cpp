@@ -245,23 +245,31 @@ std::vector<Relation> ConceptualGraph::has_edges(const Concept & rhs) const
 
 float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
 {
-    unsigned int c_same = 0, r_same = 0;
+    // C ∩ C' 
+    unsigned int c_same = 0; 
     for ( const auto this_concept : this->_concepts )
         for ( const auto other_concept : rhs._concepts )
             if ( this_concept == other_concept )
                 c_same++;
+    // R ∩ R'
+    unsigned int r_same = 0;
     for ( const auto this_relation : this->_relations )
         for ( const auto other_relation : rhs._relations )
             if ( this_relation == other_relation )
                 r_same++;
+
+    // E ∩ E'
     unsigned int e_same = 0;
     for ( const auto this_edge : this->_edges )
         for ( const auto other_edge : rhs._edges )
             if ( this_edge == other_edge )
                 e_same++;
 
+    // C + C'
     unsigned int c_size = this->_concepts.size()+rhs._concepts.size();
+    // R + R'
     unsigned int r_size = this->_relations.size()+rhs._relations.size();
+    // E + E'
     unsigned int e_size = this->_edges.size()+rhs._edges.size();
     unsigned int v_size = c_size + r_size;
 
@@ -283,8 +291,8 @@ float ConceptualGraph::jaccard_coeff(const ConceptualGraph & rhs) const
 
 float ConceptualGraph::sorensen_coeff(const ConceptualGraph & rhs) const
 {
-    //     `S(G,G') = 2 |G ∩ G'| / |G| + |G'|`
-    return (node_similarity(rhs) + edge_similarity(rhs)) / 2.f;
+    return ((node_similarity(rhs) + edge_similarity(rhs)))
+             / 2.f;
 }
 
 float ConceptualGraph::sparseness() const
@@ -343,12 +351,11 @@ float ConceptualGraph::node_similarity(const ConceptualGraph & rhs) const
             if ( this_relation == other_relation )
                 same_relations++;
 
-    // node percentage #(same nodes)  / total ( nodes ) 
-    float node_prc = (2.f * (float)(same_concepts + same_relations)) / 
-                     (float)(this->_concepts.size()+rhs._concepts.size()
-                     + this->_relations.size()+rhs._relations.size());
+    float dice_c = 2.f * (float)same_concepts / ((float)this->_concepts.size() + (float)rhs._concepts.size());
 
-    return node_prc;
+    float dice_r = 2.f * (float)same_relations / ((float)this->_relations.size() + (float)rhs._relations.size());
+
+    return (dice_c + dice_r) / 2.f;
 }
 
 float ConceptualGraph::edge_similarity(const ConceptualGraph & rhs) const

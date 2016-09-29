@@ -65,4 +65,20 @@ struct Edge
 
 };
 }
+/*
+namespace std
+{
+template <>
+struct hash<cgpp::Edge>
+{
+    size_t operator()(const cgpp::Edge & rhs) const
+    {
+        std::size_t seed = 0;
+        boost::hash_combine(seed, *rhs.from);
+        boost::hash_combine(seed, *rhs.to);
+        return seed;
+    }
+};
+}
+*/
 #endif
