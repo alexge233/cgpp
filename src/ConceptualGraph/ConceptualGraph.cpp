@@ -445,7 +445,14 @@ ConceptualGraph::ConceptualGraph(const std::string json)
              doc.HasMember("concepts") &&
              doc.HasMember("adjacencies") )
         {
-            auto version = boost::lexical_cast<int>(doc["version"].GetString());
+            int version;
+            if (doc["version"].IsString()) {
+                version = boost::lexical_cast<int>(doc["version"].GetString());
+            }
+            else if (doc["version"].IsInt()) {
+                version = doc["version"].GetInt();
+            }
+
             if (ConceptualGraph::_version == version)
             {
                 // check that uuid is correctly formated (v4 UUID) NOTE: below regex will only accept v4 UUID
@@ -624,7 +631,14 @@ void ConceptualGraph::_parse_concepts(rapidjson::Document & doc)
                     throw std::runtime_error(
 					"JSON concept obj has empty label or can't cast to string: " + _json );
 
-                int index = boost::lexical_cast<int>( data[i]["index"].GetString() );
+                int index;
+                if (data[i]["index"].IsString()) {
+                    index = boost::lexical_cast<int>(data[i]["index"].GetString());
+                }
+                else if (data[i]["index"].IsInt()) {
+                    index = data[i]["index"].GetInt();
+                }
+
                 auto postag = std::string( data[i]["postag"].GetString() );
                 // Token w/t label and POS Tag
                 Token token = Token(label, postag);
@@ -656,19 +670,25 @@ void ConceptualGraph::_parse_relations(rapidjson::Document & doc)
         for ( rapidjson::SizeType i = 0; i < data.Size(); i++ )
         {
             // Check if relation has members: label, id, postag, index, adjacencies
-            if ( data[i].HasMember( "label" ) &&
-                 data[i].HasMember( "id" ) &&
-                 data[i].HasMember( "postag" ) &&
-                 data[i].HasMember( "index" ) )
+            if ( data[i].HasMember("label") &&
+                 data[i].HasMember("id") &&
+                 data[i].HasMember("postag") &&
+                 data[i].HasMember("index"))
             {
-                auto label = std::string( data[i]["label"].GetString() );
-                if ( label.empty() )
+                auto label = std::string(data[i]["label"].GetString());
+                if (label.empty())
                     throw std::runtime_error(
 							"JSON relation obj has empty label or can't cast to string: " 
 							+ _json );
+                int index;
+                if (data[i]["index"].IsString()) {
+                    index = boost::lexical_cast<int>(data[i]["index"].GetString());
+                }
+                else if (data[i]["index"].IsInt()) {
+                    index = data[i]["index"].GetInt();
+                }
 
-                int index = boost::lexical_cast<int>( data[i]["index"].GetString() );
-                auto postag = std::string( data[i]["postag"].GetString() );
+                auto postag = std::string(data[i]["postag"].GetString());
                 // Token w/t label and POS Tag
                 Token token = Token(label,postag);
                 // Create Relation
@@ -696,13 +716,9 @@ void ConceptualGraph::_parse_edges(rapidjson::Document & doc)
     // JSON adjacencies
     auto & adj = doc["adjacencies"];
     // Iterate adjacencies
-    if ( adj.IsArray() )
-    {
-        for ( rapidjson::SizeType k = 0; k < adj.Size(); k++ )
-        {
-            if ( adj[k].HasMember ( "nodeTo" ) &&
-            adj[k].HasMember ( "nodeFrom" ) &&
-            adj[k].HasMember ( "order" ) )
+    if (adj.IsArray()) {
+        for (rapidjson::SizeType k = 0; k < adj.Size(); k++) {
+            if (adj[k].HasMember("nodeTo") && adj[k].HasMember("nodeFrom") && adj[k].HasMember("order"))
             {
                 // Get json ids
                 auto nodeFrom = boost::lexical_cast<boost::uuids::uuid>( adj[k]["nodeFrom"].GetString() );
